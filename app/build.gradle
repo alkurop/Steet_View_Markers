@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'realm-android'
+
 
 repositories {
   jcenter()
@@ -58,6 +60,8 @@ dependencies {
   compile 'com.squareup.picasso:picasso:2.5.2'
   compile 'com.stanfy.enroscar:enroscar-ui:2.1'
 
+  compile 'com.facebook.stetho:stetho:1.4.1'
+  compile 'com.uphyca:stetho_realm:2.0.0'
 
   def daggerVersion = '2.7'
   compile "com.google.dagger:dagger:$daggerVersion"
@@ -78,6 +82,7 @@ buildscript {
   }
 
   dependencies {
+    classpath "io.realm:realm-gradle-plugin:3.3.1"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
   }
