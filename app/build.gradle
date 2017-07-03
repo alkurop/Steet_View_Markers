@@ -27,6 +27,9 @@ android {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
+    debug {
+      minifyEnabled = false
+    }
   }
 
   sourceSets {
@@ -46,16 +49,19 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-  compile 'com.squareup.picasso:picasso:2.5.2'
 
   compile 'io.reactivex.rxjava2:rxjava:2.1.1'
   compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
   compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+  compile 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+
+  compile 'com.squareup.picasso:picasso:2.5.2'
+  compile 'com.stanfy.enroscar:enroscar-ui:2.1'
+
 
   def daggerVersion = '2.7'
   compile "com.google.dagger:dagger:$daggerVersion"
   kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-  kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
 
   compile 'com.jakewharton.timber:timber:4.5.1'
 

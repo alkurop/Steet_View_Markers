@@ -1,7 +1,8 @@
-package com.alkurop.mystreetplaces
+package com.alkurop.mystreetplaces.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.alkurop.mystreetplaces.R
 
 
 class MainActivity : AppCompatActivity(){
