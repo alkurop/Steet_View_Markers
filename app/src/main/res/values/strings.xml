@@ -1,5 +1,12 @@
 <resources>
-  <string name="app_name">MyStreetPlaces</string>
-  <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyD-VPyj7IwXBWFcSKEW0HgTgNJMDK1sMvM</string>
+    <string name="app_name">MyStreetPlaces</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyD-VPyj7IwXBWFcSKEW0HgTgNJMDK1sMvM</string>
+
+    <!--Drawer menu-->
+    <string name="map">Map</string>
+    <string name="places">Places</string>
+    <string name="settings">Settings</string>
+    <!--Settings menu-->
+    <string name="logout">Log Out</string>
 
 </resources>

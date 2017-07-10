@@ -17,7 +17,6 @@ class MyStreetPlacesApp : Application() {
     component = buildApplicationComponent()
     initRealm()
     initStetho()
-
   }
 
   fun buildApplicationComponent(): ApplicationComponent {
