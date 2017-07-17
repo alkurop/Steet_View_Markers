@@ -33,7 +33,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@drawable/bg_signup"
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/view_header_drawer"
             app:menu="@menu/drawer_menu"
