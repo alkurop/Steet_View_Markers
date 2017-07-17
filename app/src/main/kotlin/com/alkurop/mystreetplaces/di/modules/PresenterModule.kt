@@ -4,6 +4,10 @@ import com.alkurop.mystreetplaces.ui.home.MainActivityPresenter
 import com.alkurop.mystreetplaces.ui.home.MainActivityPresenterImpl
 import com.alkurop.mystreetplaces.ui.maps.MapPresenter
 import com.alkurop.mystreetplaces.ui.maps.MapPresenterImp
+import com.alkurop.mystreetplaces.ui.places.PlacesPresenter
+import com.alkurop.mystreetplaces.ui.places.PlacesPresenterImpl
+import com.alkurop.mystreetplaces.ui.settings.SettingsPresenter
+import com.alkurop.mystreetplaces.ui.settings.SettingsPresenterImpl
 import com.alkurop.mystreetplaces.ui.street.StreetPresenterImpl
 import com.alkurop.mystreetplaces.ui.street.StreetPresenter
 import dagger.Module
@@ -17,5 +21,9 @@ class PresenterModule {
     @Provides fun provideMapPresenter(): MapPresenter = MapPresenterImp()
 
     @Provides fun provideStreetPresenter(): StreetPresenter = StreetPresenterImpl()
+
+    @Provides fun providePlacesPresenter(): PlacesPresenter = PlacesPresenterImpl()
+
+    @Provides fun provideSettingsPresenter(): SettingsPresenter = SettingsPresenterImpl()
 }
 
