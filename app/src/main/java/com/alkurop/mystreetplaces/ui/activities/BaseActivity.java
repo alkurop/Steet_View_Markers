@@ -3,12 +3,12 @@ package com.alkurop.mystreetplaces.ui.activities;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
 import com.alkurop.mystreetplaces.MyStreetPlacesApp;
 import com.alkurop.mystreetplaces.R;
 import com.alkurop.mystreetplaces.di.components.ActivityComponent;
 import com.alkurop.mystreetplaces.di.modules.ActivityModule;
 import com.stanfy.enroscar.views.GUIUtils;
-import javax.inject.Inject;
 
 /**
  * Base class for app activities.
@@ -19,8 +19,6 @@ public abstract class BaseActivity extends AppCompatActivity {
   private ActivityComponent component;
 
   private Toolbar toolbar;
-
-  @Inject ActivityRoot root;
 
   /** Returns a component instance capable to inject this activity scoped objects. */
   protected ActivityComponent component() {
@@ -36,7 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
    * This method will crash if toolbar is not found in the layout.
    */
   protected void setupRootView(@LayoutRes int layoutId) {
-    root.setRootView(layoutId);
+    setContentView(layoutId);
     toolbar = GUIUtils.find(this, R.id.toolbar);
     if (toolbar != null) {
       setSupportActionBar(toolbar);

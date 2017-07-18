@@ -24,6 +24,8 @@ class MainActivityPresenterImpl : MainActivityPresenter {
         currentModel?.let {
             viewBus.onNext(it)
         }
+        if(currentModel == null)
+            onDrawerAction(R.id.map)
     }
 
     override fun onDrawerAction(action: Int) {
