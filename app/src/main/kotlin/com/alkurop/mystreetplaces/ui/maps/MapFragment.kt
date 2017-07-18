@@ -30,6 +30,10 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync {
+            it.isMyLocationEnabled = true
+           // it.setLocationSource()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
