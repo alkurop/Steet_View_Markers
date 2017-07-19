@@ -1,12 +1,17 @@
 package com.alkurop.mystreetplaces.ui.maps
 
+import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.alkurop.mystreetplaces.utils.LocationTracker
+import com.google.android.gms.maps.LocationSource
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_map.*
 import javax.inject.Inject
@@ -14,6 +19,7 @@ import javax.inject.Inject
 
 class MapFragment : BaseMvpFragment<MapViewModel>() {
     @Inject lateinit var presenter: MapPresenter
+
     override fun getSubject(): Observable<MapViewModel> = presenter.viewBus
 
     override fun getNavigation(): Observable<NavigationAction> = presenter.navBus
@@ -21,6 +27,11 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -32,7 +43,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync {
             it.isMyLocationEnabled = true
-           // it.setLocationSource()
+            it.setLocationSource(activity as LocationSource)
         }
     }
 
@@ -71,4 +82,5 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun unsubscribe() {
         presenter.unsubscribe()
     }
+
 }

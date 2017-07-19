@@ -3,15 +3,10 @@ package com.alkurop.mystreetplaces.utils
 import android.content.Intent
 import android.location.Location
 import android.support.v4.app.FragmentActivity
+import com.google.android.gms.maps.LocationSource
 
 
-interface LocationListener {
-    fun onFailed()
-    fun onLocationUpdate(location: Location)
-}
-
-interface LocationTracker {
-    fun deactivate()
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent)
-    fun start(activity: FragmentActivity, listener: LocationListener)
+interface LocationTracker : LocationSource {
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    fun setUp(activity: FragmentActivity, onFailedListener: () -> Unit)
 }

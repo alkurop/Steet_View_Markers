@@ -6,37 +6,44 @@ import android.support.v4.app.FragmentActivity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.LocationSource
+import java.lang.ref.WeakReference
 
 
 class LocationTrackerImpl : LocationTracker {
+
     lateinit var apiClient: FusedLocationProviderClient
-    lateinit var activity: FragmentActivity
+    var weakActivity = WeakReference<FragmentActivity>(null)
     lateinit var locationRequest: LocationRequest
     lateinit var locationCallback: LocationCallback
-    lateinit var listener: LocationListener
+    lateinit var onFailedListener: () -> Unit
 
     var isTracking = false
     val REQUEST_CHECK_SETTINGS = 220
 
-    override fun start(activity: FragmentActivity, listener: LocationListener) {
-        this.listener = listener
-        this.activity = activity
-        createLocationRequest()
-        createLocationCallback()
+    override fun setUp(activity: FragmentActivity, onFailedListener: () -> Unit) {
+        weakActivity = WeakReference(activity)
+        this.onFailedListener = onFailedListener
         apiClient = LocationServices.getFusedLocationProviderClient(activity)
+        createLocationRequest()
+    }
+
+    override fun activate(listener: LocationSource.OnLocationChangedListener) {
+        createLocationCallback(listener)
+        executeSettingsRequest()
     }
 
 
-    fun createLocationCallback() {
+    fun createLocationCallback(listener: LocationSource.OnLocationChangedListener) {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
-                listener.onLocationUpdate(result.lastLocation)
+                listener.onLocationChanged(result.lastLocation)
             }
         }
     }
 
     fun onRequestFailed() {
-        listener.onFailed()
+        onFailedListener.invoke()
     }
 
     fun createLocationRequest() {
@@ -46,8 +53,8 @@ class LocationTrackerImpl : LocationTracker {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
 
-
     fun executeSettingsRequest() {
+        val activity = weakActivity.get() ?: return
         val builder = LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
         val client = LocationServices.getSettingsClient(activity)
@@ -76,7 +83,7 @@ class LocationTrackerImpl : LocationTracker {
         apiClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == Activity.RESULT_OK) {
                 executeSettingsRequest()
@@ -90,5 +97,4 @@ class LocationTrackerImpl : LocationTracker {
         if (isTracking)
             apiClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
-
 }
