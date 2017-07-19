@@ -59,7 +59,7 @@ class MainActivityPresenterImpl : MainActivityPresenter {
             SettingsFragment::class.java.canonicalName -> R.string.settings
             PlacesFragment::class.java.canonicalName -> R.string.places
             MapFragment::class.java.canonicalName -> R.string.map
-            else -> throw  IllegalArgumentException("Unknown fragment")
+            else -> -1
         }
         val model = MainActivityView(toolbarTitleRes = toolbarTitleRes)
         viewBus.onNext(model)
