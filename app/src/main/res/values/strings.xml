@@ -6,7 +6,11 @@
     <string name="map">Map</string>
     <string name="places">Places</string>
     <string name="settings">Settings</string>
+
     <!--Settings menu-->
     <string name="logout">Log Out</string>
+
+    <!--Activity names-->
+    <string name="street_view">Street view</string>
 
 </resources>
