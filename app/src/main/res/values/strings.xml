@@ -12,5 +12,14 @@
 
     <!--Activity names-->
     <string name="street_view">Street view</string>
+    <string name="add_marker">Add marker</string>
 
+    <!--Error Messages-->
+    <string name="er_location_tracking_failed">Location tracking failed</string>
+    <string name="er_no_street_view_for_location">No street view available for location</string>
+    <string name="er_unknown_location">Location is unknown</string>
+
+    <!--Permission Messages-->
+    <string name="location_permission_rationale">App need to track current location. Please grant this permission.</string>
+    <string name="location_permission_rationale_title">Location Permission</string>
 </resources>

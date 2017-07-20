@@ -3,9 +3,8 @@ package com.alkurop.mystreetplaces.ui.maps
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
@@ -37,15 +36,20 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
-        locationTracker.setUp(activity, { Timber.e("Location tracking failed") })
+        locationTracker.setUp(activity, {
+            Timber.e("Location tracking failed")
+            Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
+        })
+        presenter.locationTracker = locationTracker
         setUpPermissionsManager()
+        setHasOptionsMenu(true)
     }
 
     private fun setUpPermissionsManager() {
         permissionManager = PermissionsManager(this)
         val permission1 = Pair(Manifest.permission.ACCESS_FINE_LOCATION,
-                PermissionOptionalDetails("Location",
-                        "This permission is optional. I can live without it"))
+                PermissionOptionalDetails(getString(R.string.location_permission_rationale_title),
+                        getString(R.string.location_permission_rationale)))
 
         permissionManager.addPermissions(mapOf(permission1))
         permissionManager.addPermissionsListener {
@@ -53,6 +57,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
                 if (!pair.value)
                     return@addPermissionsListener
             }
+            presenter.isPermissionGranted = true
             initLocationTracking()
         }
     }
@@ -64,6 +69,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapView.onCreate(savedInstanceState)
+        fab.setOnClickListener { presenter.onGoToStreetView() }
     }
 
     private fun initLocationTracking() {
@@ -86,6 +92,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onStart() {
         super.onStart()
         mapView.onStart()
+        presenter.isPermissionGranted = false
         permissionManager.makePermissionRequest()
     }
 
@@ -107,6 +114,17 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onDestroyView() {
         super.onDestroyView()
         mapView.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.map_fragment_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.addMarker) {
+            presenter.onAddMarker()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun renderView(viewModel: MapViewModel) {
