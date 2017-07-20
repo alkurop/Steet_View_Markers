@@ -1,6 +1,7 @@
 package com.alkurop.mystreetplaces.ui.home
 
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.ActionBarDrawerToggle
@@ -9,21 +10,23 @@ import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.LocationTracker
+import com.alkurop.mystreetplaces.utils.MapLocationSource
 import com.google.android.gms.maps.LocationSource
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 
-class MainActivity : BaseMvpActivity<MainActivityView>(), LocationSource {
-
+class MainActivity : BaseMvpActivity<MainActivityView>(), MapLocationSource {
     companion object {
+
         val MODEL_KEY = "model"
     }
 
     @Inject lateinit var locationTracker: LocationTracker
 
     @Inject lateinit var presenter: MainActivityPresenter
+
     var backStackListener = FragmentManager.OnBackStackChangedListener {
         val fragmentList = supportFragmentManager.fragments
         fragmentList?.filter { it != null }?.forEach {
@@ -48,7 +51,6 @@ class MainActivity : BaseMvpActivity<MainActivityView>(), LocationSource {
         locationTracker.activate(listener)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
@@ -59,6 +61,7 @@ class MainActivity : BaseMvpActivity<MainActivityView>(), LocationSource {
         presenter.currentModel = savedInstanceState?.getParcelable<MainActivityView>(MODEL_KEY)
         presenter.start()
     }
+
 
     private fun initDrawerComponents() {
         navigationView.setNavigationItemSelectedListener {
@@ -89,6 +92,10 @@ class MainActivity : BaseMvpActivity<MainActivityView>(), LocationSource {
         with(viewModel) {
             viewModel.toolbarTitleRes.takeIf { it != -1 }?.let { supportActionBar?.title = getString(viewModel.toolbarTitleRes) }
         }
+    }
+
+    override fun getLastKnownLocation(listener: (Location) -> Unit) {
+        locationTracker.getLastKnownLocation(listener)
     }
 
     override fun unsubscribe() {

@@ -2,6 +2,7 @@ package com.alkurop.mystreetplaces.utils
 
 import android.app.Activity
 import android.content.Intent
+import android.location.Location
 import android.support.v4.app.FragmentActivity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
@@ -12,19 +13,17 @@ import java.lang.ref.WeakReference
 
 class LocationTrackerImpl : LocationTracker {
 
-    lateinit var apiClient: FusedLocationProviderClient
+    var fuseClient: FusedLocationProviderClient? = null
     var weakActivity = WeakReference<FragmentActivity>(null)
     lateinit var locationRequest: LocationRequest
     lateinit var locationCallback: LocationCallback
     lateinit var onFailedListener: () -> Unit
-
-    var isTracking = false
     val REQUEST_CHECK_SETTINGS = 220
 
     override fun setUp(activity: FragmentActivity, onFailedListener: () -> Unit) {
         weakActivity = WeakReference(activity)
         this.onFailedListener = onFailedListener
-        apiClient = LocationServices.getFusedLocationProviderClient(activity)
+        fuseClient = LocationServices.getFusedLocationProviderClient(activity)
         createLocationRequest()
     }
 
@@ -33,6 +32,9 @@ class LocationTrackerImpl : LocationTracker {
         executeSettingsRequest()
     }
 
+    override fun getLastKnownLocation(listener: (Location) -> Unit) {
+        fuseClient?.lastLocation?.addOnSuccessListener { listener.invoke(it) }
+    }
 
     fun createLocationCallback(listener: LocationSource.OnLocationChangedListener) {
         locationCallback = object : LocationCallback() {
@@ -79,8 +81,7 @@ class LocationTrackerImpl : LocationTracker {
     }
 
     fun executeLocationsRequest() {
-        isTracking = true
-        apiClient.requestLocationUpdates(locationRequest, locationCallback, null)
+        fuseClient?.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -94,7 +95,6 @@ class LocationTrackerImpl : LocationTracker {
     }
 
     override fun deactivate() {
-        if (isTracking)
-            apiClient.requestLocationUpdates(locationRequest, locationCallback, null)
+        fuseClient?.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 }

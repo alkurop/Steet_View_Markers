@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.alkurop.mystreetplaces.utils.MapLocationSource
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
 import com.github.alkurop.jpermissionmanager.PermissionsManager
-import com.google.android.gms.maps.LocationSource
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_map.*
 import javax.inject.Inject
@@ -20,6 +22,8 @@ import javax.inject.Inject
 class MapFragment : BaseMvpFragment<MapViewModel>() {
     @Inject lateinit var presenter: MapPresenter
     lateinit var permissionManager: PermissionsManager
+    val DEFAULT_CAMERA_ZOOM = 14f
+
 
     override fun getSubject(): Observable<MapViewModel> = presenter.viewBus
 
@@ -33,7 +37,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     private fun setUpPermissionsManager() {
         permissionManager = PermissionsManager(this)
-        val permission1 = Pair(Manifest.permission.ACCESS_COARSE_LOCATION,
+        val permission1 = Pair(Manifest.permission.ACCESS_FINE_LOCATION,
                 PermissionOptionalDetails("Location",
                         "This permission is optional. I can live without it"))
 
@@ -57,9 +61,16 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     private fun initLocationTracking() {
-        mapView.getMapAsync {
-            it.isMyLocationEnabled = true
-            it.setLocationSource(activity as LocationSource)
+        val source = activity as MapLocationSource
+        mapView.getMapAsync { map ->
+            map.setLocationSource(source)
+            map.isMyLocationEnabled = true
+            map.isBuildingsEnabled = true
+            source.getLastKnownLocation {
+
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
+                map.animateCamera(cameraUpdate)
+            }
         }
     }
 
