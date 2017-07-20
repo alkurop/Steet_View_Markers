@@ -7,9 +7,12 @@ apply plugin: 'realm-android'
 
 repositories {
   jcenter()
+  mavenCentral()
   maven { url 'https://maven.fabric.io/public' }
   maven { url "http://repository.jetbrains.com/all" }
   maven { url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo' }
+  maven { url 'https://jitpack.io' }
+
 }
 
 

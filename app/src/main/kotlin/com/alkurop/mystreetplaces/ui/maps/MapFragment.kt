@@ -34,12 +34,11 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     private fun setUpPermissionsManager() {
         permissionManager = PermissionsManager(this)
         val permission1 = Pair(Manifest.permission.ACCESS_COARSE_LOCATION,
-                PermissionOptionalDetails( "Location",
-                         "This permission is optional. I can live without it"))
+                PermissionOptionalDetails("Location",
+                        "This permission is optional. I can live without it"))
 
         permissionManager.addPermissions(mapOf(permission1))
         permissionManager.addPermissionsListener {
-            val pa = it
             for (pair in it) {
                 if (!pair.value)
                     return@addPermissionsListener
