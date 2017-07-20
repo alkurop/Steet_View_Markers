@@ -128,6 +128,10 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     override fun renderView(viewModel: MapViewModel) {
+        with(viewModel) {
+            shouldAskForPermission.takeIf { it }?.let { permissionManager.makePermissionRequest() }
+            errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
+        }
     }
 
     override fun unsubscribe() {

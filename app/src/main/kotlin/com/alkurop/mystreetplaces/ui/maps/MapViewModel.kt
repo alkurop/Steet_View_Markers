@@ -4,4 +4,5 @@ import android.support.annotation.StringRes
 
 
 data class MapViewModel(val isLoading: Boolean? = null,
-                        @StringRes val errorRes: Int? = null)
+                        @StringRes val errorRes: Int? = null,
+                        val shouldAskForPermission:Boolean = false)
