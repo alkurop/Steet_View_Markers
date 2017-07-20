@@ -9,19 +9,24 @@ import android.view.ViewGroup
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
-import com.alkurop.mystreetplaces.utils.MapLocationSource
+import com.alkurop.mystreetplaces.utils.LocationTracker
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
 import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_map.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
 class MapFragment : BaseMvpFragment<MapViewModel>() {
     @Inject lateinit var presenter: MapPresenter
     lateinit var permissionManager: PermissionsManager
+    @Inject lateinit var locationTracker: LocationTracker
+
+    val compositeDisposable = CompositeDisposable()
     val DEFAULT_CAMERA_ZOOM = 14f
 
 
@@ -32,6 +37,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
+        locationTracker.setUp(activity, { Timber.e("Location tracking failed") })
         setUpPermissionsManager()
     }
 
@@ -61,16 +67,15 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     private fun initLocationTracking() {
-        val source = activity as MapLocationSource
         mapView.getMapAsync { map ->
-            map.setLocationSource(source)
+            map.setLocationSource(locationTracker)
             map.isMyLocationEnabled = true
             map.isBuildingsEnabled = true
-            source.getLastKnownLocation {
-
+            val dis = locationTracker.getLastKnownLocation().firstElement().subscribe({
                 val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
                 map.animateCamera(cameraUpdate)
-            }
+            })
+            compositeDisposable.add(dis)
         }
     }
 
@@ -108,6 +113,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     override fun unsubscribe() {
+        compositeDisposable.clear()
         presenter.unsubscribe()
     }
 
@@ -118,6 +124,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         permissionManager.onActivityResult(requestCode)
+        locationTracker.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
 }

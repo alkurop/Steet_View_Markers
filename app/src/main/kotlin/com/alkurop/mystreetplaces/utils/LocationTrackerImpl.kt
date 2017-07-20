@@ -8,6 +8,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.LocationSource
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import java.lang.ref.WeakReference
 
 
@@ -20,26 +22,32 @@ class LocationTrackerImpl : LocationTracker {
     lateinit var onFailedListener: () -> Unit
     val REQUEST_CHECK_SETTINGS = 220
 
+    val locationSubject = BehaviorSubject.create<Location>()
+
     override fun setUp(activity: FragmentActivity, onFailedListener: () -> Unit) {
         weakActivity = WeakReference(activity)
         this.onFailedListener = onFailedListener
         fuseClient = LocationServices.getFusedLocationProviderClient(activity)
         createLocationRequest()
+        fuseClient?.lastLocation?.addOnSuccessListener { locationSubject.onNext(it) }
+
     }
 
     override fun activate(listener: LocationSource.OnLocationChangedListener) {
         createLocationCallback(listener)
         executeSettingsRequest()
+
     }
 
-    override fun getLastKnownLocation(listener: (Location) -> Unit) {
-        fuseClient?.lastLocation?.addOnSuccessListener { listener.invoke(it) }
+    override fun getLastKnownLocation(): Observable<Location> {
+        return locationSubject
     }
 
     fun createLocationCallback(listener: LocationSource.OnLocationChangedListener) {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 listener.onLocationChanged(result.lastLocation)
+                locationSubject.onNext(result.lastLocation)
             }
         }
     }
