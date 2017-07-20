@@ -69,7 +69,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapView.onCreate(savedInstanceState)
-        fab.setOnClickListener { presenter.onGoToStreetView() }
+        fab.setOnClickListener { presenter.onGoToStreetView(null) }
     }
 
     private fun initLocationTracking() {
