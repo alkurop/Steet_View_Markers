@@ -1,0 +1,10 @@
+<manifest package="com.github.alkurop.streetviewmarker"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+  <uses-permission android:name="android.permission.INTERNET" />
+
+
+  <application android:largeHeap="true" />
+
+</manifest>

@@ -6,98 +6,97 @@ apply plugin: 'realm-android'
 
 
 repositories {
-  jcenter()
-  mavenCentral()
-  maven { url 'https://maven.fabric.io/public' }
-  maven { url "http://repository.jetbrains.com/all" }
-  maven { url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo' }
-  maven { url 'https://jitpack.io' }
+    jcenter()
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url "http://repository.jetbrains.com/all" }
+    maven { url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo' }
+    maven { url 'https://jitpack.io' }
 
 }
 
 
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
-  defaultConfig {
-    minSdkVersion rootProject.ext.minSdkVersion
-    applicationId "com.alkurop.mystreetplaces"
-    targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 1
-    versionName "1.0"
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-  }
-  signingConfigs {
-    debug {
-      keyAlias 'key0'
-      keyPassword 'debug123'
-      storeFile file('debug.keystore.jks')
-      storePassword 'debug123'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        applicationId "com.alkurop.mystreetplaces"
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-  }
+    signingConfigs {
+        debug {
+            keyAlias 'key0'
+            keyPassword 'debug123'
+            storeFile file('debug.keystore.jks')
+            storePassword 'debug123'
+        }
+    }
 
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled = false
+        }
     }
-    debug {
-      signingConfig signingConfigs.debug
-      minifyEnabled = false
-    }
-  }
 
-  sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
-  }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
-  compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-  compile "com.android.support:design:$supportLibraryVersion"
-  compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
-  compile "com.android.support:gridlayout-v7:$supportLibraryVersion"
-  compile "com.android.support:cardview-v7:$supportLibraryVersion"
-  compile "com.google.android.gms:play-services-maps:$services_version"
-  compile "com.google.android.gms:play-services-location:$services_version"
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:design:$supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    compile "com.android.support:gridlayout-v7:$supportLibraryVersion"
+    compile "com.android.support:cardview-v7:$supportLibraryVersion"
+    compile "com.google.android.gms:play-services-maps:$services_version"
+    compile "com.google.android.gms:play-services-location:$services_version"
 
-  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-  compile 'com.github.alkurop:Android-Runtime-Permission-Manager:0.0.11'
-  compile 'com.github.alkurop:steet_view_markers:1.0.3'
+    compile 'com.github.alkurop:Android-Runtime-Permission-Manager:0.0.11'
+    compile project(":streetviewmarker")
+    def daggerVersion = '2.7'
+    compile "com.google.dagger:dagger:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-  def daggerVersion = '2.7'
-  compile "com.google.dagger:dagger:$daggerVersion"
-  kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-
-  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-    exclude group: 'com.android.support', module: 'support-annotations'
-  })
-  compile 'io.reactivex.rxjava2:rxjava:2.1.1'
-  compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-  compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
-  compile 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
-  compile 'com.squareup.picasso:picasso:2.5.2'
-  compile 'com.stanfy.enroscar:enroscar-ui:2.1'
-  compile 'com.facebook.stetho:stetho:1.4.1'
-  compile 'com.uphyca:stetho_realm:2.0.0'
-  compile 'com.jakewharton.timber:timber:4.5.1'
-  compile 'com.android.support.constraint:constraint-layout:1.0.2'
-  testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'io.reactivex.rxjava2:rxjava:2.1.1'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+    compile 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.stanfy.enroscar:enroscar-ui:2.1'
+    compile 'com.facebook.stetho:stetho:1.4.1'
+    compile 'com.uphyca:stetho_realm:2.0.0'
+    compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
 }
 
 
 buildscript {
-  repositories {
-    jcenter()
-  }
+    repositories {
+        jcenter()
+    }
 
-  dependencies {
-    classpath "io.realm:realm-gradle-plugin:3.3.1"
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
-  }
+    dependencies {
+        classpath "io.realm:realm-gradle-plugin:3.3.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
+    }
 }
