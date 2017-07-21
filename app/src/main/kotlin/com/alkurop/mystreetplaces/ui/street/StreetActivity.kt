@@ -12,7 +12,7 @@ class StreetActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
-        setupRootView(R.layout.activity_street)
+        setupRootView(R.layout.activity_container)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setTitle(R.string.street_view)
         val focusLocation = intent
