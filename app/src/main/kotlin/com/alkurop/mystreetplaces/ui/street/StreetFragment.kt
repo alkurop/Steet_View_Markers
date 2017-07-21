@@ -49,7 +49,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         marker_view.onCreate(savedInstanceState)
         val focusLocation = arguments.getParcelable<LatLng>(FOCUS_LOCATION_KEY)
         marker_view.focusToLocation(focusLocation)
-
+        fab.setOnClickListener { presenter.dropPin() }
         setStreetViewListeners()
     }
 
@@ -67,6 +67,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
             }
         }
         marker_view.onCameraUpdateListener = {
+            presenter.onCameraUpdate(it)
             Timber.d("camera position changed. new position $it")
         }
     }

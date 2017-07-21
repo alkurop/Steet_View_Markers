@@ -7,4 +7,5 @@
   <color name="text_color_hint_black">#99222222</color>
   <color name="text_color_hint_white">#99F6F9FB</color>
   <color name="text_color_white">#F6F9FB</color>
+  <color name="street_fab_tint">#bb666666</color>
 </resources>

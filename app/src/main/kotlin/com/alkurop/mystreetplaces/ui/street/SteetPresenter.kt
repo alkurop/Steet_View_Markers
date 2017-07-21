@@ -1,6 +1,7 @@
 package com.alkurop.mystreetplaces.ui.street
 
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.github.alkurop.streetviewmarker.CameraPosition
 import io.reactivex.subjects.Subject
 
 
@@ -9,6 +10,10 @@ interface StreetPresenter {
     val navBus: Subject<NavigationAction>
 
     fun errorLoadingStreetView()
+
+    fun dropPin()
+
+    fun onCameraUpdate(cameraPosition: CameraPosition)
 
     fun unsubscribe()
 }
