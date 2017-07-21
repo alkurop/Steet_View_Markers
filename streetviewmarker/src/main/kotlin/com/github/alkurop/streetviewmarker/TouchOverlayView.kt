@@ -9,8 +9,8 @@ import android.widget.FrameLayout
 /**
  * Created by alkurop on 13.06.16.
  */
-internal class TouchOverlayView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null, style: Int = 0) : FrameLayout(context, attr, style) {
-    var onTouchListener:((ev: MotionEvent) ->Unit)? = null
+class TouchOverlayView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null, style: Int = 0) : FrameLayout(context, attr, style) {
+    var onTouchListener: ((ev: MotionEvent) -> Unit)? = null
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         onTouchListener?.invoke(event)

@@ -88,8 +88,8 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
     }
 
     override fun onLowMemory() {
-        super.onLowMemory()
         marker_view.onLowMemory()
+        super.onLowMemory()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -97,11 +97,10 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         super.onSaveInstanceState(markerState)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         marker_view.onDestroy()
+        super.onDestroyView()
     }
-
 
     override fun unsubscribe() {
         presenter.unsubscribe()

@@ -19,5 +19,6 @@ class StreetPresenterImpl : StreetPresenter {
     }
 
     override fun unsubscribe() {
+        compositeDisposable.clear()
     }
 }
