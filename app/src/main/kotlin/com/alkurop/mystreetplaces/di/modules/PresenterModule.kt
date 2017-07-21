@@ -4,6 +4,10 @@ import com.alkurop.mystreetplaces.ui.home.MainActivityPresenter
 import com.alkurop.mystreetplaces.ui.home.MainActivityPresenterImpl
 import com.alkurop.mystreetplaces.ui.maps.MapPresenter
 import com.alkurop.mystreetplaces.ui.maps.MapPresenterImp
+import com.alkurop.mystreetplaces.ui.pin.drop.DropPinPresenter
+import com.alkurop.mystreetplaces.ui.pin.drop.DropPinPresenterImpl
+import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenter
+import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenterImpl
 import com.alkurop.mystreetplaces.ui.places.PlacesPresenter
 import com.alkurop.mystreetplaces.ui.places.PlacesPresenterImpl
 import com.alkurop.mystreetplaces.ui.settings.SettingsPresenter
@@ -25,5 +29,9 @@ class PresenterModule {
     @Provides fun providePlacesPresenter(): PlacesPresenter = PlacesPresenterImpl()
 
     @Provides fun provideSettingsPresenter(): SettingsPresenter = SettingsPresenterImpl()
+
+    @Provides fun provideDropPinPresenter(): DropPinPresenter = DropPinPresenterImpl()
+
+    @Provides fun provideViewPinPresenter(): PinViewPresenter = PinViewPresenterImpl()
 }
 
