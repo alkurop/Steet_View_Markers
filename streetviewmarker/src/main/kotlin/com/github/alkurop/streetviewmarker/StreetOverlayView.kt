@@ -25,7 +25,7 @@ internal interface IStreetOverlayView {
   fun setLongClickListener(onClickListener: ((MarkerDrawData) -> Unit)?)
 }
 
-class StreetOverlayView : SurfaceView, IStreetOverlayView,
+internal class StreetOverlayView : SurfaceView, IStreetOverlayView,
     SurfaceHolder.Callback {
   override var mapsConfig: MapsConfig = MapsConfig()
   val TAG = StreetOverlayView::class.java.simpleName

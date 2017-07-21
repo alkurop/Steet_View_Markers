@@ -8,5 +8,7 @@ interface StreetPresenter {
     val viewBus: Subject<StreetViewModel>
     val navBus: Subject<NavigationAction>
 
+    fun errorLoadingStreetView()
+
     fun unsubscribe()
 }
