@@ -19,7 +19,11 @@ class PinActivity : BaseActivity() {
         addPinView()
     }
 
-    private fun addPinView() {
+    fun addPinView() {
+
+    }
+
+    fun addDropPinView() {
 
     }
 
