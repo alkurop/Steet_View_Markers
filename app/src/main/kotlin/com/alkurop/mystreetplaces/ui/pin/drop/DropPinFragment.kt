@@ -37,6 +37,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     override fun getNavigation(): Observable<NavigationAction> = presenter.navBus
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        component().inject(this)
         return inflater?.inflate(R.layout.fragment_drop_pin, container, false)
     }
 

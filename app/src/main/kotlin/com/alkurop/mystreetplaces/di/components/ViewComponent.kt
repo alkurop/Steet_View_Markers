@@ -11,7 +11,6 @@ import dagger.Subcomponent
 @Subcomponent(modules = arrayOf(ViewModule::class))
 interface ViewComponent {
 
-    fun inject(dropPinView: DropPinFragment)
     fun inject(dropPinView: PinView)
 
 }
