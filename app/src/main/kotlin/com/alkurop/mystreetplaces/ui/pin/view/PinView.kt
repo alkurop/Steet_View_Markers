@@ -3,10 +3,10 @@ package com.alkurop.mystreetplaces.ui.pin.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
+import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpView
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
-import com.github.alkurop.streetviewmarker.R
-import io.reactivex.Observable
+ import io.reactivex.Observable
 import javax.inject.Inject
 
 /**

@@ -1,6 +1,8 @@
 package com.alkurop.mystreetplaces
 
 import android.app.Application
+import android.content.Context
+import android.support.multidex.MultiDex
 import com.alkurop.mystreetplaces.di.components.ApplicationComponent
 import com.alkurop.mystreetplaces.di.components.DaggerApplicationComponent
 import com.alkurop.mystreetplaces.di.modules.ApplicationModule
@@ -10,32 +12,41 @@ import io.realm.Realm
 
 
 class MyStreetPlacesApp : Application() {
-  lateinit var component: ApplicationComponent
+    lateinit var component: ApplicationComponent
 
-  override fun onCreate() {
-    super.onCreate()
-    component = buildApplicationComponent()
-    initRealm()
-    initStetho()
-  }
-
-  fun buildApplicationComponent(): ApplicationComponent {
-    return DaggerApplicationComponent.builder()
-        .applicationModule(ApplicationModule(this))
-        .build()
-  }
-
-  fun initStetho() {
-    if (BuildConfig.DEBUG) {
-      Stetho.initialize(
-          Stetho.newInitializerBuilder(this)
-              .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-              .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-              .build())
+    override fun onCreate() {
+        super.onCreate()
+        component = buildApplicationComponent()
+        initRealm()
+        initStetho()
     }
-  }
 
-  fun initRealm() {
-    Realm.init(this)
-  }
+    fun installMultiDex() {
+        MultiDex.install(this)
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        installMultiDex()
+    }
+
+    fun buildApplicationComponent(): ApplicationComponent {
+        return DaggerApplicationComponent.builder()
+                .applicationModule(ApplicationModule(this))
+                .build()
+    }
+
+    fun initStetho() {
+        if (BuildConfig.DEBUG) {
+            Stetho.initialize(
+                    Stetho.newInitializerBuilder(this)
+                            .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                            .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                            .build())
+        }
+    }
+
+    fun initRealm() {
+        Realm.init(this)
+    }
 }
