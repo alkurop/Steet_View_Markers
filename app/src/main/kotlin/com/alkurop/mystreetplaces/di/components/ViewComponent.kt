@@ -2,7 +2,7 @@ package com.alkurop.mystreetplaces.di.components
 
 import com.alkurop.mystreetplaces.di.annotations.PerView
 import com.alkurop.mystreetplaces.di.modules.ViewModule
-import com.alkurop.mystreetplaces.ui.pin.drop.DropPinView
+import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinView
 import dagger.Subcomponent
 
@@ -11,7 +11,7 @@ import dagger.Subcomponent
 @Subcomponent(modules = arrayOf(ViewModule::class))
 interface ViewComponent {
 
-    fun inject(dropPinView: DropPinView)
+    fun inject(dropPinView: DropPinFragment)
     fun inject(dropPinView: PinView)
 
 }

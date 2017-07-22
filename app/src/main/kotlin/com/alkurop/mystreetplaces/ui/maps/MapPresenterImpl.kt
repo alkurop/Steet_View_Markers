@@ -5,6 +5,8 @@ import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
+import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
 import com.alkurop.mystreetplaces.utils.LocationTracker
@@ -42,7 +44,12 @@ class MapPresenterImp : MapPresenter {
         }
     }
 
-    fun addMarker(latLng: LatLng) {}
+    fun addMarker(latLng: LatLng) {
+        val args = Bundle()
+        args.putParcelable(DropPinFragment.LOCATION_KEY, latLng)
+        val navigationAction = ActivityNavigationAction(DropPinActivity::class.java, args)
+        navBus.onNext(navigationAction)
+    }
 
     override fun onGoToStreetView(location: LatLng?) {
         if (location == null) {

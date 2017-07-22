@@ -1,8 +1,8 @@
 package com.alkurop.mystreetplaces.ui.pin.drop
 
+import android.support.annotation.StringRes
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 
-/**
- * Created by alkurop on 7/21/17.
- */
-data class DropPinViewModel(val pinDto: PinDto? = null)
+
+data class DropPinViewModel(val pinDto: PinDto? = null,
+                            @StringRes val errorRes: Int? = null)

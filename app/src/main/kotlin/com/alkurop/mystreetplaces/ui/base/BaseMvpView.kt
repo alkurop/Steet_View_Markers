@@ -16,6 +16,7 @@ abstract class BaseMvpView<T> @JvmOverloads constructor(context: Context,
                                                         defStyleAttr: Int = 0)
     : BaseContainerView(context, attrs, defStyleAttr) {
     lateinit var subscriptions: CompositeDisposable
+    var navigator : ((NavigationAction) -> Unit)? = null
 
     abstract fun getSubject(): Observable<T>
 
@@ -47,42 +48,7 @@ abstract class BaseMvpView<T> @JvmOverloads constructor(context: Context,
     }
 
     private fun navigate(it: NavigationAction) {
-        if (it is ActivityNavigationAction) {
-            navigateActivity(it)
-        } else if (it is FragmentNavigationAction) {
-            navigateFragment(it)
-        } else if (it == NoArgsNavigation.BACK_ACTION) {
-            onBackward()
-        } else if (it == NoArgsNavigation.FORWARD_ACTION) {
-            onForward()
-        } else if (it is UriNavigationAction) {
-            navigateUri(it)
-        }
-    }
-
-    open fun navigateActivity(action: ActivityNavigationAction) {
-        val intent = Intent(context, action.endpoint)
-        intent.putExtra(BaseMvpActivity.ARGS_KEY, action.args)
-        if (action.startForResult) {
-            startForResult(intent)
-        } else {
-            context.startActivity(intent)
-            if (action.isShouldFinish) {
-                (context as Activity).finish()
-            }
-        }
-    }
-
-    open fun startForResult(intent: Intent) {
-        throw NotImplementedError()
-    }
-
-    open fun navigateFragment(action: FragmentNavigationAction) {
-        throw NotImplementedError()
-    }
-
-    open fun navigateUri(action: UriNavigationAction) {
-        context.startActivity(action.intent)
+      navigator?.invoke(it)
     }
 
     abstract fun renderView(viewModel: T)

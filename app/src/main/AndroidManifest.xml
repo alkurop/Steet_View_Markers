@@ -38,7 +38,7 @@
             android:name=".ui.street.StreetActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.pin.activity.PinActivity"
+            android:name=".ui.pin.activity.DropPinActivity"
             android:screenOrientation="portrait"
             />
 

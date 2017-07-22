@@ -10,8 +10,11 @@ import io.realm.annotations.RealmClass
 @RealmClass
 open class PinDto : RealmModel {
     @PrimaryKey lateinit var id: String
+
     lateinit var title: String
+
     lateinit var description: String
+
     lateinit var location: PinLocationDto
 
     constructor()
@@ -22,4 +25,5 @@ open class PinDto : RealmModel {
         this.title = title
         this.description = description
     }
+
 }

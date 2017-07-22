@@ -13,7 +13,7 @@
     <!--Activity names-->
     <string name="street_view">Street view</string>
     <string name="add_marker">Add marker</string>
-    <string name="place">Place</string>
+    <string name="add_place">Add place</string>
 
     <!--Error Messages-->
     <string name="er_location_tracking_failed">Location tracking failed</string>
