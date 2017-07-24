@@ -20,4 +20,8 @@ open class PinLocationDto : RealmModel {
         this.lon = lon
     }
 
+    override fun toString(): String {
+        return "PinLocationDto(lat=$lat, lon=$lon)"
+    }
+
 }
