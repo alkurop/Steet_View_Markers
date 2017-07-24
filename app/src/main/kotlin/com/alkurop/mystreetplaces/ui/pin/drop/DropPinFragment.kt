@@ -9,14 +9,15 @@ import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.maps.model.LatLng
+import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_drop_pin.*
 import javax.inject.Inject
 
-/**
- * Created by alkurop on 7/21/17.
- */
+
 class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
+    val compositeDesposable = CompositeDisposable()
 
     companion object {
         val LOCATION_KEY = "location"
@@ -45,18 +46,31 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         val location = arguments.getParcelable<LatLng>(LOCATION_KEY)
         presenter.start(location)
+        val disposable = RxTextView.textChangeEvents(title)
+                .subscribe({
+                    val text = it.text().toString()
+                    presenter.onTitleChange(text)
+                })
+        val disposable1 = RxTextView.textChangeEvents(description)
+                .subscribe({
+                    val text = it.text().toString()
+                    presenter.onDescriptionChange(text)
+                })
+        compositeDesposable.addAll(disposable, disposable1)
+        submit.setOnClickListener { presenter.submit() }
     }
+
     override fun unsubscribe() {
         presenter.unsubscribe()
+        compositeDesposable.clear()
     }
 
-
     override fun renderView(viewModel: DropPinViewModel) {
-        with(viewModel){
+        with(viewModel) {
             pinDto?.let { pin ->
                 location.text = pin.location.toString()
-                title.setText( pin.title)
-                description.setText( pin.description)
+                title.setText(pin.title)
+                description.setText(pin.description)
             }
 
         }

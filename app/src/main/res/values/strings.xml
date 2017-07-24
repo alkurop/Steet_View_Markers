@@ -23,4 +23,7 @@
     <!--Permission Messages-->
     <string name="location_permission_rationale">App need to track current location. Please grant this permission.</string>
     <string name="location_permission_rationale_title">Location Permission</string>
+    <string name="hint_enter_title">Enter Title</string>
+    <string name="hint_enter_description">Enter Description</string>
+    <string name="btn_submit">Submit</string>
 </resources>

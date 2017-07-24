@@ -5,12 +5,7 @@ import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v4.app.FragmentManager
 import android.widget.Toast
-import com.alkurop.mystreetplaces.ui.activities.BaseActivity
-import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
-import com.alkurop.mystreetplaces.ui.navigation.FragmentNavigationAction
-import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
-import com.alkurop.mystreetplaces.ui.navigation.NoArgsNavigation
-import com.alkurop.mystreetplaces.ui.navigation.UriNavigationAction
+import com.alkurop.mystreetplaces.ui.navigation.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

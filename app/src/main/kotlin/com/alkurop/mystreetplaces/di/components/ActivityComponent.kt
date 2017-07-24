@@ -1,7 +1,7 @@
 package com.alkurop.mystreetplaces.di.components
 
 import com.alkurop.mystreetplaces.di.annotations.PerActivity
-import com.alkurop.mystreetplaces.di.modules.ActivityModule
+import com.alkurop.mystreetplaces.di.modules.ui.ActivityModule
 import com.alkurop.mystreetplaces.ui.home.MainActivity
 import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
 import com.alkurop.mystreetplaces.ui.street.StreetActivity

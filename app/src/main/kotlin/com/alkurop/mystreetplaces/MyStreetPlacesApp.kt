@@ -5,10 +5,11 @@ import android.content.Context
 import android.support.multidex.MultiDex
 import com.alkurop.mystreetplaces.di.components.ApplicationComponent
 import com.alkurop.mystreetplaces.di.components.DaggerApplicationComponent
-import com.alkurop.mystreetplaces.di.modules.ApplicationModule
+import com.alkurop.mystreetplaces.di.modules.ui.ApplicationModule
 import com.facebook.stetho.Stetho
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
 import io.realm.Realm
+import timber.log.Timber
 
 
 class MyStreetPlacesApp : Application() {
@@ -38,6 +39,7 @@ class MyStreetPlacesApp : Application() {
 
     fun initStetho() {
         if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
             Stetho.initialize(
                     Stetho.newInitializerBuilder(this)
                             .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))

@@ -1,4 +1,4 @@
-package com.alkurop.mystreetplaces.di.modules
+package com.alkurop.mystreetplaces.di.modules.ui
 
 import android.app.Activity
 import com.alkurop.mystreetplaces.di.annotations.PerActivity

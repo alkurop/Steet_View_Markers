@@ -3,7 +3,7 @@ package com.alkurop.mystreetplaces.ui;
 import android.support.v4.app.Fragment;
 import com.alkurop.mystreetplaces.MyStreetPlacesApp;
 import com.alkurop.mystreetplaces.di.components.FragmentComponent;
-import com.alkurop.mystreetplaces.di.modules.FragmentModule;
+import com.alkurop.mystreetplaces.di.modules.ui.FragmentModule;
 
 
 /** Base class for application fragments. */

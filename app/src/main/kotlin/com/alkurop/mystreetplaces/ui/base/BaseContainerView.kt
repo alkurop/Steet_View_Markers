@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.alkurop.mystreetplaces.MyStreetPlacesApp
 import com.alkurop.mystreetplaces.di.components.ViewComponent
-import com.alkurop.mystreetplaces.di.modules.ViewModule
+import com.alkurop.mystreetplaces.di.modules.ui.ViewModule
 
 /**
  * Created by alkurop on 7/21/17.

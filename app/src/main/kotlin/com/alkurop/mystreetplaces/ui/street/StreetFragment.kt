@@ -60,8 +60,8 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         marker_view.onMarkerLongClickListener = {
             Toast.makeText(activity, "maker was long clicked $it", Toast.LENGTH_SHORT).show()
         }
-        marker_view.onStreetLoadedSuccess = { loadedSuccss ->
-            if (!loadedSuccss) {
+        marker_view.onStreetLoadedSuccess = { loadedSuccess ->
+            if (!loadedSuccess) {
                 presenter.errorLoadingStreetView()
                 Toast.makeText(activity, "This place cannot be shown in street view. Show user some other view", Toast.LENGTH_SHORT).show()
             }

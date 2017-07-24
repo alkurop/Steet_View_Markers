@@ -34,6 +34,7 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     var markerDataList = hashSetOf<Place>()
     var cam: StreetViewPanoramaCamera? = null
+    var position: LatLng? = null
 
     override fun onLocationUpdate(location: LatLng) {
         markerView.onLocationUpdate(location)
@@ -56,10 +57,12 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
         markerView.setLocalClickListener(onClickListener)
     }
 
-    private fun sendCameraPosition(position: LatLng) {
-        cam?.let { camera ->
-            val updatePosition = CameraPosition(LatLng(position.latitude,
-                    position.longitude), camera)
+    private fun sendCameraPosition() {
+        val tempPosition = position
+        val tempCam = cam
+        if (tempCam != null && tempPosition != null) {
+            val updatePosition = CameraPosition(LatLng(tempPosition.latitude,
+                    tempPosition.longitude), tempCam)
             onCameraUpdateListener?.invoke(updatePosition)
         }
     }
@@ -88,7 +91,8 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
     fun focusToLocation(location: LatLng) {
         streetView.getStreetViewPanoramaAsync { panorama ->
             panorama.setPosition(LatLng(location.latitude, location.longitude))
-            sendCameraPosition(LatLng(location.latitude, location.longitude))
+            position = location
+            sendCameraPosition()
         }
     }
 
@@ -112,12 +116,14 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
             panorama.setOnStreetViewPanoramaCameraChangeListener { cameraPosition ->
                 cam = cameraPosition
                 markerView.onCameraUpdate(cameraPosition)
+                sendCameraPosition()
             }
             panorama.setOnStreetViewPanoramaChangeListener { cameraPosition ->
                 if (cameraPosition !== null && cameraPosition.position !== null) {
                     markerView.onLocationUpdate(cameraPosition.position)
-                    sendCameraPosition(cameraPosition.position)
+                    position = cameraPosition.position
                 }
+
                 onStreetLoadedSuccess?.invoke(cameraPosition !== null && cameraPosition.links != null)
             }
             panorama.setOnStreetViewPanoramaClickListener {

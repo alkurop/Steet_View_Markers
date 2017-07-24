@@ -1,6 +1,6 @@
 package com.alkurop.mystreetplaces.di.components
 
-import com.alkurop.mystreetplaces.di.modules.BroadcastReceiverModule
+import com.alkurop.mystreetplaces.di.modules.ui.BroadcastReceiverModule
 import dagger.Subcomponent
 
 

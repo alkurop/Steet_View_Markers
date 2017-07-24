@@ -1,4 +1,4 @@
-package com.alkurop.mystreetplaces.di.modules
+package com.alkurop.mystreetplaces.di.modules.ui
 
 import android.content.Context
 import android.content.SharedPreferences

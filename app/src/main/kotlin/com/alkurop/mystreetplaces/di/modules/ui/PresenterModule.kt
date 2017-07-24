@@ -1,4 +1,4 @@
-package com.alkurop.mystreetplaces.di.modules
+package com.alkurop.mystreetplaces.di.modules.ui
 
 import com.alkurop.mystreetplaces.ui.home.MainActivityPresenter
 import com.alkurop.mystreetplaces.ui.home.MainActivityPresenterImpl

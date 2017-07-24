@@ -2,6 +2,10 @@ package com.alkurop.mystreetplaces.di.components
 
 import com.alkurop.mystreetplaces.MyStreetPlacesApp
 import com.alkurop.mystreetplaces.di.modules.*
+import com.alkurop.mystreetplaces.di.modules.data.ApiModule
+import com.alkurop.mystreetplaces.di.modules.data.CommandModule
+import com.alkurop.mystreetplaces.di.modules.data.RepoModule
+import com.alkurop.mystreetplaces.di.modules.ui.*
 import dagger.Component
 import javax.inject.Singleton
 

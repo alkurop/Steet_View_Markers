@@ -58,7 +58,7 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
         val mDrawerToggle = ActionBarDrawerToggle(
                 this,
                 drawer_layout,
-                toolbar,
+                getToolbar(),
                 R.string.app_name,
                 R.string.app_name
         )
@@ -94,12 +94,12 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         supportFragmentManager.fragments
-                .filter { it != null && it.isAdded }
-                .forEach { fragment ->
+                ?.filter { it != null && it.isAdded }
+                ?.forEach { fragment ->
                     fragment.onActivityResult(requestCode, resultCode, data)
                     fragment.childFragmentManager.fragments
-                            .filter { it != null && it.isAdded }
-                            .forEach { child ->
+                            ?.filter { it != null && it.isAdded }
+                            ?.forEach { child ->
                                 child.onActivityResult(requestCode, resultCode, data)
                             }
                 }
