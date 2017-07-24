@@ -11,6 +11,7 @@ import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
 import com.alkurop.mystreetplaces.utils.LocationTracker
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.VisibleRegion
 import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
@@ -20,14 +21,14 @@ import java.util.concurrent.TimeUnit
 
 class MapPresenterImp : MapPresenter {
     override val viewBus: Subject<MapViewModel> = createViewSubject()
+
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
-
     override var isPermissionGranted: Boolean = false
+
     override lateinit var locationTracker: LocationTracker
-
     val GET_LAST_KNOWN_LOCATION_TIMEOUT: Long = 1
-    val compositeDisposable = CompositeDisposable()
 
+    val compositeDisposable = CompositeDisposable()
     override fun onAddMarker() {
         if (isPermissionGranted) {
             val disposable = locationTracker
@@ -42,6 +43,9 @@ class MapPresenterImp : MapPresenter {
         } else {
             viewBus.onNext(MapViewModel(shouldAskForPermission = true))
         }
+    }
+
+    override fun onCameraPositionChanged(visibleRegion: VisibleRegion?) {
     }
 
     fun addMarker(latLng: LatLng) {

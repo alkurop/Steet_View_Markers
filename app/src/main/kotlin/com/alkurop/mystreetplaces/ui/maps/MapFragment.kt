@@ -12,7 +12,9 @@ import com.alkurop.mystreetplaces.utils.LocationTracker
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
 import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.clustering.ClusterManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -24,6 +26,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     @Inject lateinit var presenter: MapPresenter
     lateinit var permissionManager: PermissionsManager
     @Inject lateinit var locationTracker: LocationTracker
+    lateinit var clusterManager: ClusterManager<MapClusterItem>
 
     val compositeDisposable = CompositeDisposable()
     val DEFAULT_CAMERA_ZOOM = 14f
@@ -72,11 +75,27 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         fab.setOnClickListener { presenter.onGoToStreetView(null) }
     }
 
+    fun initClusterManager(map: GoogleMap) {
+        clusterManager = ClusterManager(activity, map)
+        val renderer = MapClusterItem.CustomClusterRenderer(activity, map, clusterManager)
+        clusterManager.renderer = renderer
+        map.setOnMarkerClickListener(clusterManager)
+        map.setOnMarkerClickListener(clusterManager)
+        map.setOnInfoWindowClickListener(clusterManager)
+        map.setOnCameraIdleListener { clusterManager.onCameraIdle() }
+    }
+
     private fun initLocationTracking() {
         mapView.getMapAsync { map ->
             map.setLocationSource(locationTracker)
             map.isMyLocationEnabled = true
             map.isBuildingsEnabled = true
+            presenter.onCameraPositionChanged(map.projection.visibleRegion)
+
+            map.setOnCameraMoveListener {
+                presenter.onCameraPositionChanged(map.projection.visibleRegion)
+            }
+            initClusterManager(map)
             val dis = locationTracker.getLastKnownLocation().firstElement().subscribe({
                 val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
                 map.animateCamera(cameraUpdate)
