@@ -77,7 +77,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     fun initClusterManager(map: GoogleMap) {
         clusterManager = ClusterManager(activity, map)
-        val renderer = MapClusterItem.CustomClusterRenderer(activity, map, clusterManager)
+        val renderer = MapClusterItem.ClusterRenderer(activity, map, clusterManager)
         clusterManager.renderer = renderer
         map.setOnMarkerClickListener(clusterManager)
         map.setOnMarkerClickListener(clusterManager)

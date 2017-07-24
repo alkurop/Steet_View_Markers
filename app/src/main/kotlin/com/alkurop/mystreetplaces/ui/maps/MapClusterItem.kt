@@ -33,12 +33,23 @@ class MapClusterItem(val place: Place) : ClusterItem {
         return null
     }
 
-    class CustomClusterRenderer(val context: Context, map: GoogleMap, clusterManager: ClusterManager<MapClusterItem>) :
+    class ClusterRenderer(val context: Context, map: GoogleMap, clusterManager: ClusterManager<MapClusterItem>) :
             DefaultClusterRenderer<MapClusterItem>(context, map, clusterManager) {
+        init {
+            minClusterSize = 5
+        }
         var iconBitmap: Bitmap? = null
 
         override fun getMarker(clusterItem: MapClusterItem): Marker? {
             return super.getMarker(clusterItem)
+        }
+
+        override fun setOnClusterClickListener(listener: ClusterManager.OnClusterClickListener<MapClusterItem>) {
+            super.setOnClusterClickListener(listener)
+        }
+
+        override fun setOnClusterItemClickListener(listener: ClusterManager.OnClusterItemClickListener<MapClusterItem>) {
+            super.setOnClusterItemClickListener(listener)
         }
 
 
