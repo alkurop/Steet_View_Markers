@@ -68,7 +68,6 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         }
         marker_view.onCameraUpdateListener = {
             presenter.onCameraUpdate(it)
-            Timber.d("camera position changed. new position $it")
         }
     }
 

@@ -33,7 +33,7 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
     var shouldFocusToMyLocation = true
 
     var markerDataList = hashSetOf<Place>()
-    var cam: StreetViewPanoramaCamera? = null
+    var cam: StreetViewPanoramaCamera = StreetViewPanoramaCamera(0f, 0f, 0f)
     var position: LatLng? = null
 
     override fun onLocationUpdate(location: LatLng) {
@@ -59,10 +59,9 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     private fun sendCameraPosition() {
         val tempPosition = position
-        val tempCam = cam
-        if (tempCam != null && tempPosition != null) {
+        if (tempPosition != null) {
             val updatePosition = CameraPosition(LatLng(tempPosition.latitude,
-                    tempPosition.longitude), tempCam)
+                    tempPosition.longitude), cam)
             onCameraUpdateListener?.invoke(updatePosition)
         }
     }
@@ -123,7 +122,7 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
                     markerView.onLocationUpdate(cameraPosition.position)
                     position = cameraPosition.position
                 }
-
+                sendCameraPosition()
                 onStreetLoadedSuccess?.invoke(cameraPosition !== null && cameraPosition.links != null)
             }
             panorama.setOnStreetViewPanoramaClickListener {
@@ -150,15 +149,17 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
     private fun restoreState(saveState: Bundle?) {
         saveState?.let {
             shouldFocusToMyLocation = saveState.getBoolean("shouldFocusToMyLocation", true)
-            @Suppress("UNCHECKED_CAST")
-            markerDataList = (saveState.getParcelableArray("markerModels") as Array<Place>).toHashSet()
+            val parcelableArray = saveState.getParcelableArray("markerModels")
+            val map = parcelableArray.map { it as Place }
+            markerDataList = (map).toHashSet()
         }
         markerView.addMarkers(markerDataList)
     }
 
     fun onSaveInstanceState(state: Bundle?): Bundle {
         val bundle = state ?: Bundle()
-        bundle.putParcelableArray("markerModels", markerDataList.toTypedArray())
+        val arrayOfPlaces = markerDataList.toTypedArray()
+        bundle.putParcelableArray("markerModels", arrayOfPlaces)
         bundle.putBoolean("shouldFocusToMyLocation", shouldFocusToMyLocation)
         val streetBundle = Bundle()
         streetView.onSaveInstanceState(streetBundle)
