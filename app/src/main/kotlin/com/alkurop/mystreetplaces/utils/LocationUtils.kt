@@ -33,9 +33,9 @@ object LocationUtils {
         val leftPoint = moveAlongBearing(location, leftBearing, halfDistance)
         val rightPoint = moveAlongBearing(location, rightBearing, halfDistance)
 
-        val maxPoint = LatLng(topPoint.latitude, leftPoint.longitude)
         val minPoint = LatLng(bottomPoint.latitude, rightPoint.longitude)
+        val maxPoint = LatLng(topPoint.latitude, leftPoint.longitude)
 
-        return arrayOf(maxPoint, minPoint)
+        return arrayOf(minPoint, maxPoint)
     }
 }

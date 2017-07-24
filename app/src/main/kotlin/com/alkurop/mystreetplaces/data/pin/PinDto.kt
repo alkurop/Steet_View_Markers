@@ -9,7 +9,7 @@ import io.realm.annotations.RealmClass
  */
 @RealmClass
 open class PinDto : RealmModel {
-    @PrimaryKey lateinit var id: String
+    @PrimaryKey var id: String? = null
 
     lateinit var title: String
 
@@ -19,8 +19,7 @@ open class PinDto : RealmModel {
 
     constructor()
 
-    constructor(id: String, location: PinLocationDto, title: String, description: String = "") {
-        this.id = id
+    constructor(location: PinLocationDto, title: String, description: String = "") {
         this.location = location
         this.title = title
         this.description = description

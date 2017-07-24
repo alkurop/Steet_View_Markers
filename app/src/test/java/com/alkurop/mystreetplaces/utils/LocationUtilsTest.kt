@@ -21,8 +21,8 @@ class LocationUtilsTest {
 
         val result = LocationUtils.getSquareOfDistanceMeters(location, distanceMeters)
         println(result)
-        assertThat(result[0].latitude).isGreaterThan(result[1].latitude)
-        assertThat(result[0].longitude).isGreaterThan(result[1].longitude)
+        assertThat(result[0].latitude).isLessThan(result[1].latitude)
+        assertThat(result[0].longitude).isLessThan(result[1].longitude)
 
     }
 }
