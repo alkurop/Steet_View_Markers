@@ -30,28 +30,21 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
     override var isPermissionGranted: Boolean = false
 
     override lateinit var locationTracker: LocationTracker
-    val GET_LAST_KNOWN_LOCATION_TIMEOUT: Long = 1
-
+    var visibleRegion: VisibleRegion? = null
     var pinsSet = setOf<PinDto>()
 
     val markersDisposable = CompositeDisposable()
     override fun onAddMarker() {
-        if (isPermissionGranted) {
-            val disposable = locationTracker
-                    .getLastKnownLocation()
-                    .compose(getLoadingStateTransformer())
-                    .firstElement()
-                    .timeout(GET_LAST_KNOWN_LOCATION_TIMEOUT, TimeUnit.SECONDS)
-                    .subscribe({
-                        addMarker(LatLng(it.latitude, it.longitude))
-                    }, { Timber.e(it) })
-            markersDisposable.add(disposable)
+        val tmp = visibleRegion
+        if (tmp!= null) {
+            addMarker(tmp.latLngBounds.center)
         } else {
             viewBus.onNext(MapViewModel(shouldAskForPermission = true))
         }
     }
 
     override fun onCameraPositionChanged(visibleRegion: VisibleRegion?) {
+        this.visibleRegion = visibleRegion
         visibleRegion?.let { getPinsForLocationFromRepo(it) }
     }
 
@@ -83,22 +76,9 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
         navBus.onNext(navigationAction)
     }
 
-    override fun onGoToStreetView(location: LatLng?) {
-        if (location == null) {
-            if (isPermissionGranted) {
-                val disposable = locationTracker
-                        .getLastKnownLocation()
-                        .compose(getLoadingStateTransformer())
-                        .firstElement()
-                        .timeout(GET_LAST_KNOWN_LOCATION_TIMEOUT, TimeUnit.SECONDS)
-                        .subscribe({
-                            navigateToStreetView(LatLng(it.latitude, it.longitude))
-                        }, { Timber.e(it) })
-                markersDisposable.add(disposable)
-            } else {
-                viewBus.onNext(MapViewModel(shouldAskForPermission = true))
-            }
-        } else {
+    override fun onGoToStreetView() {
+        val location = visibleRegion?.latLngBounds?.center
+        if (location != null) {
             navigateToStreetView(location)
         }
     }

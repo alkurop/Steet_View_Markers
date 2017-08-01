@@ -15,7 +15,6 @@ import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.VisibleRegion
 import com.google.maps.android.clustering.ClusterManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -68,7 +67,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         setUpPermissionsManager()
         mapView.onCreate(savedInstanceState)
-        fab.setOnClickListener { presenter.onGoToStreetView(null) }
+        fab.setOnClickListener { presenter.onGoToStreetView() }
     }
 
     fun initClusterManager(map: GoogleMap) {
@@ -93,16 +92,19 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             map.isBuildingsEnabled = true
             map.setOnMapLoadedCallback {
                 presenter.onCameraPositionChanged(map.projection.visibleRegion)
+                if (map.cameraPosition.target.latitude == 0.0) {
+                    val dis = locationTracker.getLastKnownLocation().firstElement().subscribe({
+                        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
+                        map.moveCamera(cameraUpdate)
+                    })
+                    compositeDisposable.add(dis)
+                }
             }
             map.setOnCameraMoveListener {
                 presenter.onCameraPositionChanged(map.projection.visibleRegion)
             }
             initClusterManager(map)
-            val dis = locationTracker.getLastKnownLocation().firstElement().subscribe({
-                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
-                map.moveCamera(cameraUpdate)
-            })
-            compositeDisposable.add(dis)
+
         }
     }
 

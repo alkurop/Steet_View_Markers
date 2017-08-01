@@ -12,7 +12,7 @@ interface MapPresenter {
     var locationTracker:LocationTracker
     var isPermissionGranted:Boolean
 
-    fun onGoToStreetView(location:LatLng?)
+    fun onGoToStreetView()
 
     fun onAddMarker()
 
