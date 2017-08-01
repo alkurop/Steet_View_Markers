@@ -36,7 +36,7 @@ data class MapsConfig(
      *  if marker is closer the 10 meters user will move the camera to the marker.
      *  Otherwise click on marker will be executed
      */
-    @JvmField  val markerMinPositionToMoveToMarker: Double = 10.toDouble(),
+    @JvmField  val markerMinPositionToMoveToMarker: Double = 30.toDouble(),
 
 
     /**

@@ -25,7 +25,7 @@ class PresenterModule {
 
     @Provides fun provideMapPresenter(pinRepo: PinRepo): MapPresenter = MapPresenterImpl(pinRepo)
 
-    @Provides fun provideStreetPresenter(): StreetPresenter = StreetPresenterImpl()
+    @Provides fun provideStreetPresenter(pinRepo: PinRepo): StreetPresenter = StreetPresenterImpl(pinRepo)
 
     @Provides fun providePlacesPresenter(): PlacesPresenter = PlacesPresenterImpl()
 

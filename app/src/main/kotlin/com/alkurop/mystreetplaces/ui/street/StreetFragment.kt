@@ -55,26 +55,25 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
     fun setStreetViewListeners() {
         marker_view.onMarkerClickListener = {
-            Toast.makeText(activity, "maker was clicked $it", Toast.LENGTH_SHORT).show()
+            presenter.onMarkerClicked(it)
         }
         marker_view.onMarkerLongClickListener = {
-            Toast.makeText(activity, "maker was long clicked $it", Toast.LENGTH_SHORT).show()
+            presenter.onMarkerClicked(it)
         }
         marker_view.onStreetLoadedSuccess = { loadedSuccess ->
             if (!loadedSuccess) {
                 presenter.errorLoadingStreetView()
-                Toast.makeText(activity, "This place cannot be shown in street view. Show user some other view", Toast.LENGTH_SHORT).show()
-            }
+             }
         }
         marker_view.onCameraUpdateListener = {
             presenter.onCameraUpdate(it)
-            Timber.d("camera position changed. new position $it")
-        }
+         }
     }
 
     override fun renderView(viewModel: StreetViewModel) {
         with(viewModel) {
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
+            places?.let { marker_view.addMarkers(it.toHashSet()) }
         }
     }
 
