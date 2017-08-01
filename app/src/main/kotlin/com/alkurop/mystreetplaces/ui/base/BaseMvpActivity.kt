@@ -56,7 +56,7 @@ abstract class BaseMvpActivity<T> : BaseActivity() {
         super.onSaveInstanceState(bundle)
     }
 
-    private fun navigate(it: NavigationAction) {
+    fun navigate(it: NavigationAction) {
         if (it is ActivityNavigationAction) {
             navigateActivity(it)
         } else if (it is FragmentNavigationAction) {

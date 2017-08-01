@@ -27,6 +27,16 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
         viewBus.onNext(model)
     }
 
+    override fun start(pinId: String) {
+        val sub = pinRepo.getPinDetails(pinId)
+                .subscribe({
+                    pinDto = it
+                    val model = DropPinViewModel(pinDto = pinDto)
+                    viewBus.onNext(model)
+                }, { Timber.e(it) })
+        compositeDisposable.add(sub)
+    }
+
     override fun onTitleChange(title: String) {
         pinDto.title = title
     }
@@ -41,6 +51,15 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
                     val navigation = NoArgsNavigation.BACK_ACTION
                     navBus.onNext(navigation)
                 }, { Timber.e(it) })
+        compositeDisposable.add(sub)
+    }
+
+    override fun deletePin() {
+        val sub = pinRepo.removePin(pinDto)
+                .subscribe({
+                    val nav = NoArgsNavigation.BACK_ACTION
+                    navBus.onNext(nav)
+                },{Timber.e(it)})
         compositeDisposable.add(sub)
     }
 

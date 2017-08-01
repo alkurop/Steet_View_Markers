@@ -9,7 +9,7 @@ import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.BottomsheetFragmentNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
-import com.alkurop.mystreetplaces.ui.pin.bottomsheet.PinFragment
+import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment

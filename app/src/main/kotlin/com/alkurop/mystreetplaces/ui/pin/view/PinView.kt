@@ -56,7 +56,7 @@ class PinView @JvmOverloads constructor(context: Context,
         val bundle = Bundle()
         bundle.putParcelable("state", onSaveInstanceState)
         bundle.putString("id", id)
-        return onSaveInstanceState
+        return bundle
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {

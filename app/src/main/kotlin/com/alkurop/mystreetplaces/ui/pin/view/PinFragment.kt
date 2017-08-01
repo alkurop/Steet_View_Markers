@@ -1,4 +1,4 @@
-package com.alkurop.mystreetplaces.ui.pin.bottomsheet
+package com.alkurop.mystreetplaces.ui.pin.view
 
 import android.app.Dialog
 import android.os.Bundle
@@ -7,7 +7,7 @@ import android.support.design.widget.BottomSheetBehavior
 import android.view.View
 import android.support.design.widget.CoordinatorLayout
 import com.alkurop.mystreetplaces.R
-import kotlinx.android.synthetic.main.fragment_view_pin.*
+import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import kotlinx.android.synthetic.main.fragment_view_pin.view.*
 
 class PinFragment : BottomSheetDialogFragment() {
@@ -45,6 +45,10 @@ class PinFragment : BottomSheetDialogFragment() {
             behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
         }
         contentView.viewPin.setPinId(pinId)
+        contentView.viewPin.navigator = {
+            val act = activity as BaseMvpActivity<*>
+            act.navigate(it)
+        }
 
     }
 

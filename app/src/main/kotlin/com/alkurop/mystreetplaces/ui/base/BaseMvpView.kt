@@ -1,15 +1,12 @@
 package com.alkurop.mystreetplaces.ui.base
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.util.AttributeSet
-import com.alkurop.mystreetplaces.ui.navigation.*
+import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
-
 
 abstract class BaseMvpView<T> @JvmOverloads constructor(context: Context,
                                                         attrs: AttributeSet? = null,
@@ -53,11 +50,4 @@ abstract class BaseMvpView<T> @JvmOverloads constructor(context: Context,
 
     abstract fun renderView(viewModel: T)
 
-    open fun onForward() {
-        throw NotImplementedError()
-    }
-
-    open fun onBackward() {
-        (context as Activity).onBackPressed()
-    }
 }

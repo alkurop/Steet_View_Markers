@@ -22,4 +22,8 @@ interface DropPinPresenter {
     fun onDescriptionChange(title: String)
 
     fun submit()
+
+    fun deletePin()
+
+    fun start(pinId: String)
 }
