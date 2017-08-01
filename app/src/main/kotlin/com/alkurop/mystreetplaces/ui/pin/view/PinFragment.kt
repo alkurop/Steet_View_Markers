@@ -15,11 +15,11 @@ class PinFragment : BottomSheetDialogFragment() {
         val PIN_ID_KEY = "pin_id"
     }
 
-    lateinit var pinId: String
+    lateinit var pinStartModel: PinViewStartModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pinId = arguments.getString(PIN_ID_KEY)
+        pinStartModel = arguments.getParcelable(PIN_ID_KEY)
     }
 
     private val mBottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
@@ -44,7 +44,7 @@ class PinFragment : BottomSheetDialogFragment() {
         if (behavior != null && behavior is BottomSheetBehavior<*>) {
             behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
         }
-        contentView.viewPin.setPinId(pinId)
+        contentView.viewPin.setStartModel(pinStartModel)
         contentView.viewPin.navigator = {
             val act = activity as BaseMvpActivity<*>
             act.navigate(it)

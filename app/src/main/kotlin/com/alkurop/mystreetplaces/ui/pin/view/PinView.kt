@@ -47,8 +47,8 @@ class PinView @JvmOverloads constructor(context: Context,
         presenter.unsubscribe()
     }
 
-    fun setPinId(id: String) {
-        this.id = id
+    fun setStartModel(model: PinViewStartModel) {
+        this.id = model.pinId
     }
 
     override fun onSaveInstanceState(): Parcelable {

@@ -12,6 +12,7 @@ import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
+import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel
 import com.alkurop.mystreetplaces.utils.LocationUtils
 import com.github.alkurop.streetviewmarker.CameraPosition
 import com.github.alkurop.streetviewmarker.Place
@@ -50,7 +51,7 @@ class StreetPresenterImpl(val pinRepo: PinRepo) : StreetPresenter {
         val oldCameraLocation = this.cameraPosition?.location
 
         this.cameraPosition = cameraPosition
-        if(oldCameraLocation == cameraPosition.location) return
+        if (oldCameraLocation == cameraPosition.location) return
         val sub = pinRepo.observePinsByLocationAndRadius(cameraPosition.location, 500)
                 .subscribe({
                     val model = StreetViewModel(places = it.map { PinPlace(it) })
@@ -65,6 +66,8 @@ class StreetPresenterImpl(val pinRepo: PinRepo) : StreetPresenter {
 
     override fun onMarkerClicked(place: Place) {
         val args = Bundle()
+        val model = PinViewStartModel(shoudShowStreetNavigation = false, shouldShowMap = true, pinId = place.id)
+
         args.putString(PinFragment.PIN_ID_KEY, place.id)
         val action = BottomsheetFragmentNavigationAction(endpoint = PinFragment::class.java, args = args)
         navBus.onNext(action)

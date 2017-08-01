@@ -11,6 +11,7 @@ import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
+import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
 import com.alkurop.mystreetplaces.utils.LocationTracker
@@ -91,7 +92,8 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
 
     override fun onPinClick(it: MapClusterItem) {
         val args = Bundle()
-        args.putString(PinFragment.PIN_ID_KEY, it.place.pinId)
+        val model = PinViewStartModel(shoudShowStreetNavigation = true, shouldShowMap = false, pinId = it.place.pinId)
+        args.putParcelable(PinFragment.PIN_ID_KEY, model)
         val action = BottomsheetFragmentNavigationAction(endpoint = PinFragment::class.java, args = args)
         navBus.onNext(action)
     }
