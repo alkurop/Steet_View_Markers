@@ -12,14 +12,14 @@ import kotlinx.android.synthetic.main.fragment_view_pin.view.*
 
 class PinFragment : BottomSheetDialogFragment() {
     companion object {
-        val PIN_ID_KEY = "pin_id"
+        val CONFIG = "pin_id"
     }
 
     lateinit var pinStartModel: PinViewStartModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pinStartModel = arguments.getParcelable(PIN_ID_KEY)
+        pinStartModel = arguments.getParcelable(CONFIG)
     }
 
     private val mBottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {

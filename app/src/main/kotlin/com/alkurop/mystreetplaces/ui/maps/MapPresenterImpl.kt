@@ -14,7 +14,6 @@ import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
-import com.alkurop.mystreetplaces.utils.LocationTracker
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.VisibleRegion
 import io.reactivex.ObservableTransformer
@@ -22,7 +21,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
     override val viewBus: Subject<MapViewModel> = createViewSubject()
@@ -93,7 +91,7 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
     override fun onPinClick(it: MapClusterItem) {
         val args = Bundle()
         val model = PinViewStartModel(shoudShowStreetNavigation = true, shouldShowMap = false, pinId = it.place.pinId)
-        args.putParcelable(PinFragment.PIN_ID_KEY, model)
+        args.putParcelable(PinFragment.CONFIG, model)
         val action = BottomsheetFragmentNavigationAction(endpoint = PinFragment::class.java, args = args)
         navBus.onNext(action)
     }

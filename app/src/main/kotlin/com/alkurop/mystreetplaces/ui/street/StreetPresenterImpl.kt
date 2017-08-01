@@ -68,7 +68,7 @@ class StreetPresenterImpl(val pinRepo: PinRepo) : StreetPresenter {
         val args = Bundle()
         val model = PinViewStartModel(shoudShowStreetNavigation = false, shouldShowMap = true, pinId = place.id)
 
-        args.putString(PinFragment.PIN_ID_KEY, place.id)
+        args.putParcelable(PinFragment.CONFIG, model)
         val action = BottomsheetFragmentNavigationAction(endpoint = PinFragment::class.java, args = args)
         navBus.onNext(action)
     }
