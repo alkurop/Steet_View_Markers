@@ -10,5 +10,7 @@ interface PinViewPresenter {
     val viewBus: Subject<PinViewModel>
     val navBus: Subject<NavigationAction>
 
+    fun loadPinDetails(id: String)
+
     fun unsubscribe()
 }

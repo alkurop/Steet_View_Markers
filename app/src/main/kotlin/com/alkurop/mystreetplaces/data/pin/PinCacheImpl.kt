@@ -3,6 +3,7 @@ package com.alkurop.mystreetplaces.data.pin
 import com.alkurop.mystreetplaces.db.RealmProvider
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.google.android.gms.maps.model.LatLng
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
@@ -39,6 +40,16 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
                         .findAll()
                 it.copyFromRealm(result)
                         .toTypedArray()
+            }
+        }
+    }
+
+    override fun getPinDetails(id: String): Single<PinDto> {
+        return Single.fromCallable {
+            realmProvider.provideRealm().use {
+                it.where(PinDto::class.java)
+                        .equalTo("id", id)
+                        .findFirst()
             }
         }
     }

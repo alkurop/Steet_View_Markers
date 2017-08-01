@@ -6,7 +6,7 @@ import android.widget.TextView
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpView
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
- import io.reactivex.Observable
+import io.reactivex.Observable
 import javax.inject.Inject
 
 /**
@@ -19,7 +19,6 @@ class PinView @JvmOverloads constructor(context: Context,
     lateinit var location: TextView
     lateinit var title: TextView
     lateinit var descrition: TextView
-
 
     init {
         inflate(context, R.layout.view_pin, this)
@@ -41,6 +40,10 @@ class PinView @JvmOverloads constructor(context: Context,
 
     override fun unsubscribe() {
         presenter.unsubscribe()
+    }
+
+    fun setPinId(id: String) {
+        presenter.loadPinDetails(id)
     }
 
     fun onResume() {}

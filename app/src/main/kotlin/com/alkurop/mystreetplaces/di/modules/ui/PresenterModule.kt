@@ -35,6 +35,6 @@ class PresenterModule {
         return DropPinPresenterImpl(pinRepo)
     }
 
-    @Provides fun provideViewPinPresenter(): PinViewPresenter = PinViewPresenterImpl()
+    @Provides fun provideViewPinPresenter(pinRepo: PinRepo): PinViewPresenter = PinViewPresenterImpl(pinRepo)
 }
 
