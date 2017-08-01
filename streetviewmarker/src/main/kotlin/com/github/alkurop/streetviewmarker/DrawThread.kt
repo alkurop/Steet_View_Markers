@@ -100,7 +100,10 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
   }
 
   private fun drawMarkersOnCanvas(canvas: Canvas) {
-    val drawDataList = matrixSet.map { matrixData ->
+    val drawDataList = matrixSet
+            .sortedBy { it.data.distance }
+            .reversed()
+            .map { matrixData ->
       var markerData: MarkerDrawData? = null
       val key = matrixData.data.id
       if (matrixData.shouldShow) {
@@ -162,8 +165,9 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
         locBufferMap.remove(key)
       }
       markerData
-    }.filter { it != null }
-    drawData.clear()
+    }
+            .filter { it != null }
+     drawData.clear()
     drawData.addAll(drawDataList)
   }
 

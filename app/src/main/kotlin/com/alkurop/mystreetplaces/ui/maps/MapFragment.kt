@@ -24,9 +24,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MapFragment : BaseMvpFragment<MapViewModel>() {
-    companion object {
-        val VISIBLE_REGION_KEY = "visible_region"
-    }
 
     @Inject lateinit var presenter: MapPresenter
     lateinit var permissionManager: PermissionsManager
