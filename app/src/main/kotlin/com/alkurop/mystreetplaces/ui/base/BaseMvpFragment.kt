@@ -5,11 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.view.View
 import com.alkurop.mystreetplaces.ui.BaseFragment
-import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
-import com.alkurop.mystreetplaces.ui.navigation.FragmentNavigationAction
-import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
-import com.alkurop.mystreetplaces.ui.navigation.NoArgsNavigation
-import com.alkurop.mystreetplaces.ui.navigation.UriNavigationAction
+import com.alkurop.mystreetplaces.ui.navigation.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -55,7 +51,14 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
     } else if (it == NoArgsNavigation.FORWARD_ACTION) {
       onForward()
     }
+    else if (it is BottomsheetFragmentNavigationAction) {
+      navigateBottomsheet(it)
+    }
   }
+
+    fun navigateBottomsheet(action: BottomsheetFragmentNavigationAction){
+      (activity as BaseMvpActivity<*>).navigateBottomsheet(action)
+    }
 
   open fun onBackward() {
     activity.onBackPressed()

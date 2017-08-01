@@ -47,9 +47,10 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
     override fun getPinDetails(id: String): Single<PinDto> {
         return Single.fromCallable {
             realmProvider.provideRealm().use {
-                it.where(PinDto::class.java)
+                val result = it.where(PinDto::class.java)
                         .equalTo("id", id)
                         .findFirst()
+                it.copyFromRealm(result)
             }
         }
     }

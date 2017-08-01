@@ -1,6 +1,8 @@
 package com.alkurop.mystreetplaces.ui.pin.view
 
 import android.content.Context
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.widget.TextView
 import com.alkurop.mystreetplaces.R
@@ -16,9 +18,10 @@ class PinView @JvmOverloads constructor(context: Context,
                                         attrs: AttributeSet? = null,
                                         defStyleAttr: Int = 0)
     : BaseMvpView<PinViewModel>(context, attrs, defStyleAttr) {
-    lateinit var location: TextView
-    lateinit var title: TextView
-    lateinit var descrition: TextView
+    lateinit var locationView: TextView
+    lateinit var titleView: TextView
+    lateinit var descritionView: TextView
+    lateinit var id: String
 
     init {
         inflate(context, R.layout.view_pin, this)
@@ -29,9 +32,11 @@ class PinView @JvmOverloads constructor(context: Context,
     override fun onAttachedToWindow() {
         component().inject(this)
         super.onAttachedToWindow()
-        location = findViewById(R.id.location) as TextView
-        title = findViewById(R.id.title) as TextView
-        descrition = findViewById(R.id.description) as TextView
+        locationView = findViewById(R.id.location) as TextView
+        titleView = findViewById(R.id.title) as TextView
+        descritionView = findViewById(R.id.description) as TextView
+        findViewById(R.id.editButton).setOnClickListener { presenter.onEdit() }
+        presenter.loadPinDetails(id)
     }
 
     override fun getSubject(): Observable<PinViewModel> = presenter.viewBus
@@ -43,13 +48,28 @@ class PinView @JvmOverloads constructor(context: Context,
     }
 
     fun setPinId(id: String) {
-        presenter.loadPinDetails(id)
+        this.id = id
     }
 
-    fun onResume() {}
-    fun onPause() {}
-    fun onDestroy() {}
+    override fun onSaveInstanceState(): Parcelable {
+        val onSaveInstanceState = super.onSaveInstanceState()
+        val bundle = Bundle()
+        bundle.putParcelable("state", onSaveInstanceState)
+        bundle.putString("id", id)
+        return onSaveInstanceState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable) {
+        val bundle = state as Bundle
+        id = bundle.getString("id")
+        super.onRestoreInstanceState(bundle.getParcelable("state"))
+    }
 
     override fun renderView(viewModel: PinViewModel) {
+        with(viewModel.pinDto) {
+            titleView.text = title
+            descritionView.text = description
+            locationView.text = "$lat     $lon"
+        }
     }
 }

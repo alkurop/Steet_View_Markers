@@ -36,8 +36,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     val compositeDisposable = CompositeDisposable()
     val DEFAULT_CAMERA_ZOOM = 14f
 
-    var latestCameraPosition: VisibleRegion? = null
-
     override fun getSubject(): Observable<MapViewModel> = presenter.viewBus
 
     override fun getNavigation(): Observable<NavigationAction> = presenter.navBus
@@ -71,7 +69,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        latestCameraPosition = savedInstanceState?.getParcelable(VISIBLE_REGION_KEY)
         locationTracker.setUp(activity, {
             Timber.e("Location tracking failed")
             Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
@@ -97,11 +94,10 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             map.setLocationSource(locationTracker)
             map.isMyLocationEnabled = true
             map.isBuildingsEnabled = true
-            latestCameraPosition?.let {
-                presenter.onCameraPositionChanged(it)
+            map.setOnMapLoadedCallback {
+                presenter.onCameraPositionChanged(map.projection.visibleRegion)
             }
             map.setOnCameraMoveListener {
-                latestCameraPosition = map.projection.visibleRegion
                 presenter.onCameraPositionChanged(map.projection.visibleRegion)
             }
             initClusterManager(map)
@@ -115,7 +111,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         val bundle = outState ?: Bundle()
-        bundle.putParcelable(VISIBLE_REGION_KEY, latestCameraPosition)
         mapView.onSaveInstanceState(bundle)
     }
 

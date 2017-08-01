@@ -34,6 +34,10 @@
   <style name="TextAppearance.Subtitle.Small" parent="TextAppearance.Subtitle">
     <item name="android:textSize">10sp</item>
   </style>
+  <style name="TextAppearance.Subtitle.Small.Medium" parent="TextAppearance.Subtitle.Medium">
+    <item name="android:textSize">10sp</item>
+  </style>
+
 
   <style name="TextAppearance.Subtitle.Medium" parent="TextAppearance.Medium">
     <item name="android:textSize">12sp</item>

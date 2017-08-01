@@ -19,7 +19,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     val compositeDesposable = CompositeDisposable()
 
     companion object {
-        val LOCATION_KEY = "location"
+        val LOCATION_KEY = "locationView"
 
         fun getNewInstance(location: LatLng): Fragment {
             val fragment = DropPinFragment()

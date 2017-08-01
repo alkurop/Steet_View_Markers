@@ -28,4 +28,8 @@
     <string name="btn_submit">Submit</string>
 
     <string name="no_description">No Description</string>
+    <string name="title">Title</string>
+    <string name="location">Location</string>
+    <string name="description">Description</string>
+    <string name="edit">Edit</string>
 </resources>

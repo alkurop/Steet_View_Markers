@@ -6,8 +6,10 @@ import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
+import com.alkurop.mystreetplaces.ui.navigation.BottomsheetFragmentNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
+import com.alkurop.mystreetplaces.ui.pin.bottomsheet.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
@@ -109,7 +111,10 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
     }
 
     override fun onPinClick(it: MapClusterItem) {
-
+        val args = Bundle()
+        args.putString(PinFragment.PIN_ID_KEY, it.place.pinId)
+        val action = BottomsheetFragmentNavigationAction(endpoint = PinFragment::class.java, args = args)
+        navBus.onNext(action)
     }
 
     fun <T> getLoadingStateTransformer(): ObservableTransformer<T, T> {

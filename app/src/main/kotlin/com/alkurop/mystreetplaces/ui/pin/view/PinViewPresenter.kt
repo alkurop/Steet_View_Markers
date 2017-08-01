@@ -12,5 +12,7 @@ interface PinViewPresenter {
 
     fun loadPinDetails(id: String)
 
+    fun onEdit()
+
     fun unsubscribe()
 }

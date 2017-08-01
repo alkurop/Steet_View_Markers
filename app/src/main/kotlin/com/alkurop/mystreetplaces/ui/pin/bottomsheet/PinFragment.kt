@@ -1,11 +1,27 @@
 package com.alkurop.mystreetplaces.ui.pin.bottomsheet
 
+import android.app.Dialog
+import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.design.widget.BottomSheetBehavior
 import android.view.View
-
+import android.support.design.widget.CoordinatorLayout
+import com.alkurop.mystreetplaces.R
+import kotlinx.android.synthetic.main.fragment_view_pin.*
+import kotlinx.android.synthetic.main.fragment_view_pin.view.*
 
 class PinFragment : BottomSheetDialogFragment() {
+    companion object {
+        val PIN_ID_KEY = "pin_id"
+    }
+
+    lateinit var pinId: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pinId = arguments.getString(PIN_ID_KEY)
+    }
+
     private val mBottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onSlide(bottomSheet: View, slideOffset: Float) {
         }
@@ -16,4 +32,21 @@ class PinFragment : BottomSheetDialogFragment() {
             }
         }
     }
+
+    override fun setupDialog(dialog: Dialog, style: Int) {
+        super.setupDialog(dialog, style)
+        val contentView = View.inflate(context, R.layout.fragment_view_pin, null)
+        dialog.setContentView(contentView)
+
+        val params = (contentView.parent as View).layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior
+
+        if (behavior != null && behavior is BottomSheetBehavior<*>) {
+            behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
+        }
+        contentView.viewPin.setPinId(pinId)
+
+    }
+
+
 }
