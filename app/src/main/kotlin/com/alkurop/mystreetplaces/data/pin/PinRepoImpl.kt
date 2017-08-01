@@ -3,7 +3,7 @@ package com.alkurop.mystreetplaces.data.pin
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.utils.LocationUtils
 import com.google.android.gms.maps.model.LatLng
-import io.reactivex.Maybe
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
@@ -43,5 +43,9 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
 
     override fun getPinDetails(id: String): Single<PinDto> {
         return pinCahe.getPinDetails(id)
+    }
+
+    override fun updateLocalPictures(pinDto: PinDto): Completable {
+        return pinCahe.updateLocalPictures(pinDto)
     }
 }

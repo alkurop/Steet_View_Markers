@@ -3,6 +3,7 @@ package com.alkurop.mystreetplaces.data.pin
 import com.alkurop.mystreetplaces.db.RealmProvider
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.google.android.gms.maps.model.LatLng
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -51,6 +52,20 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
                         .equalTo("id", id)
                         .findFirst()
                 it.copyFromRealm(result)
+            }
+        }
+    }
+
+    override fun updateLocalPictures(pinDto: PinDto): Completable {
+        return Completable.fromAction {
+            realmProvider.provideRealm().use {
+                it.beginTransaction()
+                val result = it.where(PinDto::class.java)
+                        .equalTo("id", pinDto.id)
+                        .findFirst()
+                result.localStoragePictures = pinDto.localStoragePictures
+
+                it.commitTransaction()
             }
         }
     }

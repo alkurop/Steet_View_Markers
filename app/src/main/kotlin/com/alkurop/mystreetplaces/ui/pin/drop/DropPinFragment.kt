@@ -77,6 +77,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                         presenter.deletePin()
                     })
                     .setNegativeButton(android.R.string.cancel, { _, _ -> })
+                    .show()
         }
         delete.visibility = View.GONE
 
