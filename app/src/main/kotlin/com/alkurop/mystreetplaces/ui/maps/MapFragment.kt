@@ -69,11 +69,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        locationTracker.setUp(activity, {
-            Timber.e("Location tracking failed")
-            Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
-        })
-        presenter.locationTracker = locationTracker
         setUpPermissionsManager()
         mapView.onCreate(savedInstanceState)
         fab.setOnClickListener { presenter.onGoToStreetView(null) }
@@ -90,6 +85,11 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     private fun initLocationTracking() {
+        locationTracker.setUp(activity, {
+            Timber.e("Location tracking failed")
+            Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
+        })
+        presenter.locationTracker = locationTracker
         mapView.getMapAsync { map ->
             map.setLocationSource(locationTracker)
             map.isMyLocationEnabled = true
