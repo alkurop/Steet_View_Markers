@@ -25,7 +25,7 @@ class StreetPresenterImpl(val pinRepo: PinRepo) : StreetPresenter {
         val METERS_TO_OFFSET_MARKER = 5
     }
 
-    val compositeDisposable = CompositeDisposable()
+    val subscribeToPinsUpdatesDisposable = CompositeDisposable()
     var cameraPosition: CameraPosition? = null
 
     override val viewBus: Subject<StreetViewModel> = createViewSubject()
@@ -49,19 +49,27 @@ class StreetPresenterImpl(val pinRepo: PinRepo) : StreetPresenter {
 
     override fun onCameraUpdate(cameraPosition: CameraPosition) {
         val oldCameraLocation = this.cameraPosition?.location
-
         this.cameraPosition = cameraPosition
         if (oldCameraLocation == cameraPosition.location) return
+        refreshPins(cameraPosition)
+    }
+
+    override fun refreshPins() {
+        cameraPosition?.let { refreshPins(it) }
+    }
+
+    private fun refreshPins(cameraPosition: CameraPosition) {
+        subscribeToPinsUpdatesDisposable.clear()
         val sub = pinRepo.observePinsByLocationAndRadius(cameraPosition.location, 500)
                 .subscribe({
                     val model = StreetViewModel(places = it.map { PinPlace(it) })
                     viewBus.onNext(model)
                 }, { Timber.e(it) })
-        compositeDisposable.add(sub)
+        subscribeToPinsUpdatesDisposable.add(sub)
     }
 
     override fun unsubscribe() {
-        compositeDisposable.clear()
+        subscribeToPinsUpdatesDisposable.clear()
     }
 
     override fun onMarkerClicked(place: Place) {

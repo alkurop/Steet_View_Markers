@@ -80,6 +80,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
     override fun onResume() {
         super.onResume()
         marker_view.onResume()
+        presenter.refreshPins()
     }
 
     override fun onPause() {

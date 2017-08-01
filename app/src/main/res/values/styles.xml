@@ -9,6 +9,19 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textViewStyle">@style/TextAppearance.Base</item>
         <item name="android:editTextStyle">@style/TextAppearance.EditText</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+
+    </style>
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
     </style>
 
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="behavior_peekHeight">@dimen/custom_peek_height</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <dimen name="custom_peek_height">150dp</dimen>
 </resources>

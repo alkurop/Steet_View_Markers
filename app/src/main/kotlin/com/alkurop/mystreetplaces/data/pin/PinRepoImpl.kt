@@ -15,15 +15,19 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
     override fun addOrUpdatePin(pin: PinDto): Single<PinDto> {
         if (pin.id == null) pin.id = UUID.randomUUID().toString()
         return pinCahe.addOrUpdatePin(pin)
-                .doOnSuccess { notifyListeners() }
+                .doOnSuccess {
+                    notifyListeners()
+                }
     }
 
     override fun removePin(pin: PinDto): Single<PinDto> {
         return pinCahe.removePin(pin)
-                .doOnSuccess { notifyListeners() }
+                .doOnSuccess {
+                    notifyListeners()
+                }
     }
 
-    fun notifyListeners() {
+    override fun notifyListeners() {
         locationUpdatedBus.onNext(Any())
     }
 
@@ -31,14 +35,18 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
         val minMaxPoints = LocationUtils.getSquareOfDistanceMeters(location, radiusMeters)
         return locationUpdatedBus
                 .startWith(Any())
-                .switchMapSingle { pinCahe.getPinsByLocationSquare(minMaxPoints) }
+                .switchMapSingle {
+                    pinCahe.getPinsByLocationSquare(minMaxPoints)
+                }
 
     }
 
     override fun observePinsByLocationCorners(bottomRight: LatLng, topLeft: LatLng): Observable<Array<PinDto>> {
         return locationUpdatedBus
                 .startWith(Any())
-                .switchMapSingle { pinCahe.getPinsByLocationSquare(arrayOf(bottomRight, topLeft)) }
+                .switchMapSingle {
+                    pinCahe.getPinsByLocationSquare(arrayOf(bottomRight, topLeft))
+                }
     }
 
     override fun getPinDetails(id: String): Single<PinDto> {
@@ -47,5 +55,6 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
 
     override fun updateLocalPictures(pinDto: PinDto): Completable {
         return pinCahe.updateLocalPictures(pinDto)
+                .doOnComplete { notifyListeners() }
     }
 }

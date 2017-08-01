@@ -20,5 +20,6 @@ interface PinRepo {
     fun getPinDetails(id: String): Single<PinDto>
 
     fun updateLocalPictures(pinDto: PinDto):Completable
+    fun notifyListeners()
 
 }

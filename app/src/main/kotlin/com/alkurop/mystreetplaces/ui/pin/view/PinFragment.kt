@@ -9,6 +9,9 @@ import android.support.design.widget.CoordinatorLayout
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import kotlinx.android.synthetic.main.fragment_view_pin.view.*
+import android.view.WindowManager
+
+
 
 class PinFragment : BottomSheetDialogFragment() {
     companion object {
@@ -37,6 +40,7 @@ class PinFragment : BottomSheetDialogFragment() {
         super.setupDialog(dialog, style)
         val contentView = View.inflate(context, R.layout.fragment_view_pin, null)
         dialog.setContentView(contentView)
+        dialog.window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
         val params = (contentView.parent as View).layoutParams as CoordinatorLayout.LayoutParams
         val behavior = params.behavior

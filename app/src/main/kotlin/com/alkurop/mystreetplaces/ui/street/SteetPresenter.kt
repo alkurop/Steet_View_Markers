@@ -19,4 +19,5 @@ interface StreetPresenter {
     fun onMarkerClicked(place: Place)
 
     fun unsubscribe()
+    fun refreshPins()
 }
