@@ -1,5 +1,7 @@
 package com.alkurop.mystreetplaces.ui.pin.drop
 
+import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -9,6 +11,8 @@ import android.view.ViewGroup
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
+import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.model.LatLng
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
@@ -41,6 +45,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     }
 
     @Inject lateinit var presenter: DropPinPresenter
+    var permissionManager: PermissionsManager? = null
 
     var alert: AlertDialog? = null
 
@@ -73,6 +78,33 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                     .setNegativeButton(android.R.string.cancel, { _, _ -> })
         }
         delete.visibility = View.GONE
+
+        addPicture.setOnClickListener {
+            setUpPermissionsManager({ presenter.onAddPicture() })
+        }
+
+    }
+
+    private fun setUpPermissionsManager(function: () -> Unit) {
+        if (permissionManager == null) permissionManager = PermissionsManager(this)
+        val permission1 = Pair(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                PermissionOptionalDetails(getString(R.string.storage_permission_rationale_title),
+                        getString(R.string.storage_permission_rationale)))
+        val permission2 = Pair(Manifest.permission.CAMERA,
+                PermissionOptionalDetails(getString(R.string.camera_permission_rationale_title),
+                        getString(R.string.camera_permission_rationale)))
+        permissionManager?.clearPermissions()
+        permissionManager?.clearPermissionsListeners()
+        permissionManager?.addPermissions(mapOf(permission1, permission2))
+        permissionManager?.addPermissionsListener {
+            for (pair in it) {
+                if (!pair.value)
+                    return@addPermissionsListener
+            }
+            function.invoke()
+        }
+        permissionManager?.makePermissionRequest()
+
     }
 
     override fun unsubscribe() {
@@ -102,5 +134,15 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                     presenter.onDescriptionChange(text)
                 })
         viewDisposable.addAll(disposable, disposable1)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        permissionManager?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        permissionManager?.onActivityResult(requestCode)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

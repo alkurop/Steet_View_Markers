@@ -21,16 +21,21 @@
     <string name="er_unknown_location">Location is unknown</string>
 
     <!--Permission Messages-->
-    <string name="location_permission_rationale">App need to track current location. Please grant this permission.</string>
+    <string name="location_permission_rationale">App needs to track current location. Please grant this permission.</string>
     <string name="location_permission_rationale_title">Location Permission</string>
+    <string name="storage_permission_rationale">App needs save pictures to internal memory. Please grant this permission.</string>
+    <string name="storage_permission_rationale_title">Write to SD Card permission</string>
+    <string name="camera_permission_rationale">App wants to take pictures with your camera. Please grant this permission</string>
+    <string name="camera_permission_rationale_title">Take pictures permission</string>
+
     <string name="hint_enter_title">Enter Title</string>
     <string name="hint_enter_description">Enter Description</string>
     <string name="btn_submit">Submit</string>
-
     <string name="no_description">No Description</string>
     <string name="title">Title</string>
     <string name="location">Location</string>
     <string name="description">Description</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="add_picture">Add picture</string>
 </resources>

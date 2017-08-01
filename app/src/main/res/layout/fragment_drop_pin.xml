@@ -29,16 +29,22 @@
             android:hint="@string/hint_enter_description" />
 
         <Button
+            android:id="@+id/addPicture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_picture"/>
+
+        <Button
             android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_submit" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/delete"
-            android:text="@string/delete"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delete" />
 
     </LinearLayout>
 </ScrollView>

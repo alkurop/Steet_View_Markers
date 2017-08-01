@@ -25,5 +25,7 @@ interface DropPinPresenter {
 
     fun deletePin()
 
+    fun onAddPicture()
+
     fun start(pinId: String)
 }

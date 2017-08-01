@@ -5,9 +5,20 @@ import android.view.MenuItem
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseActivity
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
+import com.alkurop.mystreetplaces.ui.createNavigationSubject
+import com.alkurop.mystreetplaces.ui.createViewSubject
+import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.maps.model.LatLng
+import io.reactivex.Observable
 
-class StreetActivity : BaseActivity() {
+class StreetActivity : BaseMvpActivity<Any>() {
+    override fun getSubject(): Observable<Any> {
+        return  createViewSubject()
+    }
+
+    override fun getNavigation(): Observable<NavigationAction> {
+        return createNavigationSubject()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +44,12 @@ class StreetActivity : BaseActivity() {
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun unsubscribe() {
+    }
+
+    override fun renderView(viewModel: Any) {
     }
 
 }

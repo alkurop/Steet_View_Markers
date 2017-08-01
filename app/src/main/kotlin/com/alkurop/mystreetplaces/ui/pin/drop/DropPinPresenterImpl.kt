@@ -12,6 +12,9 @@ import io.reactivex.subjects.Subject
 import timber.log.Timber
 
 class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
+    override fun onAddPicture() {
+    }
+
     override val viewBus: Subject<DropPinViewModel> = createViewSubject()
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
     val compositeDisposable = CompositeDisposable()
