@@ -29,7 +29,6 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
     override var isPermissionGranted: Boolean = false
 
-    override lateinit var locationTracker: LocationTracker
     var visibleRegion: VisibleRegion? = null
     var pinsSet = setOf<PinDto>()
 

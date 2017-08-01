@@ -85,7 +85,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             Timber.e("Location tracking failed")
             Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
         })
-        presenter.locationTracker = locationTracker
         mapView.getMapAsync { map ->
             map.setLocationSource(locationTracker)
             map.isMyLocationEnabled = true
