@@ -1,27 +1,17 @@
 package com.alkurop.mystreetplaces.ui.maps
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.util.DisplayMetrics
-import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.pin.PinPlace
 import com.github.alkurop.streetviewmarker.Place
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
-import com.google.maps.android.clustering.ClusterManager
-import com.google.maps.android.clustering.view.DefaultClusterRenderer
 
-class MapClusterItem(val place: Place) : ClusterItem {
-    override fun getSnippet(): String {
-        return "snippet marker_id = ${place.id}"
+class MapClusterItem(val place: PinPlace) : ClusterItem {
+    override fun getSnippet(): String? {
+        return place.description
     }
 
     override fun getTitle(): String {
-        return "marker_id = ${place.id}"
+        return place.title
     }
 
     override fun getPosition(): LatLng? {
@@ -33,50 +23,5 @@ class MapClusterItem(val place: Place) : ClusterItem {
         return null
     }
 
-    class ClusterRenderer(val context: Context, map: GoogleMap, clusterManager: ClusterManager<MapClusterItem>) :
-            DefaultClusterRenderer<MapClusterItem>(context, map, clusterManager) {
-        init {
-            minClusterSize = 5
-        }
-        var iconBitmap: Bitmap? = null
 
-        override fun getMarker(clusterItem: MapClusterItem): Marker? {
-            return super.getMarker(clusterItem)
-        }
-
-        override fun setOnClusterClickListener(listener: ClusterManager.OnClusterClickListener<MapClusterItem>) {
-            super.setOnClusterClickListener(listener)
-        }
-
-        override fun setOnClusterItemClickListener(listener: ClusterManager.OnClusterItemClickListener<MapClusterItem>) {
-            super.setOnClusterItemClickListener(listener)
-        }
-
-
-        fun getIcon(): BitmapDescriptor? {
-            if (iconBitmap == null) {
-
-                val drawable: Drawable = context.resources.getDrawable(R.drawable.ic_pin_drop)
-                val b = drawable.current as BitmapDrawable
-                b.setAntiAlias(true)
-                val wrap = DrawableCompat.wrap(drawable)
-                iconBitmap = convertToBitmap(wrap, context.dpToPx(24), context.dpToPx(24))
-            }
-            return BitmapDescriptorFactory.fromBitmap(iconBitmap)
-        }
-
-        fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
-            val mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(mutableBitmap)
-            drawable.setBounds(0, 0, widthPixels, heightPixels)
-            drawable.draw(canvas)
-            return mutableBitmap
-        }
-
-
-        fun Context.dpToPx(dp: Int): Int {
-            val displayMetrics = this.resources.displayMetrics
-            return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT))
-        }
-    }
 }

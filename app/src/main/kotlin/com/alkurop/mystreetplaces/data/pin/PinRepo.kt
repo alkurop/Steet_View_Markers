@@ -13,4 +13,6 @@ interface PinRepo {
 
     fun observePinsByLocationAndRadius(location: LatLng, radiusMeters: Int): Observable<Array<PinDto>>
 
+    fun observePinsByLocationCorners(bottomRight:LatLng, topLeft:LatLng): Observable<Array<PinDto>>
+
 }

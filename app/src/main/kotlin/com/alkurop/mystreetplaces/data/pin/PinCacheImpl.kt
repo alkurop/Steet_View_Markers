@@ -34,8 +34,8 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
         return Single.fromCallable {
             realmProvider.provideRealm().use {
                 val result = it.where(PinDto::class.java)
-                        .between("location.lat", minMaxPoints[0].latitude, minMaxPoints[1].latitude)
-                        .between("location.lon", minMaxPoints[0].longitude, minMaxPoints[1].longitude)
+                        .between("lat", minMaxPoints[0].latitude, minMaxPoints[1].latitude)
+                        .between("lon", minMaxPoints[0].longitude, minMaxPoints[1].longitude)
                         .findAll()
                 it.copyFromRealm(result)
                         .toTypedArray()

@@ -26,4 +26,6 @@
     <string name="hint_enter_title">Enter Title</string>
     <string name="hint_enter_description">Enter Description</string>
     <string name="btn_submit">Submit</string>
+
+    <string name="no_description">No Description</string>
 </resources>

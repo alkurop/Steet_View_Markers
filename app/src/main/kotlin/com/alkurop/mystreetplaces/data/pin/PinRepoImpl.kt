@@ -9,7 +9,6 @@ import io.reactivex.subjects.PublishSubject
 import java.util.*
 
 class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
-
     val locationUpdatedBus = PublishSubject.create<Any>()
 
     override fun addOrUpdatePin(pin: PinDto): Single<PinDto> {
@@ -33,6 +32,12 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
                 .startWith(Any())
                 .switchMapSingle { pinCahe.getPinsByLocationSquare(minMaxPoints) }
 
+    }
+
+    override fun observePinsByLocationCorners(bottomRight: LatLng, topLeft: LatLng): Observable<Array<PinDto>> {
+        return locationUpdatedBus
+                .startWith(Any())
+                .switchMapSingle { pinCahe.getPinsByLocationSquare(arrayOf(bottomRight, topLeft)) }
     }
 
 }

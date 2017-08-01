@@ -19,5 +19,8 @@ interface MapPresenter {
     fun unsubscribe()
 
     fun onCameraPositionChanged(visibleRegion: VisibleRegion?)
+
+    fun onPinClick (it: MapClusterItem)
+
 }
 

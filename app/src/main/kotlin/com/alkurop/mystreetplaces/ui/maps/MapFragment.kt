@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.pin.PinPlace
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.LocationTracker
@@ -14,6 +15,7 @@ import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.VisibleRegion
 import com.google.maps.android.clustering.ClusterManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -21,8 +23,11 @@ import kotlinx.android.synthetic.main.fragment_map.*
 import timber.log.Timber
 import javax.inject.Inject
 
-
 class MapFragment : BaseMvpFragment<MapViewModel>() {
+    companion object {
+        val VISIBLE_REGION_KEY = "visible_region"
+    }
+
     @Inject lateinit var presenter: MapPresenter
     lateinit var permissionManager: PermissionsManager
     @Inject lateinit var locationTracker: LocationTracker
@@ -31,6 +36,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     val compositeDisposable = CompositeDisposable()
     val DEFAULT_CAMERA_ZOOM = 14f
 
+    var latestCameraPosition: VisibleRegion? = null
 
     override fun getSubject(): Observable<MapViewModel> = presenter.viewBus
 
@@ -39,12 +45,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
-        locationTracker.setUp(activity, {
-            Timber.e("Location tracking failed")
-            Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
-        })
-        presenter.locationTracker = locationTracker
-        setUpPermissionsManager()
         setHasOptionsMenu(true)
     }
 
@@ -71,18 +71,25 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        latestCameraPosition = savedInstanceState?.getParcelable(VISIBLE_REGION_KEY)
+        locationTracker.setUp(activity, {
+            Timber.e("Location tracking failed")
+            Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
+        })
+        presenter.locationTracker = locationTracker
+        setUpPermissionsManager()
         mapView.onCreate(savedInstanceState)
         fab.setOnClickListener { presenter.onGoToStreetView(null) }
     }
 
     fun initClusterManager(map: GoogleMap) {
         clusterManager = ClusterManager(activity, map)
-        val renderer = MapClusterItem.ClusterRenderer(activity, map, clusterManager)
+        val renderer = ClusterRenderer(activity, map, clusterManager)
         clusterManager.renderer = renderer
-        map.setOnMarkerClickListener(clusterManager)
         map.setOnMarkerClickListener(clusterManager)
         map.setOnInfoWindowClickListener(clusterManager)
         map.setOnCameraIdleListener { clusterManager.onCameraIdle() }
+        renderer.setOnClusterItemInfoWindowClickListener { presenter.onPinClick(it) }
     }
 
     private fun initLocationTracking() {
@@ -90,22 +97,26 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             map.setLocationSource(locationTracker)
             map.isMyLocationEnabled = true
             map.isBuildingsEnabled = true
-            presenter.onCameraPositionChanged(map.projection.visibleRegion)
-
+            latestCameraPosition?.let {
+                presenter.onCameraPositionChanged(it)
+            }
             map.setOnCameraMoveListener {
+                latestCameraPosition = map.projection.visibleRegion
                 presenter.onCameraPositionChanged(map.projection.visibleRegion)
             }
             initClusterManager(map)
             val dis = locationTracker.getLastKnownLocation().firstElement().subscribe({
                 val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
-                map.animateCamera(cameraUpdate)
+                map.moveCamera(cameraUpdate)
             })
             compositeDisposable.add(dis)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        mapView.onSaveInstanceState(outState)
+        val bundle = outState ?: Bundle()
+        bundle.putParcelable(VISIBLE_REGION_KEY, latestCameraPosition)
+        mapView.onSaveInstanceState(bundle)
     }
 
     override fun onStart() {
@@ -150,6 +161,11 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         with(viewModel) {
             shouldAskForPermission.takeIf { it }?.let { permissionManager.makePermissionRequest() }
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
+            pins.takeIf { it.isEmpty().not() }?.let { items ->
+                val clusterItems = items.map { MapClusterItem(PinPlace(it)) }
+                clusterManager.addItems(clusterItems)
+                clusterManager.cluster()
+            }
         }
     }
 

@@ -1,6 +1,8 @@
 package com.alkurop.mystreetplaces.ui.maps
 
 import android.os.Bundle
+import com.alkurop.mystreetplaces.data.pin.PinRepo
+import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
@@ -14,12 +16,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.VisibleRegion
 import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-
-class MapPresenterImp : MapPresenter {
+class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
     override val viewBus: Subject<MapViewModel> = createViewSubject()
 
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
@@ -28,7 +30,9 @@ class MapPresenterImp : MapPresenter {
     override lateinit var locationTracker: LocationTracker
     val GET_LAST_KNOWN_LOCATION_TIMEOUT: Long = 1
 
-    val compositeDisposable = CompositeDisposable()
+    var pinsSet = setOf<PinDto>()
+
+    val markersDisposable = CompositeDisposable()
     override fun onAddMarker() {
         if (isPermissionGranted) {
             val disposable = locationTracker
@@ -39,13 +43,35 @@ class MapPresenterImp : MapPresenter {
                     .subscribe({
                         addMarker(LatLng(it.latitude, it.longitude))
                     }, { Timber.e(it) })
-            compositeDisposable.add(disposable)
+            markersDisposable.add(disposable)
         } else {
             viewBus.onNext(MapViewModel(shouldAskForPermission = true))
         }
     }
 
     override fun onCameraPositionChanged(visibleRegion: VisibleRegion?) {
+        visibleRegion?.let { getPinsForLocationFromRepo(it) }
+    }
+
+    fun getPinsForLocationFromRepo(visibleRegion: VisibleRegion) {
+        markersDisposable.clear()
+        val sub = pinRepo
+                .observePinsByLocationCorners(visibleRegion.latLngBounds.southwest, visibleRegion.latLngBounds.northeast)
+                .subscribeOn(Schedulers.io())
+                .subscribe({ onPinsReceived(it) }, { Timber.e(it) })
+        markersDisposable.add(sub)
+    }
+
+    private fun onPinsReceived(pins: Array<PinDto>) {
+        val newPins = pins.filter { pinsSet.contains(it).not() }
+        val removePins = pinsSet.filter { pins.contains(it).not() }
+
+        if (newPins.isEmpty().not() or removePins.isEmpty().not()) {
+            pinsSet += newPins
+            pinsSet -= removePins
+            val model = MapViewModel(pins = pinsSet.toList())
+            viewBus.onNext(model)
+        }
     }
 
     fun addMarker(latLng: LatLng) {
@@ -66,7 +92,7 @@ class MapPresenterImp : MapPresenter {
                         .subscribe({
                             navigateToStreetView(LatLng(it.latitude, it.longitude))
                         }, { Timber.e(it) })
-                compositeDisposable.add(disposable)
+                markersDisposable.add(disposable)
             } else {
                 viewBus.onNext(MapViewModel(shouldAskForPermission = true))
             }
@@ -80,6 +106,10 @@ class MapPresenterImp : MapPresenter {
         args.putParcelable(StreetFragment.FOCUS_LOCATION_KEY, latLng)
         val navigationAction = ActivityNavigationAction(StreetActivity::class.java, args)
         navBus.onNext(navigationAction)
+    }
+
+    override fun onPinClick(it: MapClusterItem) {
+
     }
 
     fun <T> getLoadingStateTransformer(): ObservableTransformer<T, T> {
@@ -101,6 +131,6 @@ class MapPresenterImp : MapPresenter {
     }
 
     override fun unsubscribe() {
-        compositeDisposable.clear()
+        markersDisposable.clear()
     }
 }

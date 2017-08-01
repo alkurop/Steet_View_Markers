@@ -4,7 +4,7 @@ import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.ui.home.MainActivityPresenter
 import com.alkurop.mystreetplaces.ui.home.MainActivityPresenterImpl
 import com.alkurop.mystreetplaces.ui.maps.MapPresenter
-import com.alkurop.mystreetplaces.ui.maps.MapPresenterImp
+import com.alkurop.mystreetplaces.ui.maps.MapPresenterImpl
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinPresenter
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinPresenterImpl
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenter
@@ -23,7 +23,7 @@ import dagger.Provides
 class PresenterModule {
     @Provides fun provideMainPresenter(): MainActivityPresenter = MainActivityPresenterImpl()
 
-    @Provides fun provideMapPresenter(): MapPresenter = MapPresenterImp()
+    @Provides fun provideMapPresenter(pinRepo: PinRepo): MapPresenter = MapPresenterImpl(pinRepo)
 
     @Provides fun provideStreetPresenter(): StreetPresenter = StreetPresenterImpl()
 

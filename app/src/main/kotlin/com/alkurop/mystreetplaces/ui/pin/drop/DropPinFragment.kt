@@ -15,7 +15,6 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_drop_pin.*
 import javax.inject.Inject
 
-
 class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     val compositeDesposable = CompositeDisposable()
 
@@ -68,7 +67,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     override fun renderView(viewModel: DropPinViewModel) {
         with(viewModel) {
             pinDto?.let { pin ->
-                location.text = pin.location.toString()
+                location.text = "lat = ${pin.lat} lon = ${pin.lon}"
                 title.setText(pin.title)
                 description.setText(pin.description)
             }
