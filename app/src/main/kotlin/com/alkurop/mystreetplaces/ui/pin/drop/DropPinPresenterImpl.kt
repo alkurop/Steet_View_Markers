@@ -1,5 +1,6 @@
 package com.alkurop.mystreetplaces.ui.pin.drop
 
+import android.graphics.Bitmap
 import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
@@ -10,15 +11,13 @@ import com.google.android.gms.maps.model.LatLng
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
 import timber.log.Timber
+import java.io.File
 
 class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
-    override fun onAddPicture() {
-    }
-
     override val viewBus: Subject<DropPinViewModel> = createViewSubject()
+
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
     val compositeDisposable = CompositeDisposable()
-
     override lateinit var pinDto: PinDto
 
     override fun start(location: LatLng) {
@@ -62,8 +61,12 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
                 .subscribe({
                     val nav = NoArgsNavigation.BACK_ACTION
                     navBus.onNext(nav)
-                },{Timber.e(it)})
+                }, { Timber.e(it) })
         compositeDisposable.add(sub)
+    }
+
+    override fun onAddPicture(file: File) {
+        Timber.d("picture added ${file.absoluteFile}")
     }
 
     override fun unsubscribe() {

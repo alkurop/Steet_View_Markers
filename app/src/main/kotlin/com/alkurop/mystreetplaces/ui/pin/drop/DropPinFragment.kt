@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.alkurop.mystreetplaces.utils.CameraPictureHelper
+import com.alkurop.mystreetplaces.utils.CameraPictureHelperImpl
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
 import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.model.LatLng
@@ -21,8 +23,6 @@ import kotlinx.android.synthetic.main.fragment_drop_pin.*
 import javax.inject.Inject
 
 class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
-    val viewDisposable = CompositeDisposable()
-
     companion object {
         val LOCATION_KEY = "location_key"
         val ID_KEY = "id_key"
@@ -44,9 +44,10 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         }
     }
 
+    val viewDisposable = CompositeDisposable()
+    lateinit var photoHelper: CameraPictureHelper
     @Inject lateinit var presenter: DropPinPresenter
     var permissionManager: PermissionsManager? = null
-
     var alert: AlertDialog? = null
 
     override fun getSubject(): Observable<DropPinViewModel> = presenter.viewBus
@@ -65,7 +66,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
         val pinId = arguments.getString(ID_KEY)
         pinId?.let { presenter.start(pinId) }
-
+        photoHelper = CameraPictureHelperImpl(this)
 
         submit.setOnClickListener { presenter.submit() }
         delete.setOnClickListener {
@@ -80,7 +81,11 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         delete.visibility = View.GONE
 
         addPicture.setOnClickListener {
-            setUpPermissionsManager({ presenter.onAddPicture() })
+            setUpPermissionsManager({
+                photoHelper.execute({ file ->
+                    presenter.onAddPicture(file)
+                })
+            })
         }
 
     }
@@ -143,6 +148,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         permissionManager?.onActivityResult(requestCode)
+        photoHelper.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
 }

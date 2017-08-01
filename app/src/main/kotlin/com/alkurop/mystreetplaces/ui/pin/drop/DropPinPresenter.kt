@@ -4,6 +4,7 @@ import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.subjects.Subject
+import java.io.File
 
 /**
  * Created by alkurop on 7/21/17.
@@ -11,7 +12,7 @@ import io.reactivex.subjects.Subject
 interface DropPinPresenter {
     val viewBus: Subject<DropPinViewModel>
     val navBus: Subject<NavigationAction>
-    var pinDto:PinDto
+    var pinDto: PinDto
 
     fun unsubscribe()
 
@@ -25,7 +26,7 @@ interface DropPinPresenter {
 
     fun deletePin()
 
-    fun onAddPicture()
+    fun onAddPicture(file: File)
 
     fun start(pinId: String)
 }
