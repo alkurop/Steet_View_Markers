@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.FrameLayout
+import com.google.android.gms.maps.StreetViewPanorama
 import com.google.android.gms.maps.StreetViewPanoramaView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera
@@ -35,7 +36,7 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
     var markerDataList = hashSetOf<Place>()
     var cam: StreetViewPanoramaCamera = StreetViewPanoramaCamera(0f, 0f, 0f)
     var position: LatLng? = null
-
+    lateinit var callback: (StreetViewPanorama) -> Unit
     override fun onLocationUpdate(location: LatLng) {
         markerView.onLocationUpdate(location)
     }
@@ -51,7 +52,6 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun onLongClick() {
         markerView.onLongClick()
     }
-
 
     override fun setLocalClickListener(onClickListener: ((data: MarkerDrawData) -> Unit)?) {
         markerView.setLocalClickListener(onClickListener)
@@ -104,13 +104,12 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
         markerDataList.addAll(addMarkers)
     }
 
-
     //State callbacks
 
     fun onCreate(state: Bundle?) {
         val streetBundle = state?.getBundle("streetView")
         streetView.onCreate(streetBundle)
-        streetView.getStreetViewPanoramaAsync { panorama ->
+        callback = { panorama ->
             markerView.onCameraUpdate(panorama.panoramaCamera)
             panorama.setOnStreetViewPanoramaCameraChangeListener { cameraPosition ->
                 cam = cameraPosition
@@ -131,8 +130,8 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
             panorama.setOnStreetViewPanoramaLongClickListener {
                 onLongClick()
             }
-
         }
+        streetView.getStreetViewPanoramaAsync(callback)
         touchOverlay.onTouchListener = {
             markerView.onTouchEvent(it)
         }
@@ -170,16 +169,18 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     fun onResume() {
         streetView.onResume()
-        markerView.postDelayed({ cam?.let { markerView.onCameraUpdate(it) } }, 300)
+        markerView.postDelayed({ markerView.onCameraUpdate(cam) }, 300)
     }
 
     fun onPause() {
+        markerView.pause()
         streetView.onPause()
     }
 
     fun onDestroy() {
-        streetView.onDestroy()
         markerView.stop()
+        streetView.onLowMemory()
+        streetView.onDestroy()
     }
 
     fun onLowMemory() = streetView.onLowMemory()

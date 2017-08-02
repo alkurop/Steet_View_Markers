@@ -57,6 +57,10 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
         mCameraPosition = null
     }
 
+    fun pause(){
+        mDrawThread?.setRunning(false)
+    }
+
     override fun onLocationUpdate(location: LatLng) {
         this.mLocation = location
         val pos = mCameraPosition

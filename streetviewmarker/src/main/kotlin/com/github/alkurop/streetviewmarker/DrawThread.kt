@@ -94,6 +94,7 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
         try {
           surfaceHolder.unlockCanvasAndPost(canvas)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
       }
     }
