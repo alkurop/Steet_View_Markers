@@ -16,7 +16,9 @@ import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel
 import com.alkurop.mystreetplaces.utils.LocationUtils
 import com.github.alkurop.streetviewmarker.CameraPosition
 import com.github.alkurop.streetviewmarker.Place
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
 
@@ -61,6 +63,7 @@ class StreetPresenterImpl(val pinRepo: PinRepo) : StreetPresenter {
     private fun refreshPins(cameraPosition: CameraPosition) {
         subscribeToPinsUpdatesDisposable.clear()
         val sub = pinRepo.observePinsByLocationAndRadius(cameraPosition.location, 500)
+                .subscribeOn(Schedulers.io())
                 .subscribe({
                     val model = StreetViewModel(places = it.map { PinPlace(it) })
                     viewBus.onNext(model)

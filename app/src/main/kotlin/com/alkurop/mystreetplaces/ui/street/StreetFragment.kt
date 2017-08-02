@@ -10,11 +10,15 @@ import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.maps.model.LatLng
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_street.*
 import timber.log.Timber
 import javax.inject.Inject
-
 
 class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
@@ -48,9 +52,11 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         marker_view.onCreate(savedInstanceState)
         val focusLocation = arguments.getParcelable<LatLng>(FOCUS_LOCATION_KEY)
+
         marker_view.focusToLocation(focusLocation)
-        fab.setOnClickListener { presenter.dropPin() }
         setStreetViewListeners()
+        fab.setOnClickListener { presenter.dropPin() }
+
     }
 
     fun setStreetViewListeners() {
@@ -63,11 +69,11 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         marker_view.onStreetLoadedSuccess = { loadedSuccess ->
             if (!loadedSuccess) {
                 presenter.errorLoadingStreetView()
-             }
+            }
         }
         marker_view.onCameraUpdateListener = {
             presenter.onCameraUpdate(it)
-         }
+        }
     }
 
     override fun renderView(viewModel: StreetViewModel) {

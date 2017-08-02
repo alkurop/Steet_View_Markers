@@ -9,11 +9,18 @@ import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.maps.model.LatLng
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 class StreetActivity : BaseMvpActivity<Any>() {
+    val compositeDis = CompositeDisposable()
     override fun getSubject(): Observable<Any> {
-        return  createViewSubject()
+        return createViewSubject()
     }
 
     override fun getNavigation(): Observable<NavigationAction> {
@@ -32,11 +39,18 @@ class StreetActivity : BaseMvpActivity<Any>() {
         addStreetFragment(focusLocation)
     }
 
-    private fun addStreetFragment(focusLocation:LatLng) {
-        val fragment = StreetFragment.getNewInstance(focusLocation)
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit()
+    private fun addStreetFragment(focusLocation: LatLng) {
+        val sub = Single.fromCallable {
+            return@fromCallable StreetFragment.getNewInstance(focusLocation)
+        }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    supportFragmentManager.beginTransaction()
+                            .replace(R.id.container, it)
+                            .commit()
+                }, { Timber.e(it) })
+        compositeDis.add(sub)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -47,6 +61,7 @@ class StreetActivity : BaseMvpActivity<Any>() {
     }
 
     override fun unsubscribe() {
+        compositeDis.clear()
     }
 
     override fun renderView(viewModel: Any) {

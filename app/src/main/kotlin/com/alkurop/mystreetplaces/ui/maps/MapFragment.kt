@@ -17,7 +17,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterManager
 import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_map.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -27,7 +30,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     @Inject lateinit var presenter: MapPresenter
     lateinit var permissionManager: PermissionsManager
     @Inject lateinit var locationTracker: LocationTracker
-    lateinit var clusterManager: ClusterManager<MapClusterItem>
+    var clusterManager: ClusterManager<MapClusterItem>? = null
 
     val compositeDisposable = CompositeDisposable()
     val DEFAULT_CAMERA_ZOOM = 14f
@@ -71,16 +74,20 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     fun initClusterManager(map: GoogleMap) {
+        if (clusterManager != null) return
+
         clusterManager = ClusterManager(activity, map)
-        val renderer = ClusterRenderer(activity, map, clusterManager)
-        clusterManager.renderer = renderer
+        val renderer = ClusterRenderer(activity, map, clusterManager!!)
+        clusterManager?.renderer = renderer
         map.setOnMarkerClickListener(clusterManager)
         map.setOnInfoWindowClickListener(clusterManager)
-        map.setOnCameraIdleListener { clusterManager.onCameraIdle() }
+        map.setOnCameraIdleListener { clusterManager?.onCameraIdle() }
         renderer.setOnClusterItemInfoWindowClickListener { presenter.onPinClick(it) }
     }
 
     private fun initLocationTracking() {
+        if (clusterManager != null) return
+
         locationTracker.setUp(activity, {
             Timber.e("Location tracking failed")
             Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
@@ -92,7 +99,10 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             map.setOnMapLoadedCallback {
                 presenter.onCameraPositionChanged(map.projection.visibleRegion)
                 if (map.cameraPosition.target.latitude == 0.0) {
-                    val dis = locationTracker.getLastKnownLocation().firstElement().subscribe({
+                    val dis = locationTracker.getLastKnownLocation().firstElement()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
                         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
                         map.moveCamera(cameraUpdate)
                     })
@@ -156,8 +166,8 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
             pins.takeIf { it.isEmpty().not() }?.let { items ->
                 val clusterItems = items.map { MapClusterItem(PinPlace(it)) }
-                clusterManager.addItems(clusterItems)
-                clusterManager.cluster()
+                clusterManager?.addItems(clusterItems)
+                clusterManager?.cluster()
             }
         }
     }
