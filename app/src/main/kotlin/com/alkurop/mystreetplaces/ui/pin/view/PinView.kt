@@ -3,6 +3,8 @@ package com.alkurop.mystreetplaces.ui.pin.view
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.widget.TextView
 import com.alkurop.mystreetplaces.R
@@ -21,6 +23,7 @@ class PinView @JvmOverloads constructor(context: Context,
     lateinit var locationView: TextView
     lateinit var titleView: TextView
     lateinit var descritionView: TextView
+    lateinit var recyclerView: RecyclerView
     lateinit var id: String
 
     init {
@@ -35,6 +38,10 @@ class PinView @JvmOverloads constructor(context: Context,
         locationView = findViewById(R.id.location) as TextView
         titleView = findViewById(R.id.title) as TextView
         descritionView = findViewById(R.id.description) as TextView
+        recyclerView = findViewById(R.id.recyclerView) as RecyclerView
+        val layoutManager  = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
         findViewById(R.id.editButton).setOnClickListener { presenter.onEdit() }
         presenter.loadPinDetails(id)
     }

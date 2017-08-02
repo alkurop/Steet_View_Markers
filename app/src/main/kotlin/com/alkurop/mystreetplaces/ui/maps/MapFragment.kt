@@ -17,7 +17,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterManager
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -28,7 +27,7 @@ import javax.inject.Inject
 class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     @Inject lateinit var presenter: MapPresenter
-    lateinit var permissionManager: PermissionsManager
+      var permissionManager: PermissionsManager? = null
     @Inject lateinit var locationTracker: LocationTracker
     var clusterManager: ClusterManager<MapClusterItem>? = null
 
@@ -46,13 +45,14 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     private fun setUpPermissionsManager() {
+        if(permissionManager!= null) return
         permissionManager = PermissionsManager(this)
         val permission1 = Pair(Manifest.permission.ACCESS_FINE_LOCATION,
                 PermissionOptionalDetails(getString(R.string.location_permission_rationale_title),
                         getString(R.string.location_permission_rationale)))
 
-        permissionManager.addPermissions(mapOf(permission1))
-        permissionManager.addPermissionsListener {
+        permissionManager?.addPermissions(mapOf(permission1))
+        permissionManager?.addPermissionsListener {
             for (pair in it) {
                 if (!pair.value)
                     return@addPermissionsListener
@@ -71,6 +71,8 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         setUpPermissionsManager()
         mapView.onCreate(savedInstanceState)
         fab.setOnClickListener { presenter.onGoToStreetView() }
+        presenter.isPermissionGranted = false
+        permissionManager?.makePermissionRequest()
     }
 
     fun initClusterManager(map: GoogleMap) {
@@ -125,8 +127,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onStart() {
         super.onStart()
         mapView.onStart()
-        presenter.isPermissionGranted = false
-        permissionManager.makePermissionRequest()
     }
 
     override fun onResume() {
@@ -162,7 +162,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     override fun renderView(viewModel: MapViewModel) {
         with(viewModel) {
-            shouldAskForPermission.takeIf { it }?.let { permissionManager.makePermissionRequest() }
+            shouldAskForPermission.takeIf { it }?.let { permissionManager?.makePermissionRequest() }
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
             pins.takeIf { it.isEmpty().not() }?.let { items ->
                 val clusterItems = items.map { MapClusterItem(PinPlace(it)) }
@@ -178,12 +178,12 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionManager?.onRequestPermissionsResult(requestCode, permissions, grantResults)
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        permissionManager.onActivityResult(requestCode)
+        permissionManager?.onActivityResult(requestCode)
         locationTracker.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }

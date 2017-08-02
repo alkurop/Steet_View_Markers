@@ -13,13 +13,9 @@ import io.realm.annotations.RealmClass
 @RealmClass
 open class PinDto : RealmModel {
     @PrimaryKey var id: String? = null
-
     lateinit var title: String
-
     lateinit var description: String
-
     var lat: Double = 0.0
-
     var lon: Double = 0.0
 
     constructor()
