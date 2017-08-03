@@ -63,6 +63,7 @@ class PinView @JvmOverloads constructor(context: Context,
 
     private fun setUpPermissionsManager(function: () -> Unit) {
         if (permissionManager == null) permissionManager = PermissionsManager(context as Activity)
+        permissionManager?.setRequestCode(203)
         val permission1 = Pair(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 PermissionOptionalDetails(context.getString(R.string.storage_permission_rationale_title),
                         context.getString(R.string.storage_permission_rationale)))

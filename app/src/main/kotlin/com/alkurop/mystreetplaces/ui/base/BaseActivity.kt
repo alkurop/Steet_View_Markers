@@ -30,7 +30,7 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     protected open fun setupRootView(@LayoutRes layoutId: Int) {
         setContentView(layoutId)
-        toolbar =  this.findViewById(R.id.toolbar) as Toolbar
+        toolbar = this.findViewById(R.id.toolbar) as Toolbar
         if (toolbar != null) {
             setSupportActionBar(toolbar)
         }
@@ -42,6 +42,20 @@ abstract class BaseActivity : AppCompatActivity() {
             throw IllegalStateException("Tool bar is not initialized. Have you called setupRootView?")
         }
         return toolbar!!
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        supportFragmentManager.fragments
+                ?.filter { it != null && it.isAdded }
+                ?.forEach { fragment ->
+                    fragment.onRequestPermissionsResult(requestCode, permissions, grantResults)
+                    fragment.childFragmentManager.fragments
+                            ?.filter { it != null && it.isAdded }
+                            ?.forEach { child ->
+                                child.onRequestPermissionsResult(requestCode, permissions, grantResults)
+                            }
+                }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

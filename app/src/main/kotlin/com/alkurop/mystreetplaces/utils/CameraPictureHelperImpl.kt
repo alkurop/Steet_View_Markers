@@ -3,7 +3,6 @@ package com.alkurop.mystreetplaces.utils
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -16,11 +15,9 @@ import java.util.*
 
 class CameraPictureHelperImpl : CameraPictureHelper {
     companion object {
-        val REQUEST_IMAGE_CAPTURE = 2212
-        val DATA = "data"
         val APP_PACKAGE = "com.alkurop.mystreetplaces.fileprovider"
     }
-
+    private var requestCode:Int = 2212
     val fragment: Fragment?
     val activity: AppCompatActivity?
     lateinit var listener: (File) -> Unit
@@ -48,19 +45,19 @@ class CameraPictureHelperImpl : CameraPictureHelper {
 
         activity?.let {
             if (takePictureIntent.resolveActivity(activity.packageManager) != null) {
-                activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                activity.startActivityForResult(takePictureIntent, requestCode)
             }
         }
 
         fragment?.let {
             if (takePictureIntent.resolveActivity(fragment.activity.packageManager) != null) {
-                fragment.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                fragment.startActivityForResult(takePictureIntent, requestCode)
             }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
+        if (requestCode == requestCode && resultCode == RESULT_OK && data != null) {
             val extras = data.extras
             listener.invoke(photoFile)
             galleryAddPic(photoFile.absolutePath, activity ?: fragment!!.activity)
@@ -85,6 +82,10 @@ class CameraPictureHelperImpl : CameraPictureHelper {
         val contentUri = Uri.fromFile(f)
         mediaScanIntent.data = contentUri
         activity.sendBroadcast(mediaScanIntent)
+    }
+
+    override fun setRequestCode(code: Int) {
+        requestCode = code
     }
 }
 

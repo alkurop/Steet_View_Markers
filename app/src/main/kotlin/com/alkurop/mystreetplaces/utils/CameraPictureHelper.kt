@@ -8,4 +8,6 @@ interface CameraPictureHelper {
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
 
     fun execute(listener: (File) -> Unit)
+
+    fun setRequestCode(code: Int)
 }

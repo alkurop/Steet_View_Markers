@@ -67,7 +67,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile 'com.github.alkurop:Android-Runtime-Permission-Manager:0.0.11'
+    compile 'com.github.alkurop:Android-Runtime-Permission-Manager:0.0.12'
     compile project(":streetviewmarker")
     def daggerVersion = '2.7'
     compile "com.google.dagger:dagger:$daggerVersion"

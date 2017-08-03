@@ -67,6 +67,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         val pinId = arguments.getString(ID_KEY)
         pinId?.let { presenter.start(pinId) }
         photoHelper = CameraPictureHelperImpl(this)
+        photoHelper.setRequestCode(301)
 
         submit.setOnClickListener { presenter.submit() }
         delete.setOnClickListener {
@@ -93,6 +94,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
     private fun setUpPermissionsManager(function: () -> Unit) {
         if (permissionManager == null) permissionManager = PermissionsManager(this)
+        permissionManager?.setRequestCode(202)
         val permission1 = Pair(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 PermissionOptionalDetails(getString(R.string.storage_permission_rationale_title),
                         getString(R.string.storage_permission_rationale)))

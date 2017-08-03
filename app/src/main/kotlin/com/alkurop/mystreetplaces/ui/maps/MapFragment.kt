@@ -47,6 +47,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     private fun setUpPermissionsManager() {
         if(permissionManager!= null) return
         permissionManager = PermissionsManager(this)
+        permissionManager?.setRequestCode(101)
         val permission1 = Pair(Manifest.permission.ACCESS_FINE_LOCATION,
                 PermissionOptionalDetails(getString(R.string.location_permission_rationale_title),
                         getString(R.string.location_permission_rationale)))
