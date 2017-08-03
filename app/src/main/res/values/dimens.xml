@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="pin_details_image_recycler_height">120dp</dimen>
-    <dimen name="pin_details_image_recycler_width">140dp</dimen>
+    <dimen name="pin_details_image_recycler_width">100dp</dimen>
     <dimen name="pin_details_image_add_recycler_width">100dp</dimen>
 </resources>

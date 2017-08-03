@@ -7,4 +7,4 @@ import com.alkurop.mystreetplaces.domain.pin.PinDto
 data class MapViewModel(val isLoading: Boolean? = null,
                         @StringRes val errorRes: Int? = null,
                         val shouldAskForPermission: Boolean = false,
-                        val pins: List<PinDto> = listOf())
+                        val pins: List<PinDto>? = null)

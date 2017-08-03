@@ -65,7 +65,7 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
                         .equalTo("id", pinDto.id)
                         .findFirst()
                 val realmList = RealmList<PictureWrapper>()
-                pinDto.pictures.forEach { item -> realmList.add(it.copyToRealm(item)) }
+                pinDto.pictures.forEach { item -> realmList.add(it.copyToRealmOrUpdate(item)) }
                 result.pictures = realmList
 
                 it.commitTransaction()

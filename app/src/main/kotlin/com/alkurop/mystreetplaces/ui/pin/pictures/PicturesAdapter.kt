@@ -23,7 +23,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     var onAddPictureClick: (() -> Unit)? = null
     var onPictureClick: ((PictureWrapper) -> Unit)? = null
 
-    fun addPictures(newPictures: List<PictureWrapper>) {
+    fun setItems(newPictures: List<PictureWrapper>) {
         val diffCallback = PicturesDiffUtil(pictures, newPictures)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         diffResult.dispatchUpdatesTo(this)
@@ -98,6 +98,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
 
                 override fun onLoadingFailed(imageUri: String?, view: View?, failReason: FailReason?) {
                     itemView.progress_bar.visibility = View.GONE
+                    itemView.photoView.setImageResource(R.mipmap.ic_launcher_round)
                 }
             })
         }

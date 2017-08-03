@@ -14,5 +14,7 @@ interface PinViewPresenter {
 
     fun onEdit()
 
+    fun addPicture()
+
     fun unsubscribe()
 }

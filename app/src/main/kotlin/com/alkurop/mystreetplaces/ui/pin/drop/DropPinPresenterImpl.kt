@@ -66,7 +66,7 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
     }
 
     override fun onAddPicture(file: File) {
-        pinDto.pictures.add(PictureWrapper(file.absolutePath))
+        pinDto.pictures.add(PictureWrapper("file://${file.absolutePath}"))
         if (pinDto.id != null) {
             val sub = pinRepo.updateLocalPictures(pinDto)
                     .subscribe({}, { Timber.e(it) })

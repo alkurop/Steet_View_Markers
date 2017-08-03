@@ -1,6 +1,7 @@
 package com.alkurop.mystreetplaces.ui.pin.view
 
 import android.os.Bundle
+import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
@@ -44,5 +45,23 @@ class PinViewPresenterImpl(val pinRepo: PinRepo) : PinViewPresenter {
 
     override fun unsubscribe() {
         pinSubscription.clear()
+    }
+
+    override fun addPicture() {
+       /* val sub = pinRepo.getPinDetails(id)
+                .flatMap {  }
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                   *//* val viewModel = PinViewModel(it)
+                    viewBus.onNext(viewModel)*//*
+                }, { Timber.e(it) })
+        pinSubscription.add(sub)
+        pinDto.pictures.add(PictureWrapper(file.absolutePath))
+        if (pinDto.id != null) {
+            val sub = pinRepo.updateLocalPictures(pinDto)
+                    .subscribe({}, { Timber.e(it) })
+            compositeDisposable.add(sub)
+        }
+        Timber.d("picture added ${file.absoluteFile}")*/
     }
 }

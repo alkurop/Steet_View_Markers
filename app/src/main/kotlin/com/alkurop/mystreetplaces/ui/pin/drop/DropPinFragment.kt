@@ -46,8 +46,8 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
     val viewDisposable = CompositeDisposable()
     lateinit var photoHelper: CameraPictureHelper
-    @Inject lateinit var presenter: DropPinPresenter
     var permissionManager: PermissionsManager? = null
+    @Inject lateinit var presenter: DropPinPresenter
     var alert: AlertDialog? = null
 
     override fun getSubject(): Observable<DropPinViewModel> = presenter.viewBus

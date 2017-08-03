@@ -1,6 +1,7 @@
 package com.alkurop.mystreetplaces.ui.pin.view
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.design.widget.BottomSheetBehavior
@@ -10,8 +11,7 @@ import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import kotlinx.android.synthetic.main.fragment_view_pin.view.*
 import android.view.WindowManager
-
-
+import kotlinx.android.synthetic.main.fragment_view_pin.*
 
 class PinFragment : BottomSheetDialogFragment() {
     companion object {
@@ -57,5 +57,13 @@ class PinFragment : BottomSheetDialogFragment() {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        viewPin.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        viewPin.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 }
