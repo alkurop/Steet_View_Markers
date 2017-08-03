@@ -7,10 +7,12 @@ import com.alkurop.mystreetplaces.di.components.ApplicationComponent
 import com.alkurop.mystreetplaces.di.components.DaggerApplicationComponent
 import com.alkurop.mystreetplaces.di.modules.ui.ApplicationModule
 import com.facebook.stetho.Stetho
+import com.nostra13.universalimageloader.core.DisplayImageOptions
+import com.nostra13.universalimageloader.core.ImageLoader
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
 import io.realm.Realm
 import timber.log.Timber
-
 
 class MyStreetPlacesApp : Application() {
     lateinit var component: ApplicationComponent
@@ -20,6 +22,7 @@ class MyStreetPlacesApp : Application() {
         component = buildApplicationComponent()
         initRealm()
         initStetho()
+        initUniversalImageLoader()
     }
 
     fun installMultiDex() {
@@ -50,5 +53,16 @@ class MyStreetPlacesApp : Application() {
 
     fun initRealm() {
         Realm.init(this)
+    }
+
+    fun initUniversalImageLoader() {
+        val defaultOptions = DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build()
+        val config = ImageLoaderConfiguration.Builder(this)
+                .defaultDisplayImageOptions(defaultOptions)
+                .build()
+        ImageLoader.getInstance().init(config)
     }
 }

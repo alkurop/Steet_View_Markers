@@ -8,7 +8,6 @@ import com.alkurop.mystreetplaces.MyStreetPlacesApp
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.di.components.ActivityComponent
 import com.alkurop.mystreetplaces.di.modules.ui.ActivityModule
-import com.stanfy.enroscar.views.GUIUtils
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -31,7 +30,7 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     protected open fun setupRootView(@LayoutRes layoutId: Int) {
         setContentView(layoutId)
-        toolbar = GUIUtils.find<Toolbar>(this, R.id.toolbar)
+        toolbar =  this.findViewById(R.id.toolbar) as Toolbar
         if (toolbar != null) {
             setSupportActionBar(toolbar)
         }

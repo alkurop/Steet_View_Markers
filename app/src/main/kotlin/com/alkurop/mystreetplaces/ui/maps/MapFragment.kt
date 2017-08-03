@@ -115,7 +115,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
                 presenter.onCameraPositionChanged(map.projection.visibleRegion)
             }
             initClusterManager(map)
-
         }
     }
 

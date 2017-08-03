@@ -4,7 +4,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'realm-android'
 
-
 repositories {
     jcenter()
     mavenCentral()
@@ -14,7 +13,6 @@ repositories {
     maven { url 'https://jitpack.io' }
 
 }
-
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -26,7 +24,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
+        multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
     }
     signingConfigs {
@@ -75,7 +73,6 @@ dependencies {
     compile "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -84,18 +81,15 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
     compile 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.stanfy.enroscar:enroscar-ui:2.1'
     compile 'com.facebook.stetho:stetho:1.4.1'
     compile 'com.uphyca:stetho_realm:2.0.0'
     compile 'com.jakewharton.timber:timber:4.5.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.8.47'
     testCompile 'org.assertj:assertj-core:2.8.0'
 }
-
 
 buildscript {
     repositories {
