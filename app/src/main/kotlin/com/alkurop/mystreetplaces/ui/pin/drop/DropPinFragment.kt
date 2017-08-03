@@ -5,12 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.alkurop.mystreetplaces.ui.pin.pictures.PicturesAdapter
 import com.alkurop.mystreetplaces.utils.CameraPictureHelper
 import com.alkurop.mystreetplaces.utils.CameraPictureHelperImpl
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
@@ -81,15 +83,17 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                     .show()
         }
         delete.visibility = View.GONE
-
-        addPicture.setOnClickListener {
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
+        val picturesAdapter = PicturesAdapter()
+        picturesAdapter.onAddPictureClick = {
             setUpPermissionsManager({
                 photoHelper.execute({ file ->
                     presenter.onAddPicture(file)
                 })
             })
         }
-
     }
 
     private fun setUpPermissionsManager(function: () -> Unit) {
@@ -129,6 +133,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 title.setText(pin.title)
                 description.setText(pin.description)
                 pin.id?.let { delete.visibility = View.VISIBLE }
+                (recyclerView.adapter as PicturesAdapter).setItems(pin.pictures)
             }
         }
         val disposable = RxTextView.textChangeEvents(title)

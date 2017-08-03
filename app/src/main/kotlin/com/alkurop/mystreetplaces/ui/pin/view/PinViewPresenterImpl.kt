@@ -13,6 +13,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
+import java.io.File
 
 /**
  * Created by alkurop on 7/21/17.
@@ -47,13 +48,13 @@ class PinViewPresenterImpl(val pinRepo: PinRepo) : PinViewPresenter {
         pinSubscription.clear()
     }
 
-    override fun addPicture() {
+    override fun addPicture(file: File) {
        /* val sub = pinRepo.getPinDetails(id)
                 .flatMap {  }
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                   *//* val viewModel = PinViewModel(it)
-                    viewBus.onNext(viewModel)*//*
+                    val viewModel = PinViewModel(it)
+                    viewBus.onNext(viewModel)
                 }, { Timber.e(it) })
         pinSubscription.add(sub)
         pinDto.pictures.add(PictureWrapper(file.absolutePath))

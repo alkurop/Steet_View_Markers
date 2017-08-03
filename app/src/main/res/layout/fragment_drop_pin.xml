@@ -28,11 +28,11 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_enter_description" />
 
-        <Button
-            android:id="@+id/addPicture"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/add_picture"/>
+            android:background="#aaaaaa"
+            android:layout_height="@dimen/pin_details_image_recycler_height" />
 
         <Button
             android:id="@+id/submit"
