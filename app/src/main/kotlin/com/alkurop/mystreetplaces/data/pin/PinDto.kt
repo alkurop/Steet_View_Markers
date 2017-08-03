@@ -1,9 +1,9 @@
 package com.alkurop.mystreetplaces.domain.pin
 
+import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.google.android.gms.maps.model.LatLng
 import io.realm.RealmList
 import io.realm.RealmModel
-import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 
@@ -17,11 +17,11 @@ open class PinDto : RealmModel {
     lateinit var description: String
     var lat: Double = 0.0
     var lon: Double = 0.0
+    var pictures = RealmList<PictureWrapper>()
+    var isSynchronized: Boolean = false
+    var timeStamp: Long = 0
 
     constructor()
-
-    var localStoragePictures = RealmList<PhotoWrapper>()
-    var onlineStoragePictures = RealmList<PhotoWrapper>()
 
     constructor(location: LatLng, title: String, description: String = "") {
         this.lat = location.latitude
@@ -47,11 +47,3 @@ open class PinDto : RealmModel {
 
 }
 
-open class PhotoWrapper : RealmObject {
-    var photo: String? = null
-
-    constructor()
-    constructor(photo: String) {
-        this.photo = photo
-    }
-}

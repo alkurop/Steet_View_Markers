@@ -1,7 +1,7 @@
 package com.alkurop.mystreetplaces.ui.pin.drop
 
+import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.data.pin.PinRepo
-import com.alkurop.mystreetplaces.domain.pin.PhotoWrapper
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
@@ -66,7 +66,7 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
     }
 
     override fun onAddPicture(file: File) {
-        pinDto.localStoragePictures.add(PhotoWrapper(file.absolutePath))
+        pinDto.pictures.add(PictureWrapper(file.absolutePath))
         if (pinDto.id != null) {
             val sub = pinRepo.updateLocalPictures(pinDto)
                     .subscribe({}, { Timber.e(it) })

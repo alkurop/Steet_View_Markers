@@ -1,11 +1,9 @@
 package com.alkurop.mystreetplaces.data.pin
 
 import com.alkurop.mystreetplaces.db.RealmProvider
-import com.alkurop.mystreetplaces.domain.pin.PhotoWrapper
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.RealmList
 
@@ -14,6 +12,7 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
         return Single.fromCallable {
             realmProvider.provideRealm().use {
                 it.beginTransaction()
+                pin.timeStamp = System.currentTimeMillis()
                 it.insertOrUpdate(pin)
                 it.commitTransaction()
                 return@fromCallable pin
@@ -65,9 +64,9 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
                 val result = it.where(PinDto::class.java)
                         .equalTo("id", pinDto.id)
                         .findFirst()
-                val realmList = RealmList<PhotoWrapper>()
-                pinDto.localStoragePictures.forEach { item -> realmList.add(it.copyToRealm(item)) }
-                result.localStoragePictures = realmList
+                val realmList = RealmList<PictureWrapper>()
+                pinDto.pictures.forEach { item -> realmList.add(it.copyToRealm(item)) }
+                result.pictures = realmList
 
                 it.commitTransaction()
             }

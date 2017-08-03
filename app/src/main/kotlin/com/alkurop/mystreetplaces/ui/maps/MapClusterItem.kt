@@ -23,5 +23,4 @@ class MapClusterItem(val place: PinPlace) : ClusterItem {
         return null
     }
 
-
 }

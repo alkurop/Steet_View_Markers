@@ -1,24 +1,73 @@
 package com.alkurop.mystreetplaces.ui.pin.pictures
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 
 class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
+    private var pictures = listOf<PictureWrapper>()
+
+    lateinit var li: LayoutInflater
+
+    var onAddPictureClick: (() -> Unit)? = null
+    var onPictureClick: ((PictureWrapper) -> Unit)? = null
+
+    fun addPictures(newPictures: List<PictureWrapper>) {
+        val diffCallback = PicturesDiffUtil(pictures, newPictures)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        diffResult.dispatchUpdatesTo(this)
+        pictures = newPictures
+    }
+
+    fun getItems() = pictures
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+        super.onAttachedToRecyclerView(recyclerView)
+        li = LayoutInflater.from(recyclerView?.context)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PictureVH {
-        return PictureVH(null)
+        return if (viewType == 0) createAddPictureVh(parent)
+        else createExistingPictureVh(parent)
+    }
+
+    private fun createExistingPictureVh(parent: ViewGroup?): ExistingPictureVh {
+        val view = li.inflate(R.layout.item_existing_picture, parent, false)
+        return ExistingPictureVh(view)
+    }
+
+    private fun createAddPictureVh(parent: ViewGroup?): AddPictureVh {
+        val view = li.inflate(R.layout.item_add_picture, parent, false)
+        return AddPictureVh(view)
     }
 
     override fun getItemCount(): Int {
-        return 0
+        return pictures.size + 1
     }
 
+    fun getItem(position: Int): PictureWrapper = pictures[position - 1]
+
     override fun onBindViewHolder(holder: PictureVH?, position: Int) {
+        if (holder is ExistingPictureVh) {
+            holder.bind(getItem(position))
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return super.getItemViewType(position)
+        return position
     }
 
-    class PictureVH(itemView: View?) : RecyclerView.ViewHolder(itemView) {}
+    abstract class PictureVH(itemView: View?) : RecyclerView.ViewHolder(itemView)
+
+    class AddPictureVh(itemView: View?) : PictureVH(itemView)
+
+    class ExistingPictureVh(itemView: View?) : PictureVH(itemView) {
+        fun bind(item: PictureWrapper) {
+
+        }
+    }
 }

@@ -127,6 +127,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onStart() {
         super.onStart()
         mapView.onStart()
+        presenter.refresh()
     }
 
     override fun onResume() {
@@ -166,6 +167,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
             pins.takeIf { it.isEmpty().not() }?.let { items ->
                 val clusterItems = items.map { MapClusterItem(PinPlace(it)) }
+                clusterManager?.clearItems()
                 clusterManager?.addItems(clusterItems)
                 clusterManager?.cluster()
             }

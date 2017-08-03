@@ -29,12 +29,11 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
     override var isPermissionGranted: Boolean = false
 
     var visibleRegion: VisibleRegion? = null
-    var pinsSet = setOf<PinDto>()
 
     val markersDisposable = CompositeDisposable()
     override fun onAddMarker() {
         val tmp = visibleRegion
-        if (tmp!= null) {
+        if (tmp != null) {
             addMarker(tmp.latLngBounds.center)
         } else {
             viewBus.onNext(MapViewModel(shouldAskForPermission = true))
@@ -46,25 +45,20 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
         visibleRegion?.let { getPinsForLocationFromRepo(it) }
     }
 
+    override fun refresh(){
+        onCameraPositionChanged(visibleRegion)
+    }
+
     fun getPinsForLocationFromRepo(visibleRegion: VisibleRegion) {
         markersDisposable.clear()
         val sub = pinRepo
                 .observePinsByLocationCorners(visibleRegion.latLngBounds.southwest, visibleRegion.latLngBounds.northeast)
                 .subscribeOn(Schedulers.io())
-                .subscribe({ onPinsReceived(it) }, { Timber.e(it) })
+                .subscribe({
+                    val model = MapViewModel(pins = it.toList())
+                    viewBus.onNext(model)
+                }, { Timber.e(it) })
         markersDisposable.add(sub)
-    }
-
-    private fun onPinsReceived(pins: Array<PinDto>) {
-        val newPins = pins.filter { pinsSet.contains(it).not() }
-        val removePins = pinsSet.filter { pins.contains(it).not() }
-
-        if (newPins.isEmpty().not() or removePins.isEmpty().not()) {
-            pinsSet += newPins
-            pinsSet -= removePins
-            val model = MapViewModel(pins = pinsSet.toList())
-            viewBus.onNext(model)
-        }
     }
 
     fun addMarker(latLng: LatLng) {

@@ -21,5 +21,6 @@ interface MapPresenter {
 
     fun onPinClick (it: MapClusterItem)
 
+    fun refresh()
 }
 
