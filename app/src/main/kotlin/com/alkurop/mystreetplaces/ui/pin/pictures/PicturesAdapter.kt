@@ -38,7 +38,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PictureVH {
-        return if (viewType == 0) createAddPictureVh(parent)
+        return if (viewType == 0 && getOffset() > 0) createAddPictureVh(parent)
         else createExistingPictureVh(parent)
     }
 
@@ -53,10 +53,12 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     }
 
     override fun getItemCount(): Int {
-        return pictures.size + 1
+        return pictures.size + getOffset()
     }
 
-    fun getItem(position: Int): PictureWrapper = pictures[position - 1]
+    fun getItem(position: Int): PictureWrapper = pictures[position - getOffset()]
+
+    private fun getOffset() = if (onAddPictureClick == null) 0 else 1
 
     override fun onBindViewHolder(holder: PictureVH?, position: Int) {
         if (holder is ExistingPictureVh) {

@@ -31,7 +31,6 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:background="#aaaaaa"
             android:layout_height="@dimen/pin_details_image_recycler_height" />
 
         <Button

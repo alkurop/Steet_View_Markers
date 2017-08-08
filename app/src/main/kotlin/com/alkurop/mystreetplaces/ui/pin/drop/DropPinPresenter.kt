@@ -16,6 +16,8 @@ interface DropPinPresenter {
 
     fun unsubscribe()
 
+    fun start(pinId: String)
+
     fun start(location: LatLng)
 
     fun onTitleChange(title: String)
@@ -27,6 +29,4 @@ interface DropPinPresenter {
     fun deletePin()
 
     fun onAddPicture(file: File)
-
-    fun start(pinId: String)
 }

@@ -27,7 +27,7 @@ import javax.inject.Inject
 class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     @Inject lateinit var presenter: MapPresenter
-      var permissionManager: PermissionsManager? = null
+    var permissionManager: PermissionsManager? = null
     @Inject lateinit var locationTracker: LocationTracker
     var clusterManager: ClusterManager<MapClusterItem>? = null
 
@@ -45,7 +45,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     }
 
     private fun setUpPermissionsManager() {
-        if(permissionManager!= null) return
+        if (permissionManager != null) return
         permissionManager = PermissionsManager(this)
         permissionManager?.setRequestCode(101)
         val permission1 = Pair(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -106,9 +106,10 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
-                        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
-                        map.moveCamera(cameraUpdate)
-                    })
+                                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
+                                map.moveCamera(cameraUpdate)
+                                presenter.onCameraPositionChanged(map.projection.visibleRegion)
+                            })
                     compositeDisposable.add(dis)
                 }
             }
@@ -165,7 +166,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         with(viewModel) {
             shouldAskForPermission.takeIf { it }?.let { permissionManager?.makePermissionRequest() }
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
-            pins ?.let { items ->
+            pins?.let { items ->
                 val clusterItems = items.map { MapClusterItem(PinPlace(it)) }
                 clusterManager?.clearItems()
                 clusterManager?.addItems(clusterItems)

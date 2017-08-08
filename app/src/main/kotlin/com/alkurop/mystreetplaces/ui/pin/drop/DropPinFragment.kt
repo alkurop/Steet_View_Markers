@@ -63,11 +63,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val location = arguments.getParcelable<LatLng>(LOCATION_KEY)
-        location?.let { presenter.start(location) }
 
-        val pinId = arguments.getString(ID_KEY)
-        pinId?.let { presenter.start(pinId) }
         photoHelper = CameraPictureHelperImpl(this)
         photoHelper.setRequestCode(301)
 
@@ -94,6 +90,14 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 })
             })
         }
+
+        recyclerView.adapter = picturesAdapter
+
+        val location = arguments.getParcelable<LatLng>(LOCATION_KEY)
+        location?.let { presenter.start(location) }
+
+        val pinId = arguments.getString(ID_KEY)
+        pinId?.let { presenter.start(pinId) }
     }
 
     private fun setUpPermissionsManager(function: () -> Unit) {

@@ -1,12 +1,8 @@
 package com.alkurop.mystreetplaces.ui.pin.view
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
@@ -15,10 +11,6 @@ import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpView
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.pictures.PicturesAdapter
-import com.alkurop.mystreetplaces.utils.CameraPictureHelper
-import com.alkurop.mystreetplaces.utils.CameraPictureHelperImpl
-import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
-import com.github.alkurop.jpermissionmanager.PermissionsManager
 import io.reactivex.Observable
 import javax.inject.Inject
 
@@ -34,9 +26,6 @@ class PinView @JvmOverloads constructor(context: Context,
     lateinit var descritionView: TextView
     lateinit var recyclerView: RecyclerView
     lateinit var id: String
-
-    var photoHelper: CameraPictureHelper? = null
-    var permissionManager: PermissionsManager? = null
 
     init {
         inflate(context, R.layout.view_pin, this)
@@ -56,45 +45,9 @@ class PinView @JvmOverloads constructor(context: Context,
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
         val picturesAdapter = PicturesAdapter()
-        picturesAdapter.onAddPictureClick = {
-            addPicture()
-        }
         recyclerView.adapter = picturesAdapter
         findViewById(R.id.editButton).setOnClickListener { presenter.onEdit() }
         presenter.loadPinDetails(id)
-
-        if (photoHelper == null) {
-            photoHelper = CameraPictureHelperImpl(context as AppCompatActivity)
-            photoHelper?.setRequestCode(301)
-        }
-    }
-
-    private fun addPicture() {
-        setUpPermissionsManager { photoHelper?.execute {
-            presenter.addPicture(it)
-        } }
-    }
-
-    private fun setUpPermissionsManager(function: () -> Unit) {
-        if (permissionManager == null) permissionManager = PermissionsManager(context as Activity)
-        permissionManager?.setRequestCode(203)
-        val permission1 = Pair(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                PermissionOptionalDetails(context.getString(R.string.storage_permission_rationale_title),
-                        context.getString(R.string.storage_permission_rationale)))
-        val permission2 = Pair(Manifest.permission.CAMERA,
-                PermissionOptionalDetails(context.getString(R.string.camera_permission_rationale_title),
-                        context.getString(R.string.camera_permission_rationale)))
-        permissionManager?.clearPermissions()
-        permissionManager?.clearPermissionsListeners()
-        permissionManager?.addPermissions(mapOf(permission1, permission2))
-        permissionManager?.addPermissionsListener {
-            for (pair in it) {
-                if (!pair.value)
-                    return@addPermissionsListener
-            }
-            function.invoke()
-        }
-        permissionManager?.makePermissionRequest()
     }
 
     override fun getSubject(): Observable<PinViewModel> = presenter.viewBus
@@ -130,14 +83,5 @@ class PinView @JvmOverloads constructor(context: Context,
             locationView.text = "$lat     $lon"
             (recyclerView.adapter as PicturesAdapter).setItems(pictures)
         }
-    }
-
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        permissionManager?.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        permissionManager?.onActivityResult(requestCode)
-        photoHelper?.onActivityResult(requestCode, resultCode, data)
     }
 }
