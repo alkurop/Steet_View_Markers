@@ -9,13 +9,12 @@ import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
-import com.alkurop.mystreetplaces.ui.pin.picture.PictureActivity
-import com.alkurop.mystreetplaces.ui.pin.picture.PicturePreviewStateModel
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContainerStateModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
-import java.io.File
 
 /**
  * Created by alkurop on 7/21/17.
@@ -51,7 +50,7 @@ class PinViewPresenterImpl(val pinRepo: PinRepo) : PinViewPresenter {
     }
 
     override fun onPictureClick(items: List<PictureWrapper>, position: Int) {
-        val stateModel = PicturePreviewStateModel(items, position)
+        val stateModel = PicturePreviewContainerStateModel(items, position)
         val args = Bundle()
         args.putParcelable(PictureActivity.START_MODEL_KEY, stateModel)
         val navModel = ActivityNavigationAction(PictureActivity::class.java, args)

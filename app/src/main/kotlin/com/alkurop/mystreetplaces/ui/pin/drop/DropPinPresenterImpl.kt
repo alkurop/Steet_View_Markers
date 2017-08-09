@@ -9,8 +9,8 @@ import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NoArgsNavigation
-import com.alkurop.mystreetplaces.ui.pin.picture.PictureActivity
-import com.alkurop.mystreetplaces.ui.pin.picture.PicturePreviewStateModel
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContainerStateModel
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
@@ -86,7 +86,7 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
     }
 
     override fun onPictureClick(position: Int, items: List<PictureWrapper>) {
-        val stateModel = PicturePreviewStateModel(items, position)
+        val stateModel = PicturePreviewContainerStateModel(items, position)
         val args = Bundle()
         args.putParcelable(PictureActivity.START_MODEL_KEY, stateModel)
         val navModel = ActivityNavigationAction(PictureActivity::class.java, args)

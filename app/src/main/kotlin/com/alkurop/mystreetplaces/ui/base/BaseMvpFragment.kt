@@ -36,7 +36,7 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
         subscriptions.add(sub2)
     }
 
-    fun navigate(it: NavigationAction) {
+    open fun navigate(it: NavigationAction) {
         if (it is ActivityNavigationAction) {
             navigateActivity(it)
         } else if (it is FragmentNavigationAction) {

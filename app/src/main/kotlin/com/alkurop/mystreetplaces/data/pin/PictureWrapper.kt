@@ -46,10 +46,20 @@ open class PictureWrapper : RealmObject, Parcelable {
         }
     }
 
-    constructor(source: Parcel) : this(
-    )
+    constructor(source: Parcel) : this(){
+        id = source.readString()
+        timeStamp = source.readLong()
+        localPhoto = source.readString()
+        serverPhoto = source.readString()
+    }
+
 
     override fun describeContents() = 0
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {}
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(id)
+        dest.writeLong(timeStamp)
+        dest.writeString(localPhoto)
+        dest.writeString(serverPhoto)
+    }
 }

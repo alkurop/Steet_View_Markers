@@ -7,8 +7,10 @@ import com.alkurop.mystreetplaces.ui.maps.MapPresenter
 import com.alkurop.mystreetplaces.ui.maps.MapPresenterImpl
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinPresenter
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinPresenterImpl
-import com.alkurop.mystreetplaces.ui.pin.picture.PicturePreviewPresenter
-import com.alkurop.mystreetplaces.ui.pin.picture.PicturePreviewPresenterImpl
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContainerPresenter
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContainerPresenterImpl
+import com.alkurop.mystreetplaces.ui.pin.picture.view.PreviewPicturePresenter
+import com.alkurop.mystreetplaces.ui.pin.picture.view.PreviewPicturePresenterImpl
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenter
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenterImpl
 import com.alkurop.mystreetplaces.ui.places.PlacesPresenter
@@ -39,7 +41,8 @@ class PresenterModule {
 
     @Provides fun provideViewPinPresenter(pinRepo: PinRepo): PinViewPresenter = PinViewPresenterImpl(pinRepo)
 
-    @Provides fun providePreviewPicturePresenter(pinRepo: PinRepo): PicturePreviewPresenter = PicturePreviewPresenterImpl(pinRepo)
+    @Provides fun providePreviewPictureContainerPresenter(pinRepo: PinRepo): PicturePreviewContainerPresenter = PicturePreviewContainerPresenterImpl(pinRepo)
 
+    @Provides fun providePreviewPicturePresenter(): PreviewPicturePresenter = PreviewPicturePresenterImpl()
 }
 

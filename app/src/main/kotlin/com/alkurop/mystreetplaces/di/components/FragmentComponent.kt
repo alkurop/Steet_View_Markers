@@ -4,6 +4,7 @@ import com.alkurop.mystreetplaces.di.annotations.PerFragment
 import com.alkurop.mystreetplaces.di.modules.ui.FragmentModule
 import com.alkurop.mystreetplaces.ui.maps.MapFragment
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
+import com.alkurop.mystreetplaces.ui.pin.picture.view.PreviewPictureFragment
 import com.alkurop.mystreetplaces.ui.places.PlacesFragment
 import com.alkurop.mystreetplaces.ui.settings.SettingsFragment
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
@@ -24,5 +25,6 @@ interface FragmentComponent {
 
     fun inject(dropPinView: DropPinFragment)
 
+    fun inject(previewPictureFragment: PreviewPictureFragment)
 
 }

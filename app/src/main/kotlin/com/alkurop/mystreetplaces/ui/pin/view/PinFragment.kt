@@ -50,7 +50,6 @@ class PinFragment : BottomSheetDialogFragment() {
         }
         contentView.viewPin.setStartModel(pinStartModel)
         contentView.viewPin.navigator = {
-            dismiss()
             val act = activity as BaseMvpActivity<*>
             act.navigate(it)
         }

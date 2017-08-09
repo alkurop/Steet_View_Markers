@@ -83,7 +83,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     inner class ExistingPictureVh(view: View?) : PictureVH(view) {
         init {
             itemView.pictureContainer.setOnClickListener {
-                onPictureClick?.invoke(adapterPosition)
+                onPictureClick?.invoke(adapterPosition - getOffset())
             }
         }
 
