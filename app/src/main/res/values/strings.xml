@@ -38,4 +38,8 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="add_picture">Add picture</string>
+    <string name="delete_picture_dialog_msg">Do you want to delete this picture?</string>
+    <string name="delete_picture_dialog_title">Delete picture</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
