@@ -45,6 +45,7 @@ class PinView @JvmOverloads constructor(context: Context,
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
         val picturesAdapter = PicturesAdapter()
+        picturesAdapter.onPictureClick = { position -> presenter.onPictureClick(picturesAdapter.getItems(), position) }
         recyclerView.adapter = picturesAdapter
         findViewById(R.id.editButton).setOnClickListener { presenter.onEdit() }
         presenter.loadPinDetails(id)

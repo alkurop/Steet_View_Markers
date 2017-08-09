@@ -1,4 +1,4 @@
-package com.alkurop.mystreetplaces.ui.pin.activity
+package com.alkurop.mystreetplaces.ui.pin.drop
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -6,7 +6,6 @@ import android.view.MenuItem
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseActivity
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
-import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.google.android.gms.maps.model.LatLng
 
 class DropPinActivity : BaseActivity() {

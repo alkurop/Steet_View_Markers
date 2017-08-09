@@ -90,6 +90,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 })
             })
         }
+        picturesAdapter.onPictureClick = { presenter.onPictureClick(it, picturesAdapter.getItems()) }
 
         recyclerView.adapter = picturesAdapter
 

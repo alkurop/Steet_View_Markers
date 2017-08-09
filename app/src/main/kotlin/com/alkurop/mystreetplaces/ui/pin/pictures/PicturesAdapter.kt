@@ -21,7 +21,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     lateinit var li: LayoutInflater
 
     var onAddPictureClick: (() -> Unit)? = null
-    var onPictureClick: ((PictureWrapper) -> Unit)? = null
+    var onPictureClick: ((Int) -> Unit)? = null
 
     fun setItems(newPictures: List<PictureWrapper>) {
         val diffCallback = PicturesDiffUtil(pictures, newPictures)
@@ -83,7 +83,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     inner class ExistingPictureVh(view: View?) : PictureVH(view) {
         init {
             itemView.pictureContainer.setOnClickListener {
-                onPictureClick?.invoke(getItem(adapterPosition))
+                onPictureClick?.invoke(adapterPosition)
             }
         }
 

@@ -9,14 +9,13 @@ import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.BottomsheetFragmentNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
-import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
+import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel
 import com.alkurop.mystreetplaces.utils.LocationUtils
 import com.github.alkurop.streetviewmarker.CameraPosition
 import com.github.alkurop.streetviewmarker.Place
-import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject

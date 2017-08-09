@@ -14,9 +14,9 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -40,7 +40,11 @@
             android:name=".ui.street.StreetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.pin.activity.DropPinActivity"
+            android:name=".ui.pin.drop.DropPinActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.pin.picture.PictureActivity"
             android:screenOrientation="portrait" />
 
         <provider

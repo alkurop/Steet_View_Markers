@@ -2,13 +2,12 @@ package com.alkurop.mystreetplaces.ui.maps
 
 import android.os.Bundle
 import com.alkurop.mystreetplaces.data.pin.PinRepo
-import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.BottomsheetFragmentNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
-import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
+import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel

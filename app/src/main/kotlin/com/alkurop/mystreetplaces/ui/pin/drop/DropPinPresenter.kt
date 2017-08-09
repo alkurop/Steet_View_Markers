@@ -1,5 +1,6 @@
 package com.alkurop.mystreetplaces.ui.pin.drop
 
+import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.maps.model.LatLng
@@ -29,4 +30,6 @@ interface DropPinPresenter {
     fun deletePin()
 
     fun onAddPicture(file: File)
+
+    fun onPictureClick(position: Int, items: List<PictureWrapper>)
 }

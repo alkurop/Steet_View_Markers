@@ -7,8 +7,10 @@ import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
-import com.alkurop.mystreetplaces.ui.pin.activity.DropPinActivity
+import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
+import com.alkurop.mystreetplaces.ui.pin.picture.PictureActivity
+import com.alkurop.mystreetplaces.ui.pin.picture.PicturePreviewStateModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
@@ -48,21 +50,11 @@ class PinViewPresenterImpl(val pinRepo: PinRepo) : PinViewPresenter {
         pinSubscription.clear()
     }
 
-    override fun addPicture(file: File) {
-       /* val sub = pinRepo.getPinDetails(id)
-                .flatMap {  }
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    val viewModel = PinViewModel(it)
-                    viewBus.onNext(viewModel)
-                }, { Timber.e(it) })
-        pinSubscription.add(sub)
-        pinDto.pictures.add(PictureWrapper(file.absolutePath))
-        if (pinDto.id != null) {
-            val sub = pinRepo.updateLocalPictures(pinDto)
-                    .subscribe({}, { Timber.e(it) })
-            compositeDisposable.add(sub)
-        }
-        Timber.d("picture added ${file.absoluteFile}")*/
+    override fun onPictureClick(items: List<PictureWrapper>, position: Int) {
+        val stateModel = PicturePreviewStateModel(items, position)
+        val args = Bundle()
+        args.putParcelable(PictureActivity.START_MODEL_KEY, stateModel)
+        val navModel = ActivityNavigationAction(PictureActivity::class.java, args)
+        navBus.onNext(navModel)
     }
 }
