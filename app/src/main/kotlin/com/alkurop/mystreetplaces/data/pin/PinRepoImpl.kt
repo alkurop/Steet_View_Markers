@@ -27,7 +27,7 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
                 }
     }
 
-    override fun notifyListeners() {
+    fun notifyListeners() {
         locationUpdatedBus.onNext(Any())
     }
 
@@ -56,5 +56,9 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
     override fun updateLocalPictures(pinDto: PinDto): Completable {
         return pinCahe.updateLocalPictures(pinDto)
                 .doOnComplete { notifyListeners() }
+    }
+
+    override fun deletePicture(id: String): Completable {
+        return pinCahe.deletePicture(id)
     }
 }

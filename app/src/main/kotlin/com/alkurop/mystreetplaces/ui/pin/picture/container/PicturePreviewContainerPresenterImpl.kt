@@ -6,6 +6,7 @@ import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
+import timber.log.Timber
 
 class PicturePreviewContainerPresenterImpl(val pinRepo: PinRepo) : PicturePreviewContainerPresenter {
 
@@ -28,4 +29,25 @@ class PicturePreviewContainerPresenterImpl(val pinRepo: PinRepo) : PicturePrevie
             stateModel = PicturePreviewContainerStateModel(it.picturesList, position)
         }
     }
+
+    override fun deletePicture() {
+        stateModel?.let { model ->
+            val pictureIndex = model.startIndex
+            val listSize = model.picturesList.size
+            val item = model.picturesList[pictureIndex]
+
+            pinRepo.deletePicture(item.id)
+                    .subscribe({
+                        removePictureFromUi(model)
+                    }, { Timber.e(it) })
+
+            if (listSize == 0) {
+            } else if (pictureIndex == listSize - 1) {
+            } else {
+            }
+        }
+    }
+
+    private fun removePictureFromUi(model: PicturePreviewContainerStateModel){}
+
 }

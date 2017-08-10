@@ -14,5 +14,8 @@ interface PicturePreviewContainerPresenter {
     fun loadContent(model: PicturePreviewContainerStateModel)
 
     fun unsubscribe()
+
     fun onPagerPageChanged(position: Int)
+
+    fun deletePicture()
 }

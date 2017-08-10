@@ -16,4 +16,6 @@ interface PinCahe {
     fun getPinDetails(id: String): Single<PinDto>
 
     fun updateLocalPictures(pinDto: PinDto): Completable
+
+    fun deletePicture(id: String): Completable
 }

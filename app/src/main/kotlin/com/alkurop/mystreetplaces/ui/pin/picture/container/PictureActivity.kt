@@ -80,10 +80,7 @@ class PictureActivity : BaseMvpActivity<PicturePreviewContainerStateModel>() {
                         .setTitle(getString(R.string.delete_picture_dialog_title))
                         .setMessage(getString(R.string.delete_picture_dialog_msg))
                         .setPositiveButton(getString(R.string.yes), { _, _ ->
-                            val pictureIndex = stateModel.startIndex
-
-
-
+                            presenter.deletePicture()
                         })
                         .setNegativeButton(getString(R.string.no), { _, _ -> })
                         .create()

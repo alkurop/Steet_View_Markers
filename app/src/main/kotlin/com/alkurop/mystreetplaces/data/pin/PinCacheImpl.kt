@@ -72,4 +72,17 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
             }
         }
     }
+
+    override fun deletePicture(id: String): Completable {
+        return Completable.fromAction {
+            realmProvider.provideRealm().use {
+                it.beginTransaction()
+                it.where(PictureWrapper::class.java)
+                        .equalTo("id", id)
+                        .findFirst()
+                        ?.deleteFromRealm()
+                it.commitTransaction()
+            }
+        }
+    }
 }
