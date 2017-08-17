@@ -57,18 +57,13 @@ abstract class BaseMvpActivity<T> : BaseActivity() {
     }
 
     fun navigate(it: NavigationAction) {
-        if (it is ActivityNavigationAction) {
-            navigateActivity(it)
-        } else if (it is FragmentNavigationAction) {
-            navigateFragment(it)
-        } else if (it == NoArgsNavigation.BACK_ACTION) {
-            onBackward()
-        } else if (it == NoArgsNavigation.FORWARD_ACTION) {
-            onForward()
-        } else if (it is UriNavigationAction) {
-            navigateUri(it)
-        } else if (it is BottomsheetFragmentNavigationAction) {
-            navigateBottomsheet(it)
+        when (it) {
+            is ActivityNavigationAction -> navigateActivity(it)
+            is FragmentNavigationAction -> navigateFragment(it)
+            NoArgsNavigation.BACK_ACTION -> onBackward()
+            NoArgsNavigation.FORWARD_ACTION -> onForward()
+            is UriNavigationAction -> navigateUri(it)
+            is BottomsheetFragmentNavigationAction -> navigateBottomsheet(it)
         }
     }
 
@@ -112,7 +107,7 @@ abstract class BaseMvpActivity<T> : BaseActivity() {
 
     fun hasFragmentInBackStack(tag: String): Boolean {
         val backStackCount = supportFragmentManager.backStackEntryCount
-        (0..backStackCount - 1)
+        (0 until backStackCount)
                 .forEach {
                     val name = supportFragmentManager.getBackStackEntryAt(it).name
                     if (name == tag) {
@@ -126,7 +121,7 @@ abstract class BaseMvpActivity<T> : BaseActivity() {
         val intent = Intent(this, action.endpoint)
         intent.putExtra(ARGS_KEY, action.args)
         if (action.startForResult) {
-            startForResult(intent)
+            startForResult(intent, action.requestCode)
         } else {
             startActivity(intent)
             if (action.isShouldFinish) {
@@ -135,8 +130,8 @@ abstract class BaseMvpActivity<T> : BaseActivity() {
         }
     }
 
-    open fun startForResult(intent: Intent) {
-        throw NotImplementedError()
+    open fun startForResult(intent: Intent, requestCode: Int) {
+        startActivityForResult(intent, requestCode)
     }
 
     open fun navigateUri(action: UriNavigationAction) {

@@ -57,8 +57,7 @@ class CameraPictureHelperImpl : CameraPictureHelper {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == this.requestCode && resultCode == RESULT_OK && data != null) {
-            val extras = data.extras
+        if (requestCode == this.requestCode && resultCode == RESULT_OK) {
             listener.invoke(photoFile)
             galleryAddPic(photoFile.absolutePath, activity ?: fragment!!.activity)
         }

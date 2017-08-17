@@ -32,4 +32,6 @@ interface DropPinPresenter {
     fun onAddPicture(file: File)
 
     fun onPictureClick(position: Int, items: List<PictureWrapper>)
+
+    fun reloadPictureList(pictures:List<PictureWrapper>)
 }

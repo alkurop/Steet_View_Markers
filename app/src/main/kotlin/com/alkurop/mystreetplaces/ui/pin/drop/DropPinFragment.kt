@@ -1,6 +1,7 @@
 package com.alkurop.mystreetplaces.ui.pin.drop
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,8 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContainerStateModel
 import com.alkurop.mystreetplaces.ui.pin.pictures.PicturesAdapter
 import com.alkurop.mystreetplaces.utils.CameraPictureHelper
 import com.alkurop.mystreetplaces.utils.CameraPictureHelperImpl
@@ -93,7 +97,6 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         picturesAdapter.onPictureClick = { presenter.onPictureClick(it, picturesAdapter.getItems()) }
 
         recyclerView.adapter = picturesAdapter
-
         val location = arguments.getParcelable<LatLng>(LOCATION_KEY)
         location?.let { presenter.start(location) }
 
@@ -162,6 +165,19 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         permissionManager?.onActivityResult(requestCode)
         photoHelper.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PictureActivity.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            val pictureModel = data.getParcelableExtra<PicturePreviewContainerStateModel>(PictureActivity.START_MODEL_KEY)
+            pictureModel?.let { reloadList(it.picturesList) }
+        }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun reloadList(pictures:List<PictureWrapper>) {
+        presenter.reloadPictureList(pictures)
+    }
+
+    override fun onBackward() {
+        activity.setResult(Activity.RESULT_OK)
+        activity.finish()
     }
 }

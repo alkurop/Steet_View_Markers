@@ -1,5 +1,7 @@
 package com.alkurop.mystreetplaces.ui.pin.picture.container
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
@@ -18,6 +20,7 @@ import javax.inject.Inject
  */
 class PictureActivity : BaseMvpActivity<PicturePreviewContainerStateModel>() {
     companion object {
+        val REQUEST_CODE = 44
         val START_MODEL_KEY = "start_model_key"
     }
 
@@ -47,7 +50,7 @@ class PictureActivity : BaseMvpActivity<PicturePreviewContainerStateModel>() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = MenuInflater(this)
-        inflater.inflate(R.menu.map_fragment_menu, menu)
+        inflater.inflate(R.menu.pictures_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -96,4 +99,22 @@ class PictureActivity : BaseMvpActivity<PicturePreviewContainerStateModel>() {
         pager.currentItem = viewModel.startIndex
     }
 
+    override fun onBackward() {
+        val startModel = intent.getParcelableExtra<Bundle>(BaseMvpActivity.ARGS_KEY)
+                .getParcelable<PicturePreviewContainerStateModel>(START_MODEL_KEY)
+        val model = presenter.stateModel
+
+        val isOk = startModel.picturesList.size != model?.picturesList?.size ?: false
+        val intent = Intent()
+        intent.putExtra(START_MODEL_KEY, presenter.stateModel)
+
+        val result = if (isOk) Activity.RESULT_OK else Activity.RESULT_CANCELED
+        setResult(result, intent)
+        finish()
+
+    }
+
+    override fun onBackPressed() {
+        onBackward()
+    }
 }

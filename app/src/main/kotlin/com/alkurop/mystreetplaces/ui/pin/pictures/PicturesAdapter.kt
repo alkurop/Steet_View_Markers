@@ -24,10 +24,8 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     var onPictureClick: ((Int) -> Unit)? = null
 
     fun setItems(newPictures: List<PictureWrapper>) {
-        val diffCallback = PicturesDiffUtil(pictures, newPictures)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        diffResult.dispatchUpdatesTo(this)
         pictures = newPictures
+        notifyDataSetChanged()
     }
 
     fun getItems() = pictures

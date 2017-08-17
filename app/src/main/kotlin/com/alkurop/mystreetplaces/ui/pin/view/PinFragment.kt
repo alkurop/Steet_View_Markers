@@ -1,24 +1,29 @@
 package com.alkurop.mystreetplaces.ui.pin.view
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialogFragment
+import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
-import android.view.View
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.design.widget.CoordinatorLayout
+import android.view.View
+import android.view.WindowManager
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
-import kotlinx.android.synthetic.main.fragment_view_pin.view.*
-import android.view.WindowManager
+import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
 import kotlinx.android.synthetic.main.fragment_view_pin.*
+import kotlinx.android.synthetic.main.fragment_view_pin.view.*
 
 class PinFragment : BottomSheetDialogFragment() {
     companion object {
         val CONFIG = "pin_id"
+        val handler = Handler()
     }
 
-    lateinit var pinStartModel: PinViewStartModel
+    private lateinit var pinStartModel: PinViewStartModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +57,23 @@ class PinFragment : BottomSheetDialogFragment() {
         contentView.viewPin.navigator = {
             val act = activity as BaseMvpActivity<*>
             act.navigate(it)
-        }
 
+        }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if ((requestCode == PinViewPresenterImpl.REQUEST_EDIT_CODE
+                || requestCode == PictureActivity.REQUEST_CODE)
+                && resultCode == Activity.RESULT_OK) {
+            handler.postDelayed({
+                if (view != null) {
+                    val pinView = view?.findViewById(R.id.viewPin) as PinView
+                    pinView.reload()
+                } else
+                    dismiss()
+            }, 200)
+        }
+    }
+
+
 }

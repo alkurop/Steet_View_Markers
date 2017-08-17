@@ -14,6 +14,7 @@ import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContain
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
+import io.realm.RealmList
 import timber.log.Timber
 import java.io.File
 
@@ -52,7 +53,6 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
     }
 
     override fun submit() {
-
         if (pinDto.title.isNullOrBlank()) return
         val sub = pinRepo.addOrUpdatePin(pinDto)
                 .subscribe({
@@ -89,7 +89,14 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
         val stateModel = PicturePreviewContainerStateModel(items, position)
         val args = Bundle()
         args.putParcelable(PictureActivity.START_MODEL_KEY, stateModel)
-        val navModel = ActivityNavigationAction(PictureActivity::class.java, args)
+        val navModel = ActivityNavigationAction(PictureActivity::class.java, args, startForResult = true, requestCode = PictureActivity.REQUEST_CODE)
         navBus.onNext(navModel)
+    }
+
+    override fun reloadPictureList(pictures: List<PictureWrapper>) {
+        pinDto.pictures.clear()
+        pinDto.pictures.addAll(pictures)
+        val model = DropPinViewModel(pinDto)
+        viewBus.onNext(model)
     }
 }

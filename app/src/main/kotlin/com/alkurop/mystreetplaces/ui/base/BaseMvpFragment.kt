@@ -113,7 +113,7 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
         val intent = Intent(activity, action.endpoint)
         intent.putExtra(BaseMvpActivity.ARGS_KEY, action.args)
         if (action.startForResult) {
-            startForResult(intent)
+            startForResult(intent, action.requestCode)
         } else {
             startActivity(intent)
             if (action.isShouldFinish) {
@@ -122,8 +122,8 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
         }
     }
 
-    open fun startForResult(intent: Intent) {
-        throw NotImplementedError()
+    open fun startForResult(intent: Intent, code: Int) {
+        startActivityForResult(intent, code)
     }
 
     open fun navigateUri(action: UriNavigationAction) {

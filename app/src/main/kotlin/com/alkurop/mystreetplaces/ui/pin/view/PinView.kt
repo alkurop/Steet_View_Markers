@@ -85,4 +85,8 @@ class PinView @JvmOverloads constructor(context: Context,
             (recyclerView.adapter as PicturesAdapter).setItems(pictures)
         }
     }
+
+    fun reload() {
+        presenter.loadPinDetails(id)
+    }
 }

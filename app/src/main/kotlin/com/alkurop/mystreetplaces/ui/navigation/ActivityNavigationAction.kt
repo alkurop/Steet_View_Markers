@@ -9,7 +9,8 @@ import com.alkurop.mystreetplaces.ui.navigation.equalBundles
 data class ActivityNavigationAction(val endpoint: Class<out Activity>,
                                     val args: Bundle? = null,
                                     val isShouldFinish: Boolean = false,
-                                    val startForResult: Boolean = false) : NavigationAction {
+                                    val startForResult: Boolean = false,
+                                    val requestCode:Int = 0) : NavigationAction {
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

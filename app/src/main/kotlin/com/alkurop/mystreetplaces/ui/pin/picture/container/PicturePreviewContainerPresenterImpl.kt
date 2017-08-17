@@ -4,6 +4,7 @@ import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.alkurop.mystreetplaces.ui.navigation.NoArgsNavigation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
 import timber.log.Timber
@@ -33,21 +34,35 @@ class PicturePreviewContainerPresenterImpl(val pinRepo: PinRepo) : PicturePrevie
     override fun deletePicture() {
         stateModel?.let { model ->
             val pictureIndex = model.startIndex
-            val listSize = model.picturesList.size
             val item = model.picturesList[pictureIndex]
-
             pinRepo.deletePicture(item.id)
                     .subscribe({
-                        removePictureFromUi(model)
+                        removePictureFromUi(model, pictureIndex)
                     }, { Timber.e(it) })
 
-            if (listSize == 0) {
-            } else if (pictureIndex == listSize - 1) {
-            } else {
-            }
         }
     }
 
-    private fun removePictureFromUi(model: PicturePreviewContainerStateModel){}
+    private fun removePictureFromUi(model: PicturePreviewContainerStateModel, pictureIndex: Int) {
+        val listSize = model.picturesList.size
 
+        when {
+            listSize == 1 -> {
+                val newModel = PicturePreviewContainerStateModel(listOf(), 0)
+                stateModel = newModel
+                val navigationAction = NoArgsNavigation.BACK_ACTION
+                navSubject.onNext(navigationAction)
+            }
+            else -> {
+                val newList = stateModel?.picturesList?.toMutableList()
+                newList?.removeAt(pictureIndex)
+                newList?.let {
+                    val newIndex = if (pictureIndex < listSize + 1) pictureIndex - 1 else 0
+                    val newModel = PicturePreviewContainerStateModel(newList, newIndex)
+                    stateModel = newModel
+                    viewSubject.onNext(newModel)
+                }
+            }
+        }
+    }
 }
