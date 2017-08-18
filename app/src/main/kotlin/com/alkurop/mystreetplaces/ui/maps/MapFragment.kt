@@ -8,6 +8,8 @@ import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.pin.PinPlace
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
+import com.alkurop.mystreetplaces.ui.home.SearchTopic
+import com.alkurop.mystreetplaces.ui.home.Searchable
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.LocationTracker
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
@@ -24,15 +26,15 @@ import kotlinx.android.synthetic.main.fragment_map.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class MapFragment : BaseMvpFragment<MapViewModel>() {
+class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
 
     @Inject lateinit var presenter: MapPresenter
-    var permissionManager: PermissionsManager? = null
+    private var permissionManager: PermissionsManager? = null
     @Inject lateinit var locationTracker: LocationTracker
-    var clusterManager: ClusterManager<MapClusterItem>? = null
+    private var clusterManager: ClusterManager<MapClusterItem>? = null
 
-    val compositeDisposable = CompositeDisposable()
-    val DEFAULT_CAMERA_ZOOM = 14f
+    private val compositeDisposable = CompositeDisposable()
+    private val DEFAULT_CAMERA_ZOOM = 14f
 
     override fun getSubject(): Observable<MapViewModel> = presenter.viewBus
 
@@ -151,7 +153,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         mapView.onDestroy()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.map_fragment_menu, menu)
     }
 
@@ -189,5 +191,9 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         permissionManager?.onActivityResult(requestCode)
         locationTracker.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onSearch(topic: SearchTopic, query: String) {
+        if (topic != SearchTopic.MAP) return
     }
 }

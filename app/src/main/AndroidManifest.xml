@@ -24,7 +24,17 @@
 
         <activity
             android:name=".ui.home.MainActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait">
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -56,6 +66,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <provider
+            android:authorities="SearchContentProvider"
+            android:name=".ui.home.SearchContentProvider"
+            />
     </application>
 
 </manifest>

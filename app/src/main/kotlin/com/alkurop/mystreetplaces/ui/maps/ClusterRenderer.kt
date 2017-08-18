@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.DisplayMetrics
 import com.alkurop.mystreetplaces.R
@@ -23,7 +24,7 @@ class ClusterRenderer(val context: Context, map: GoogleMap, clusterManager: Clus
     fun getIcon(): BitmapDescriptor? {
         if (iconBitmap == null) {
 
-            val drawable: Drawable = context.resources.getDrawable(R.drawable.ic_pin_drop)
+            val drawable: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_pin_drop)
             val b = drawable.current as BitmapDrawable
             b.setAntiAlias(true)
             val wrap = DrawableCompat.wrap(drawable)

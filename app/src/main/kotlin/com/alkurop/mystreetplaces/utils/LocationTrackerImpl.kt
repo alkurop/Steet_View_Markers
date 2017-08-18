@@ -12,7 +12,6 @@ import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import java.lang.ref.WeakReference
 
-
 class LocationTrackerImpl : LocationTracker {
 
     var fuseClient: FusedLocationProviderClient? = null
@@ -29,7 +28,9 @@ class LocationTrackerImpl : LocationTracker {
         this.onFailedListener = onFailedListener
         fuseClient = LocationServices.getFusedLocationProviderClient(activity)
         createLocationRequest()
-        fuseClient?.lastLocation?.addOnSuccessListener { locationSubject.onNext(it) }
+        fuseClient?.lastLocation?.addOnSuccessListener {
+            it?.let { locationSubject.onNext(it) }
+        }
 
     }
 

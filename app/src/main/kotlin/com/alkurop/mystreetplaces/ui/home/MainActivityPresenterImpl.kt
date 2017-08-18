@@ -10,7 +10,6 @@ import com.alkurop.mystreetplaces.ui.places.PlacesFragment
 import com.alkurop.mystreetplaces.ui.settings.SettingsFragment
 import io.reactivex.subjects.Subject
 
-
 class MainActivityPresenterImpl : MainActivityPresenter {
     override val viewBus: Subject<MainActivityView> = createViewSubject()
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
@@ -19,12 +18,11 @@ class MainActivityPresenterImpl : MainActivityPresenter {
     val containerId = R.id.fragment_container
     var currentTab: Int = 0
 
-
     override fun start() {
         currentModel?.let {
             viewBus.onNext(it)
         }
-        if(currentModel == null)
+        if (currentModel == null)
             onDrawerAction(R.id.map)
     }
 
@@ -61,7 +59,8 @@ class MainActivityPresenterImpl : MainActivityPresenter {
             MapFragment::class.java.canonicalName -> R.string.map
             else -> -1
         }
-        val model = MainActivityView(toolbarTitleRes = toolbarTitleRes)
+        val isShowSearch = tag == MapFragment::class.java.canonicalName
+        val model = MainActivityView(toolbarTitleRes = toolbarTitleRes, shouldShowSearch = isShowSearch)
         viewBus.onNext(model)
     }
 

@@ -42,4 +42,6 @@
     <string name="delete_picture_dialog_title">Delete picture</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    
+    <string name="search">Search</string>
 </resources>

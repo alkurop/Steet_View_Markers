@@ -17,6 +17,7 @@ import javax.inject.Singleton
         PresenterModule::class,
         RepoModule::class,
         CommandModule::class,
+        ProviderModule::class,
         UtilityModule::class))
 interface ApplicationComponent {
 
@@ -31,5 +32,7 @@ interface ApplicationComponent {
     fun serviceComponent(module: ServiceModule): ServiceComponent
 
     fun viewComponent(module: ViewModule): ViewComponent
+
+    fun providerComponent(module: ProviderModule): ProviderComponent
 
 }
