@@ -174,18 +174,19 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
 
   private fun MarkerMatrixData.getBitmapFromModel(key: String): Bitmap? {
     val containsKey = bitmapMap.containsKey(key)
-    val bitmap: Bitmap? = if (containsKey) {
-      bitmapMap[key]!!
-    } else if (data.place.drawableRes != 0) {
-      val bitmap = BitmapFactory.decodeResource(resources, data.place.drawableRes)
-      bitmapMap.put(key, bitmap)
-      bitmap
-    } else {
-      val modelBitmap = data.place.bitmap
-      modelBitmap?.let {
-        bitmapMap.put(key, it)
-      }
-      modelBitmap
+    val bitmap: Bitmap? = when {
+        containsKey -> bitmapMap[key]!!
+        data.place.drawableRes != 0 -> {
+            val bitmap = BitmapFactory.decodeResource(resources, data.place.drawableRes)
+            bitmap
+        }
+        else -> {
+            val modelBitmap = data.place.getBitmap(context)
+            modelBitmap?.let {
+                bitmapMap.put(key, it)
+            }
+            modelBitmap
+        }
     }
     if (containsKey.not()) {
       data.place.markerPath?.let {

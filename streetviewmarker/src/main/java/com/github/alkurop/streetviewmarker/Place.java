@@ -1,5 +1,6 @@
 package com.github.alkurop.streetviewmarker;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
@@ -21,5 +22,5 @@ public interface Place extends Parcelable {
 
   @DrawableRes int getDrawableRes();
 
-  @Nullable Bitmap getBitmap();
+  @Nullable Bitmap getBitmap(Context context);
 }

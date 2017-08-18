@@ -186,7 +186,7 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
     fun onLowMemory() = streetView.onLowMemory()
 
     init {
-        inflate(context, R.layout.view_street_marker, this)
+        inflate(context, R.layout.vsm_view_street_marker, this)
         markerView = findViewById(R.id.overlay) as StreetOverlayView
         streetView = findViewById(R.id.panorama) as StreetViewPanoramaView
         touchOverlay = findViewById(R.id.touch) as TouchOverlayView
