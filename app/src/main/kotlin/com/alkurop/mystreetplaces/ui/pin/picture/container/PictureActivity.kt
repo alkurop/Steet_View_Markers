@@ -24,6 +24,8 @@ class PictureActivity : BaseMvpActivity<PicturePreviewContainerStateModel>() {
         val START_MODEL_KEY = "start_model_key"
     }
 
+    lateinit var startModel: PicturePreviewContainerStateModel
+
     var alertDialog: AlertDialog? = null
     @Inject lateinit var presenter: PicturePreviewContainerPresenter
 
@@ -32,8 +34,8 @@ class PictureActivity : BaseMvpActivity<PicturePreviewContainerStateModel>() {
         component().inject(this)
         setupRootView(R.layout.activity_picture)
 
-        val startModel = intent.getParcelableExtra<Bundle>(BaseMvpActivity.ARGS_KEY)
-                .getParcelable<PicturePreviewContainerStateModel>(START_MODEL_KEY)
+        startModel = intent.getParcelableExtra<Bundle>(BaseMvpActivity.ARGS_KEY)
+                .getParcelable(START_MODEL_KEY)
 
         val savedModel = savedInstanceState
                 ?.getParcelable<PicturePreviewContainerStateModel>(START_MODEL_KEY)
@@ -78,33 +80,40 @@ class PictureActivity : BaseMvpActivity<PicturePreviewContainerStateModel>() {
 
         if (item?.itemId == R.id.deletePicture) {
             val stateModel = presenter.stateModel
-            if (stateModel != null) {
-                alertDialog = AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.delete_picture_dialog_title))
-                        .setMessage(getString(R.string.delete_picture_dialog_msg))
-                        .setPositiveButton(getString(R.string.yes), { _, _ ->
-                            presenter.deletePicture()
-                        })
-                        .setNegativeButton(getString(R.string.no), { _, _ -> })
-                        .create()
-                alertDialog?.show()
-            }
+
+            alertDialog = AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.delete_picture_dialog_title))
+                    .setMessage(getString(R.string.delete_picture_dialog_msg))
+                    .setPositiveButton(getString(R.string.yes), { _, _ ->
+                        val picturesPreviewAdapter = pager.adapter as PicturesPreviewAdapter
+                        picturesPreviewAdapter.items.removeAt(stateModel.startIndex)
+                        picturesPreviewAdapter.notifyDataSetChanged()
+                        presenter.deletePicture()
+                    })
+                    .setNegativeButton(getString(R.string.no), { _, _ -> })
+                    .create()
+            alertDialog?.show()
+
+
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun renderView(viewModel: PicturePreviewContainerStateModel) {
-        val adapter = PicturesPreviewAdapter(supportFragmentManager, viewModel.picturesList)
-        pager.adapter = adapter
+        if (pager.adapter == null) {
+            pager.adapter = PicturesPreviewAdapter(supportFragmentManager, mutableListOf())
+        }
+        val picturesPreviewAdapter = pager.adapter as PicturesPreviewAdapter
+        picturesPreviewAdapter.items.clear()
+        picturesPreviewAdapter.items.addAll(viewModel.picturesList)
         pager.currentItem = viewModel.startIndex
+        picturesPreviewAdapter.notifyDataSetChanged()
     }
 
     override fun onBackward() {
-        val startModel = intent.getParcelableExtra<Bundle>(BaseMvpActivity.ARGS_KEY)
-                .getParcelable<PicturePreviewContainerStateModel>(START_MODEL_KEY)
         val model = presenter.stateModel
 
-        val isOk = startModel.picturesList.size != model?.picturesList?.size ?: false
+        val isOk = startModel.picturesList.size != model.picturesList.size
         val intent = Intent()
         intent.putExtra(START_MODEL_KEY, presenter.stateModel)
 

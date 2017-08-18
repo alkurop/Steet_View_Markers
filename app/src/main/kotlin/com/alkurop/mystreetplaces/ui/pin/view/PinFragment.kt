@@ -13,6 +13,8 @@ import android.view.View
 import android.view.WindowManager
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
+import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
+import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
 import kotlinx.android.synthetic.main.fragment_view_pin.*
 import kotlinx.android.synthetic.main.fragment_view_pin.view.*
@@ -58,6 +60,9 @@ class PinFragment : BottomSheetDialogFragment() {
             val act = activity as BaseMvpActivity<*>
             act.navigate(it)
 
+            if ((it is ActivityNavigationAction) && it.endpoint.canonicalName == DropPinActivity::class.java.canonicalName) {
+                dismiss()
+            }
         }
     }
 
@@ -65,13 +70,7 @@ class PinFragment : BottomSheetDialogFragment() {
         if ((requestCode == PinViewPresenterImpl.REQUEST_EDIT_CODE
                 || requestCode == PictureActivity.REQUEST_CODE)
                 && resultCode == Activity.RESULT_OK) {
-            handler.postDelayed({
-                if (view != null) {
-                    val pinView = view?.findViewById(R.id.viewPin) as PinView
-                    pinView.reload()
-                } else
-                    dismiss()
-            }, 200)
+            handler.postDelayed({ dismiss() }, 200)
         }
     }
 

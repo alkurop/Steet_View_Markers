@@ -54,7 +54,7 @@ class PinViewPresenterImpl(val pinRepo: PinRepo) : PinViewPresenter {
     }
 
     override fun onPictureClick(items: List<PictureWrapper>, position: Int) {
-        val stateModel = PicturePreviewContainerStateModel(items, position)
+        val stateModel = PicturePreviewContainerStateModel(items.toMutableList(), position)
         val args = Bundle()
         args.putParcelable(PictureActivity.START_MODEL_KEY, stateModel)
         val navModel = ActivityNavigationAction(PictureActivity::class.java, args, startForResult = true, requestCode = PictureActivity.REQUEST_CODE)

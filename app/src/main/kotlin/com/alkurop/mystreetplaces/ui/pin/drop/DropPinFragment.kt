@@ -3,6 +3,7 @@ package com.alkurop.mystreetplaces.ui.pin.drop
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -10,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
@@ -55,6 +57,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     var permissionManager: PermissionsManager? = null
     @Inject lateinit var presenter: DropPinPresenter
     var alert: AlertDialog? = null
+    var shouldReturnResult = false
 
     override fun getSubject(): Observable<DropPinViewModel> = presenter.viewBus
 
@@ -168,6 +171,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         if (requestCode == PictureActivity.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             val pictureModel = data.getParcelableExtra<PicturePreviewContainerStateModel>(PictureActivity.START_MODEL_KEY)
             pictureModel?.let { reloadList(it.picturesList) }
+            shouldReturnResult = true
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -180,4 +184,5 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         activity.setResult(Activity.RESULT_OK)
         activity.finish()
     }
+
 }

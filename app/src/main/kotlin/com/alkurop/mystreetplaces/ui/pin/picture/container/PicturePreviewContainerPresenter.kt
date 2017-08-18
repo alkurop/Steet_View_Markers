@@ -9,7 +9,7 @@ import io.reactivex.subjects.Subject
 interface PicturePreviewContainerPresenter {
     var viewSubject: Subject<PicturePreviewContainerStateModel>
     var navSubject: Subject<NavigationAction>
-    var stateModel: PicturePreviewContainerStateModel?
+    var stateModel: PicturePreviewContainerStateModel
 
     fun loadContent(model: PicturePreviewContainerStateModel)
 
