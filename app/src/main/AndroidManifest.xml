@@ -68,7 +68,7 @@
         </provider>
 
         <provider
-            android:authorities="SearchContentProvider"
+            android:authorities="com.alkurop.mystreetplaces.ui.home.SearchContentProvider"
             android:name=".ui.home.SearchContentProvider"
             />
     </application>

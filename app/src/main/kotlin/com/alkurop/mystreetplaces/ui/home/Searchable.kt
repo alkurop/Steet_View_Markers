@@ -5,5 +5,6 @@ interface Searchable {
 }
 
 enum class SearchTopic {
-    MAP
+    MAP_QUERY,
+    MAP_ITEM_ID
 }

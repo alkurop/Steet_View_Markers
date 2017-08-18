@@ -3,5 +3,5 @@
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
     android:label="@string/search"
     android:searchSuggestAuthority="com.alkurop.mystreetplaces.ui.home.SearchContentProvider"
-    android:searchSuggestIntentAction="android.Intent.action.VIEW"
+    android:searchSuggestIntentAction="android.intent.action.SEARCH"
     android:hint="@string/search" />

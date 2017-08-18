@@ -17,7 +17,6 @@ import javax.inject.Singleton
         PresenterModule::class,
         RepoModule::class,
         CommandModule::class,
-        ProviderModule::class,
         UtilityModule::class))
 interface ApplicationComponent {
 

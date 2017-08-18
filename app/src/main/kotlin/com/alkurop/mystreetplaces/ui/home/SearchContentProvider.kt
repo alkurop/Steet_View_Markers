@@ -13,31 +13,37 @@ import com.alkurop.mystreetplaces.domain.pin.PinDto
 import javax.inject.Inject
 
 class SearchContentProvider : ContentProvider() {
-    companion object {
-        val AUTH = "SearchContentProvider"
-    }
 
     @Inject lateinit var realmProvider: RealmProvider
+
+    var isInited = false
 
     override fun insert(uri: Uri?, values: ContentValues?): Uri {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>, sortOrder: String?): Cursor {
-        val cursor = MatrixCursor(arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1
-                , SearchManager.SUGGEST_COLUMN_TEXT_2, SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID))
+    override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
+        if (isInited.not()) {
+            (context.applicationContext as MyStreetPlacesApp).component.providerComponent(ProviderModule(this)).inject(this)
+            isInited = true
+        }
+
+        val cursor = MatrixCursor(arrayOf("_id",
+                SearchManager.SUGGEST_COLUMN_TEXT_1,
+                SearchManager.SUGGEST_COLUMN_TEXT_2,
+                SearchManager. SUGGEST_COLUMN_INTENT_DATA))
 
         val realm = realmProvider.provideRealm()
         val findAll = realm.where(PinDto::class.java).contains("title", uri.lastPathSegment).findAll()
         val copyFromRealm = realm.copyFromRealm(findAll)
         copyFromRealm.forEach {
-            cursor.addRow(arrayOf(it.title, it.description, it.id))
+            val elements = it.id?.hashCode() ?: 0
+            cursor.addRow(arrayOf(elements, it.title, it.description, it.id))
         }
         return cursor
     }
 
     override fun onCreate(): Boolean {
-        (context.applicationContext as MyStreetPlacesApp).component.providerComponent(ProviderModule(this)).inject(this)
         return true
     }
 

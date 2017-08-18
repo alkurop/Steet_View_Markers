@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
-import android.support.v4.view.MenuItemCompat
-import android.support.v7.app.ActionBarDrawerToggle
 import android.view.View
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
@@ -117,22 +115,25 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
-            doMySearch(query)
+            val query = intent.getStringExtra(SearchManager.QUERY) ?: intent.getStringExtra("user_query")
+            if (query != null) sendSearchResult(query, SearchTopic.MAP_QUERY)
+            val id = intent.data?.lastPathSegment
+            if (id != null) sendSearchResult(query, SearchTopic.MAP_ITEM_ID)
+
         }
     }
 
-    private fun doMySearch(query: String) {
+    private fun sendSearchResult(query: String, topic: SearchTopic) {
         supportFragmentManager.fragments
                 ?.filter { it != null && it.isAdded }
                 ?.filter { it is Searchable }
                 ?.forEach { fragment ->
-                    (fragment as Searchable).onSearch(SearchTopic.MAP, query)
+                    (fragment as Searchable).onSearch(topic, query)
                     fragment.childFragmentManager.fragments
                             ?.filter { it != null && it.isAdded }
                             ?.filter { it is Searchable }
                             ?.forEach { child ->
-                                (child as Searchable).onSearch(SearchTopic.MAP, query)
+                                (child as Searchable).onSearch(topic, query)
                             }
                 }
     }
