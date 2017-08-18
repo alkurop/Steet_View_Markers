@@ -23,4 +23,8 @@ interface PinRepo {
 
     fun deletePicture(id: String): Completable
 
+    fun search(query: String): Single<List<PinDto>>
+
+    fun searchSync(query: String): List<PinDto>
+
 }

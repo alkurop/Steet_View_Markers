@@ -14,6 +14,7 @@ import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.LocationTracker
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
 import com.github.alkurop.jpermissionmanager.PermissionsManager
+import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -174,6 +175,13 @@ class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
                 clusterManager?.addItems(clusterItems)
                 clusterManager?.cluster()
             }
+            focusMarker?.let { nonNullMarker ->
+                mapView.getMapAsync { map ->
+                    val letLon = LatLng(nonNullMarker.lat, nonNullMarker.lon)
+                    val cameraUpdate = CameraUpdateFactory.newLatLng(letLon)
+                    map.animateCamera(cameraUpdate)
+                }
+            }
         }
     }
 
@@ -194,6 +202,15 @@ class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
     }
 
     override fun onSearch(topic: SearchTopic, query: String) {
-        if (topic != SearchTopic.MAP) return
+        when (topic) {
+            SearchTopic.MAP_QUERY -> {
+                presenter.runSearchQuery(query)
+            }
+            SearchTopic.MAP_ITEM_ID -> {
+                presenter.navigateToItem(query)
+            }
+            else -> {
+            }
+        }
     }
 }

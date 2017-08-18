@@ -61,4 +61,13 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
     override fun deletePicture(id: String): Completable {
         return pinCahe.deletePicture(id)
     }
+
+    override fun search(query: String): Single<List<PinDto>> {
+        return Single.fromCallable { searchSync(query) }
+    }
+
+    override fun searchSync(query: String): List<PinDto> {
+        return pinCahe.searchSync(query)
+    }
+
 }

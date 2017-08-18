@@ -2,6 +2,7 @@ package com.alkurop.mystreetplaces.ui.maps
 
 import android.os.Bundle
 import com.alkurop.mystreetplaces.data.pin.PinRepo
+import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
@@ -44,7 +45,7 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
         visibleRegion?.let { getPinsForLocationFromRepo(it) }
     }
 
-    override fun refresh(){
+    override fun refresh() {
         onCameraPositionChanged(visibleRegion)
     }
 
@@ -82,32 +83,43 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
     }
 
     override fun onPinClick(it: MapClusterItem) {
-        val args = Bundle()
-        val model = PinViewStartModel(shoudShowStreetNavigation = true, shouldShowMap = false, pinId = it.place.pinId)
-        args.putParcelable(PinFragment.CONFIG, model)
-        val action = BottomsheetFragmentNavigationAction(endpoint = PinFragment::class.java, args = args)
-        navBus.onNext(action)
-    }
-
-    fun <T> getLoadingStateTransformer(): ObservableTransformer<T, T> {
-        return ObservableTransformer {
-            it
-                    .doOnSubscribe {
-                        val viewModel = MapViewModel(isLoading = true)
-                        viewBus.onNext(viewModel)
-                    }
-                    .doOnNext {
-                        val viewModel = MapViewModel(isLoading = false)
-                        viewBus.onNext(viewModel)
-                    }
-                    .doOnError {
-                        val viewModel = MapViewModel(isLoading = false)
-                        viewBus.onNext(viewModel)
-                    }
-        }
+        showMarkerDetails(it.place.pinId)
     }
 
     override fun unsubscribe() {
         markersDisposable.clear()
+    }
+
+    override fun runSearchQuery(query: String) {
+        val subscribe = pinRepo.search(query).subscribe({
+            it.takeIf { it.isNotEmpty() }
+                    ?.first()
+                    ?.let {
+                        focusViewToMarker(it)
+                    }
+        }, { Timber.e(it) })
+        markersDisposable.add(subscribe)
+    }
+
+    override fun navigateToItem(itemId: String) {
+        val subscribe = pinRepo.getPinDetails(itemId).subscribe({
+            focusViewToMarker(it)
+        }, { Timber.e(it) })
+        markersDisposable.add(subscribe)
+    }
+
+    private fun focusViewToMarker(it: PinDto) {
+        val model = MapViewModel(focusMarker = it)
+        viewBus.onNext(model)
+        showMarkerDetails(it.id!!)
+
+    }
+
+    fun showMarkerDetails(markerId: String) {
+        val args = Bundle()
+        val model = PinViewStartModel(shoudShowStreetNavigation = true, shouldShowMap = false, pinId = markerId)
+        args.putParcelable(PinFragment.CONFIG, model)
+        val action = BottomsheetFragmentNavigationAction(endpoint = PinFragment::class.java, args = args)
+        navBus.onNext(action)
     }
 }

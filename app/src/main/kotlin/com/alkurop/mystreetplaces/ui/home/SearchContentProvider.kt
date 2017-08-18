@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import com.alkurop.mystreetplaces.MyStreetPlacesApp
+import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.db.RealmProvider
 import com.alkurop.mystreetplaces.di.modules.ProviderModule
 import com.alkurop.mystreetplaces.domain.pin.PinDto
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 class SearchContentProvider : ContentProvider() {
 
-    @Inject lateinit var realmProvider: RealmProvider
+    @Inject lateinit var pinRepo:PinRepo
 
     var isInited = false
 
@@ -33,10 +34,8 @@ class SearchContentProvider : ContentProvider() {
                 SearchManager.SUGGEST_COLUMN_TEXT_2,
                 SearchManager. SUGGEST_COLUMN_INTENT_DATA))
 
-        val realm = realmProvider.provideRealm()
-        val findAll = realm.where(PinDto::class.java).contains("title", uri.lastPathSegment).findAll()
-        val copyFromRealm = realm.copyFromRealm(findAll)
-        copyFromRealm.forEach {
+        val list = pinRepo.searchSync(uri.lastPathSegment)
+        list.forEach {
             val elements = it.id?.hashCode() ?: 0
             cursor.addRow(arrayOf(elements, it.title, it.description, it.id))
         }

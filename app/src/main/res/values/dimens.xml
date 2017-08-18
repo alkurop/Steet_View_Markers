@@ -3,4 +3,5 @@
     <dimen name="pin_details_image_recycler_height">120dp</dimen>
     <dimen name="pin_details_image_recycler_width">100dp</dimen>
     <dimen name="pin_details_image_add_recycler_width">100dp</dimen>
+    <dimen name="bottom_sheet_peek_height">230dp</dimen>
 </resources>

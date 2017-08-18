@@ -18,4 +18,6 @@ interface PinCahe {
     fun updateLocalPictures(pinDto: PinDto): Completable
 
     fun deletePicture(id: String): Completable
+
+    fun searchSync(query: String): List<PinDto>
 }

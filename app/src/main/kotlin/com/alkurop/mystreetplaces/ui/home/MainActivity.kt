@@ -115,10 +115,10 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY) ?: intent.getStringExtra("user_query")
+            val query = intent.getStringExtra(SearchManager.QUERY)
             if (query != null) sendSearchResult(query, SearchTopic.MAP_QUERY)
             val id = intent.data?.lastPathSegment
-            if (id != null) sendSearchResult(query, SearchTopic.MAP_ITEM_ID)
+            if (id != null) sendSearchResult(id, SearchTopic.MAP_ITEM_ID)
 
         }
     }

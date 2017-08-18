@@ -9,7 +9,7 @@ import io.reactivex.subjects.Subject
 interface MapPresenter {
     val viewBus: Subject<MapViewModel>
     val navBus: Subject<NavigationAction>
-    var isPermissionGranted:Boolean
+    var isPermissionGranted: Boolean
 
     fun onGoToStreetView()
 
@@ -19,8 +19,12 @@ interface MapPresenter {
 
     fun onCameraPositionChanged(visibleRegion: VisibleRegion?)
 
-    fun onPinClick (it: MapClusterItem)
+    fun onPinClick(it: MapClusterItem)
 
     fun refresh()
+
+    fun navigateToItem(itemId: String)
+
+    fun runSearchQuery(query: String)
 }
 
