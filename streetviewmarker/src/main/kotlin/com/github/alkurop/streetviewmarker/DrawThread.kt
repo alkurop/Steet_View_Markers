@@ -221,7 +221,7 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
   }
 
   override fun updateCamera(location: LatLng, bearing: Float, tilt: Float, zoom: Float) {
-    if (!(mLocation?.equals(location) ?: false))
+    if (mLocation?.equals(location) != true)
       locBufferMap.clear()
     mLocation = location
     mBearing = bearing.toDouble()

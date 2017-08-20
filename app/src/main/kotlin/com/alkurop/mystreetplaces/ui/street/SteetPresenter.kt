@@ -5,10 +5,10 @@ import com.github.alkurop.streetviewmarker.CameraPosition
 import com.github.alkurop.streetviewmarker.Place
 import io.reactivex.subjects.Subject
 
-
 interface StreetPresenter {
     val viewBus: Subject<StreetViewModel>
     val navBus: Subject<NavigationAction>
+    var cameraPosition: CameraPosition?
 
     fun errorLoadingStreetView()
 

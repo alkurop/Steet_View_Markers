@@ -1,28 +1,24 @@
 package com.alkurop.mystreetplaces.ui.street
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v4.content.FileProvider
+import android.view.*
 import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.maps.model.LatLng
-import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_street.*
-import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
     companion object {
+            val APP_PACKAGE = "com.alkurop.mystreetplaces.fileprovider"
         val FOCUS_LOCATION_KEY = "focus_location"
 
         fun getNewInstance(focusLocation: LatLng): Fragment {
@@ -42,6 +38,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,8 +53,39 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         marker_view.focusToLocation(focusLocation)
         setStreetViewListeners()
         fab.setOnClickListener { presenter.dropPin() }
-
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.street_fragment_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.share) {
+            shareStreetView()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun shareStreetView() {
+        val latLng = presenter.cameraPosition?.location ?: return
+/*
+        val bitmap = Bitmap.createBitmap(view!!.drawingCache)
+        view!!.isDrawingCacheEnabled = false
+
+        val shareIntent = ShareUtil().createShareIntentFromStreetProjection(context, bitmap, latLng)
+        startActivity(shareIntent)*/
+    }
+
+    private fun openScreenshot(imageFile: File) {
+        val intent = Intent()
+        intent.action = Intent.ACTION_SEND
+        var uri = FileProvider.getUriForFile(context, APP_PACKAGE, imageFile)
+        intent.type = "image/jpeg"
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        startActivity(intent)
+    }
+
+
 
     fun setStreetViewListeners() {
         marker_view.onMarkerClickListener = {

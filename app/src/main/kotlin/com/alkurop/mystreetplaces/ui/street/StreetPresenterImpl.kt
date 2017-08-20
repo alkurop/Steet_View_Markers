@@ -27,7 +27,7 @@ class StreetPresenterImpl(val pinRepo: PinRepo) : StreetPresenter {
     }
 
     val subscribeToPinsUpdatesDisposable = CompositeDisposable()
-    var cameraPosition: CameraPosition? = null
+    override var cameraPosition: CameraPosition? = null
 
     override val viewBus: Subject<StreetViewModel> = createViewSubject()
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
