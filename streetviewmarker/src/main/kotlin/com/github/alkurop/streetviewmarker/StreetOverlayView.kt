@@ -1,6 +1,7 @@
 package com.github.alkurop.streetviewmarker
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.util.AttributeSet
 import android.util.Log
@@ -12,7 +13,6 @@ import com.google.android.gms.maps.model.StreetViewPanoramaCamera
 import java.util.*
 import java.util.concurrent.*
 
-
 interface IStreetOverlayView {
     fun onLocationUpdate(location: LatLng)
     fun onCameraUpdate(cameraPosition: StreetViewPanoramaCamera)
@@ -23,6 +23,7 @@ interface IStreetOverlayView {
     var mapsConfig: MapsConfig
 
     fun setLongClickListener(onClickListener: ((MarkerDrawData) -> Unit)?)
+    fun setSharingListener(listener: (Bitmap) -> Unit)
 }
 
 class StreetOverlayView : SurfaceView, IStreetOverlayView,
@@ -50,15 +51,10 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
     }
 
     fun stop() {
-        mDrawThread?.setRunning(false)
-        mDrawMarkers.clear()
-        mMarkers.clear()
-        mLocation = null
-        mCameraPosition = null
+
     }
 
-    fun pause(){
-        mDrawThread?.setRunning(false)
+    fun pause() {
     }
 
     override fun onLocationUpdate(location: LatLng) {
@@ -85,7 +81,6 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
         this.mMarkers.addAll(filteredAdd)
     }
 
-
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
     }
 
@@ -109,7 +104,6 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
         mDrawThread?.start()
     }
 
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
@@ -121,8 +115,7 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
         if (mLatestTouchPoint != null) {
 
             Log.d(TAG, mLatestTouchPoint.toString())
-            mDrawMarkers.sortedBy { it!!.matrixData.data.distance }.forEach {
-                itt ->
+            mDrawMarkers.sortedBy { it!!.matrixData.data.distance }.forEach { itt ->
                 Log.d(TAG, itt!!.toString())
                 if (mLatestTouchPoint!!.isInRange(itt)) {
                     longClickListener?.invoke(itt)
@@ -136,8 +129,7 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
         if (mLatestTouchPoint != null) {
 
             Log.d(TAG, mLatestTouchPoint.toString())
-            mDrawMarkers.sortedBy { it!!.matrixData.data.distance }.forEach {
-                itt ->
+            mDrawMarkers.sortedBy { it!!.matrixData.data.distance }.forEach { itt ->
                 Log.d(TAG, itt!!.toString())
                 if (mLatestTouchPoint!!.isInRange(itt)) {
                     listener?.invoke(itt)
@@ -146,7 +138,6 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
             }
         }
     }
-
 
     data class TouchPoint(val x: Float, val y: Float) {
         fun isInRange(data: MarkerDrawData?): Boolean {
@@ -168,5 +159,9 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
 
     override fun setLongClickListener(onClickListener: ((MarkerDrawData) -> Unit)?) {
         this.longClickListener = onClickListener
+    }
+
+    override fun setSharingListener(listener: (Bitmap) -> Unit) {
+        mDrawThread?.setSharingListener(listener)
     }
 }

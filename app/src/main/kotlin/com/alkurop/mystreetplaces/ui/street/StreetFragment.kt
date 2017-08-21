@@ -1,12 +1,9 @@
 package com.alkurop.mystreetplaces.ui.street
 
-import android.content.Intent
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.FileProvider
-import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.ShareActionProvider
 import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
@@ -14,12 +11,11 @@ import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.ShareUtil
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_street.*
 import timber.log.Timber
-import java.io.File
 import javax.inject.Inject
 
 class StreetFragment : BaseMvpFragment<StreetViewModel>() {
@@ -36,6 +32,9 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
             return fragment
         }
     }
+
+    var progressDialog:ProgressDialog? = null
+    val compositeDisposable = CompositeDisposable()
 
     @Inject lateinit var presenter: StreetPresenter
     override fun getSubject(): Observable<StreetViewModel> = presenter.viewBus
@@ -76,10 +75,19 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
     private fun shareStreetView() {
         val camera = presenter.cameraPosition ?: return
 
-       ShareUtil().createShareIntentFromStreetProjection(activity, camera)
+        val subscribe = ShareUtil().createShareIntentFromStreetProjection(marker_view, camera)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe { progressDialog = ProgressDialog.show(activity,
+                        getString(R.string.share_create_title),
+                        getString(R.string.share_create_msg),
+                        false,
+                        true) }
+                .doOnTerminate { progressDialog?.dismiss() }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     startActivity(it)
                 }, { Timber.e(it) })
+                compositeDisposable.add(subscribe)
     }
 
     fun setStreetViewListeners() {
@@ -129,6 +137,8 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
     override fun onDestroyView() {
         marker_view.onDestroy()
+        compositeDisposable.clear()
+        progressDialog?.takeIf { it.isShowing }?.dismiss()
         super.onDestroyView()
     }
 

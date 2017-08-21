@@ -45,4 +45,6 @@
     <string name="share">Share</string>
     
     <string name="search">Search</string>
+    <string name="share_create_title">Creating sharing data</string>
+    <string name="share_create_msg">Please wait</string>
 </resources>

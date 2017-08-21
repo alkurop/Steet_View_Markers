@@ -1,6 +1,7 @@
 package com.github.alkurop.streetviewmarker
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -37,6 +38,14 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
     var cam: StreetViewPanoramaCamera = StreetViewPanoramaCamera(0f, 0f, 0f)
     var position: LatLng? = null
     lateinit var callback: (StreetViewPanorama) -> Unit
+
+    init {
+        inflate(context, R.layout.vsm_view_street_marker, this)
+        markerView = findViewById(R.id.overlay) as StreetOverlayView
+        streetView = findViewById(R.id.panorama) as StreetViewPanoramaView
+        touchOverlay = findViewById(R.id.touch) as TouchOverlayView
+    }
+
     override fun onLocationUpdate(location: LatLng) {
         markerView.onLocationUpdate(location)
     }
@@ -184,11 +193,8 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun onLowMemory() = streetView.onLowMemory()
-
-    init {
-        inflate(context, R.layout.vsm_view_street_marker, this)
-        markerView = findViewById(R.id.overlay) as StreetOverlayView
-        streetView = findViewById(R.id.panorama) as StreetViewPanoramaView
-        touchOverlay = findViewById(R.id.touch) as TouchOverlayView
+    override fun setSharingListener(listener: (Bitmap) -> Unit) {
+        markerView.setSharingListener(listener)
     }
+
 }
