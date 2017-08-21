@@ -50,5 +50,8 @@
 
     <string name="sharing_map">View on map %1$s</string>
     <string name="sharing_street_view_subject">This is the place</string>
-    <string name="sharing_street_description">I\'m sharing a place with view.\nFind a Street View screenshot in attachments.</string>
+    <string name="sharing_street_description">I\'m sharing a place with view.\nFind a Street View screenshot in attachments.\n</string>
+    <string name="sharing_pin_msg_description">I\'m sharing a place with view.\n</string>
+    <string name="sharing_pin_title"><b>Title:</b>\n%1$s\n\n</string>
+    <string name="sharing_pin_description"><b>Description:</b>\n%1$s\n\n</string>
 </resources>

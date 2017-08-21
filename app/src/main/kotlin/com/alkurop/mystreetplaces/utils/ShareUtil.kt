@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.Canvas
-import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.os.Environment
 import android.support.v4.content.FileProvider
@@ -23,8 +22,11 @@ import com.squareup.picasso.Target as PicassoTarget
 
 class ShareUtil {
 
-    fun createShareIntentFromPin(pin: PinDto): Intent {
+    fun createShareIntentFromPin(context: Context, pin: PinDto): Intent {
+
         val intent = Intent()
+        intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.sharing_street_view_subject))
+        intent.putExtra(Intent.EXTRA_TEXT, getPinSharingText(context, pin))
         return intent
     }
 
@@ -129,6 +131,17 @@ class ShareUtil {
         stringBuilder.append(context.getString(R.string.sharing_street_description))
         stringBuilder.append(context.getString(R.string.sharing_map, mapText))
         stringBuilder.append("\n")
+
+        return stringBuilder.toString()
+    }
+
+    fun getPinSharingText(context: Context, pin: PinDto): String {
+        val mapText = getMapUrl(LatLng(pin.lat, pin.lon))
+        val stringBuilder = StringBuilder()
+        stringBuilder.append(context.getString(R.string.sharing_pin_msg_description))
+        stringBuilder.append(context.getString(R.string.sharing_pin_title, pin.title))
+        stringBuilder.append(context.getString(R.string.sharing_pin_description, pin.description))
+        stringBuilder.append(context.getString(R.string.sharing_map, mapText))
 
         return stringBuilder.toString()
     }
