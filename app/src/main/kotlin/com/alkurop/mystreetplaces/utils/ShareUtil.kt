@@ -9,9 +9,11 @@ import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.os.Environment
 import android.support.v4.content.FileProvider
+import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.github.alkurop.streetviewmarker.CameraPosition
 import com.github.alkurop.streetviewmarker.StreetMarkerView
+import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
@@ -73,34 +75,36 @@ class ShareUtil {
                     combineBitmap
                 })
 
-        return resultObservable.map { bitmap ->
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "image/*"
-            val imageFile = createImageFile(context)
+        return resultObservable
+                .map { bitmap ->
+                    val imageFile = createImageFile(context)
+                    val fOut = FileOutputStream(imageFile)
+                    bitmap.compress(CompressFormat.PNG, 80, fOut)
+                    fOut.flush()
+                    fOut.close()
+                    bitmap.recycle()
 
-            val fOut = FileOutputStream(imageFile)
-            bitmap.compress(CompressFormat.PNG, 80, fOut)
-            fOut.flush()
-            fOut.close()
-            bitmap.recycle()
-
-            val photoURI = FileProvider.getUriForFile(context,
-                    CameraPictureHelperImpl.FILE_PROVIDER,
-                    imageFile)
-            intent.putExtra(android.content.Intent.EXTRA_TEXT, "privet")
-
-            intent.putExtra(Intent.EXTRA_STREAM, photoURI)
-            intent
-        }
+                    FileProvider.getUriForFile(context,
+                            CameraPictureHelperImpl.FILE_PROVIDER,
+                            imageFile)
+                }
+                .map { photoURI ->
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.type = "image/*"
+                    intent.putExtra(android.content.Intent.EXTRA_TEXT, getStreetSharingText(context, cameraPosition.location))
+                    intent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.sharing_street_view_subject))
+                    intent.putExtra(Intent.EXTRA_STREAM, photoURI)
+                    intent
+                }
     }
 
     fun combineBitmap(background: Bitmap, foreground: Bitmap): Bitmap {
         val result = Bitmap.createBitmap(foreground.width, foreground.height, Bitmap.Config.ARGB_8888)
-        val resizedBg =   Bitmap.createScaledBitmap(
+        val resizedBg = Bitmap.createScaledBitmap(
                 background, foreground.width, foreground.height, false)
         val cv = Canvas(result)
         cv.drawBitmap(resizedBg, 0f, 0f, null)
-        cv.drawBitmap(foreground,  0f, 0f, null)
+        cv.drawBitmap(foreground, 0f, 0f, null)
         cv.save(Canvas.ALL_SAVE_FLAG)
         cv.restore()
         return result
@@ -115,5 +119,17 @@ class ShareUtil {
                 storageDir
         )
         return image
+    }
+
+    fun getMapUrl(latLng: LatLng): String = "https://www.google.com/maps/@${latLng.latitude},${latLng.longitude},12z"
+
+    fun getStreetSharingText(context: Context, latLng: LatLng): String {
+        val mapText = getMapUrl(latLng)
+        val stringBuilder = StringBuilder()
+        stringBuilder.append(context.getString(R.string.sharing_street_description))
+        stringBuilder.append(context.getString(R.string.sharing_map, mapText))
+        stringBuilder.append("\n")
+
+        return stringBuilder.toString()
     }
 }

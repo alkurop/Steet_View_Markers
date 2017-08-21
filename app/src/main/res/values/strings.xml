@@ -47,4 +47,8 @@
     <string name="search">Search</string>
     <string name="share_create_title">Creating sharing data</string>
     <string name="share_create_msg">Please wait</string>
+
+    <string name="sharing_map">View on map %1$s</string>
+    <string name="sharing_street_view_subject">This is the place</string>
+    <string name="sharing_street_description">I\'m sharing a place with view.\nFind a Street View screenshot in attachments.</string>
 </resources>

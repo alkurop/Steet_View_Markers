@@ -33,7 +33,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         }
     }
 
-    var progressDialog:ProgressDialog? = null
+    var progressDialog: ProgressDialog? = null
     val compositeDisposable = CompositeDisposable()
 
     @Inject lateinit var presenter: StreetPresenter
@@ -77,17 +77,19 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
         val subscribe = ShareUtil().createShareIntentFromStreetProjection(marker_view, camera)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe { progressDialog = ProgressDialog.show(activity,
-                        getString(R.string.share_create_title),
-                        getString(R.string.share_create_msg),
-                        false,
-                        true) }
+                .doOnSubscribe {
+                    progressDialog = ProgressDialog.show(activity,
+                            getString(R.string.share_create_title),
+                            getString(R.string.share_create_msg),
+                            false,
+                            true, { subscriptions.clear() })
+                }
                 .doOnTerminate { progressDialog?.dismiss() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     startActivity(it)
                 }, { Timber.e(it) })
-                compositeDisposable.add(subscribe)
+        compositeDisposable.add(subscribe)
     }
 
     fun setStreetViewListeners() {
