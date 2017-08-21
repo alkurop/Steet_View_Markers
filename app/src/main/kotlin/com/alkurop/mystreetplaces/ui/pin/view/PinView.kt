@@ -47,7 +47,9 @@ class PinView @JvmOverloads constructor(context: Context,
         val picturesAdapter = PicturesAdapter()
         picturesAdapter.onPictureClick = { position -> presenter.onPictureClick(picturesAdapter.getItems(), position) }
         recyclerView.adapter = picturesAdapter
-        findViewById(R.id.editButton).setOnClickListener { presenter.onEdit() }
+        findViewById(R.id.editBtn).setOnClickListener { presenter.onEdit() }
+        findViewById(R.id.navigateBtn).setOnClickListener { presenter.onNavigate() }
+        findViewById(R.id.shareBtn).setOnClickListener { presenter.onShare() }
         presenter.loadPinDetails(id)
     }
 

@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
     <LinearLayout
@@ -32,18 +33,35 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pin_details_image_recycler_height" />
+        <LinearLayout
+            android:layout_margin="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/picture"
+                style="@style/ActionButton"
+                app:srcCompat="@drawable/ic_photo_camera_black_24dp" />
+            <ImageView
+                android:id="@+id/galeryPicture"
+                style="@style/ActionButton"
+                app:srcCompat="@drawable/ic_image_black_24dp" />
+        </LinearLayout>
         <Button
+            android:layout_margin="16dp"
+
             android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_submit" />
 
         <Button
+            android:layout_margin="16dp"
             android:id="@+id/delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/delete" />
+            android:text="@string/delete" />z
 
     </LinearLayout>
 </ScrollView>

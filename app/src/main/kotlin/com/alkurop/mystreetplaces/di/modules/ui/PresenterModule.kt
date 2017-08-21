@@ -19,6 +19,7 @@ import com.alkurop.mystreetplaces.ui.settings.SettingsPresenter
 import com.alkurop.mystreetplaces.ui.settings.SettingsPresenterImpl
 import com.alkurop.mystreetplaces.ui.street.StreetPresenterImpl
 import com.alkurop.mystreetplaces.ui.street.StreetPresenter
+import com.alkurop.mystreetplaces.utils.ShareUtil
 import dagger.Module
 import dagger.Provides
 
@@ -39,7 +40,7 @@ class PresenterModule {
         return DropPinPresenterImpl(pinRepo)
     }
 
-    @Provides fun provideViewPinPresenter(pinRepo: PinRepo): PinViewPresenter = PinViewPresenterImpl(pinRepo)
+    @Provides fun provideViewPinPresenter(pinRepo: PinRepo, shareUtil: ShareUtil): PinViewPresenter = PinViewPresenterImpl(pinRepo, shareUtil)
 
     @Provides fun providePreviewPictureContainerPresenter(pinRepo: PinRepo): PicturePreviewContainerPresenter = PicturePreviewContainerPresenterImpl(pinRepo)
 

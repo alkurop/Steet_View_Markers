@@ -18,4 +18,8 @@ interface PinViewPresenter {
     fun unsubscribe()
 
     fun onPictureClick(items: List<PictureWrapper>, position: Int)
+
+    fun onNavigate()
+
+    fun onShare()
 }

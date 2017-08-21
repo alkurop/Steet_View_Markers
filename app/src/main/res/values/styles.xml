@@ -12,16 +12,21 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
 
     </style>
-    <style name="AppBottomSheetDialogTheme"
-        parent="Theme.Design.Light.BottomSheetDialog">
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
     </style>
 
-    <style name="AppModalStyle"
-        parent="Widget.Design.BottomSheet.Modal">
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="behavior_peekHeight">@dimen/custom_peek_height</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <dimen name="custom_peek_height">@dimen/bottom_sheet_peek_height</dimen>
+    <style name="ActionButton">
+        <item name="android:clickable">true</item>
+        <item name="android:layout_width">@dimen/action_button_size</item>
+        <item name="android:layout_height">@dimen/action_button_size</item>
+        <item name="android:tint">@color/street_fab_tint</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
 </resources>

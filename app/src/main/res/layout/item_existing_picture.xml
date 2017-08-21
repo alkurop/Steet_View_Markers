@@ -4,6 +4,8 @@
     android:layout_width="@dimen/pin_details_image_recycler_width"
     android:layout_height="@dimen/pin_details_image_recycler_height"
     android:clickable="true"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
     android:foreground="?selectableItemBackground">
 
     <ProgressBar
