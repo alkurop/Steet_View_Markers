@@ -4,21 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
+import android.support.v7.app.AppCompatActivity
 import android.view.*
+import android.widget.ShareActionProvider
 import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.alkurop.mystreetplaces.utils.ShareUtil
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_street.*
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
 class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
     companion object {
-            val APP_PACKAGE = "com.alkurop.mystreetplaces.fileprovider"
+        val APP_PACKAGE = "com.alkurop.mystreetplaces.fileprovider"
         val FOCUS_LOCATION_KEY = "focus_location"
 
         fun getNewInstance(focusLocation: LatLng): Fragment {
@@ -67,25 +74,13 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
     }
 
     private fun shareStreetView() {
-        val latLng = presenter.cameraPosition?.location ?: return
-/*
-        val bitmap = Bitmap.createBitmap(view!!.drawingCache)
-        view!!.isDrawingCacheEnabled = false
+        val camera = presenter.cameraPosition ?: return
 
-        val shareIntent = ShareUtil().createShareIntentFromStreetProjection(context, bitmap, latLng)
-        startActivity(shareIntent)*/
+       ShareUtil().createShareIntentFromStreetProjection(activity, camera)
+                .subscribe({
+                    startActivity(it)
+                }, { Timber.e(it) })
     }
-
-    private fun openScreenshot(imageFile: File) {
-        val intent = Intent()
-        intent.action = Intent.ACTION_SEND
-        var uri = FileProvider.getUriForFile(context, APP_PACKAGE, imageFile)
-        intent.type = "image/jpeg"
-        intent.putExtra(Intent.EXTRA_STREAM, uri)
-        startActivity(intent)
-    }
-
-
 
     fun setStreetViewListeners() {
         marker_view.onMarkerClickListener = {

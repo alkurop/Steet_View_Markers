@@ -15,7 +15,7 @@ import java.util.*
 
 class CameraPictureHelperImpl : CameraPictureHelper {
     companion object {
-        val APP_PACKAGE = "com.alkurop.mystreetplaces.fileprovider"
+        val FILE_PROVIDER = "com.alkurop.mystreetplaces.fileprovider"
     }
     private var requestCode:Int = 2212
     val fragment: Fragment?
@@ -39,7 +39,7 @@ class CameraPictureHelperImpl : CameraPictureHelper {
         val act = activity ?: fragment!!.activity
         photoFile = createImageFile(act)
         val photoURI = FileProvider.getUriForFile(act,
-                APP_PACKAGE,
+                FILE_PROVIDER,
                 photoFile)
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
 
