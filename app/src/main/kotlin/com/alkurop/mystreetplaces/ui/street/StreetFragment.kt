@@ -9,7 +9,7 @@ import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.ShareUtil
-import com.alkurop.mystreetplaces.utils.ShareUtilImpl
+import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,7 +33,8 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
             return fragment
         }
     }
-    @Inject lateinit var shareUtil:ShareUtil
+
+    @Inject lateinit var shareUtil: ShareUtil
 
     var progressDialog: ProgressDialog? = null
     val compositeDisposable = CompositeDisposable()
@@ -79,6 +80,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
         val subscribe = shareUtil.createShareIntentFromStreetProjection(marker_view, camera)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
                     progressDialog = ProgressDialog.show(activity,
                             getString(R.string.share_create_title),
@@ -87,7 +89,6 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
                             true, { subscriptions.clear() })
                 }
                 .doOnTerminate { progressDialog?.dismiss() }
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     startActivity(it)
                 }, { Timber.e(it) })

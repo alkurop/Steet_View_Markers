@@ -78,27 +78,13 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
                     combineBitmap
                 })
 
-        return resultObservable
-                .map { bitmap ->
-                    val imageFile = createImageFile(context)
-                    val fOut = FileOutputStream(imageFile)
-                    bitmap.compress(CompressFormat.PNG, 80, fOut)
-                    fOut.flush()
-                    fOut.close()
-                    bitmap.recycle()
-
-                    FileProvider.getUriForFile(context,
-                            CameraPictureHelperImpl.FILE_PROVIDER,
-                            imageFile)
-                }
-                .map { photoURI ->
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "image/*"
-                    intent.putExtra(android.content.Intent.EXTRA_TEXT, getStreetSharingText(context, cameraPosition.location))
-                    intent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.sharing_street_view_subject))
-                    intent.putExtra(Intent.EXTRA_STREAM, photoURI)
-                    intent
-                }
+        return Observable.fromCallable {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(android.content.Intent.EXTRA_TEXT, getStreetSharingText(context, cameraPosition.location))
+            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.sharing_street_view_subject))
+            intent
+        }
     }
 
     fun combineBitmap(background: Bitmap, foreground: Bitmap): Bitmap {

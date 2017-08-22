@@ -67,7 +67,7 @@ class PinViewPresenterImpl(val pinRepo: PinRepo, val shareUtil: ShareUtil) : Pin
 
     override fun onNavigate() {
         val subscribe = pinRepo.getPinDetails(id).subscribe({
-            val uri = Uri.parse("http://maps.google.com/maps?daddr=${it.lat},${it.lon}(${it.title}")
+            val uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${it.lat},${it.lon}")
             val shareIntent = Intent(Intent.ACTION_VIEW, uri)
             shareIntent.`package` = "com.google.android.apps.maps"
             val navAction = UriNavigationAction(shareIntent)
