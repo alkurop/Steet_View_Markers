@@ -10,6 +10,7 @@ import com.facebook.stetho.Stetho
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
+import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
 import io.realm.Realm
 import timber.log.Timber
@@ -58,6 +59,7 @@ class MyStreetPlacesApp : Application() {
     fun initUniversalImageLoader() {
         val defaultOptions = DisplayImageOptions.Builder()
                 .cacheInMemory(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
                 .cacheOnDisk(true)
                 .build()
         val config = ImageLoaderConfiguration.Builder(this)

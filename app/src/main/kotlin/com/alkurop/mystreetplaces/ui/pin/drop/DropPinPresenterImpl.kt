@@ -79,6 +79,8 @@ class DropPinPresenterImpl(val pinRepo: PinRepo) : DropPinPresenter {
             compositeDisposable.add(sub)
         }
         Timber.d("picture added ${file.absoluteFile}")
+        val model = DropPinViewModel(pinDto)
+        viewBus.onNext(model)
     }
 
     override fun unsubscribe() {

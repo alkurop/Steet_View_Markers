@@ -54,4 +54,6 @@
     <string name="sharing_pin_msg_description">I\'m sharing a place with you.\n\n</string>
     <string name="sharing_pin_title"><b>Title:</b>\n%1$s\n\n</string>
     <string name="sharing_pin_description"><b>Description:</b>\n%1$s\n\n</string>
+    <string name="delet_pin_msg">Would you like to delete this pin?</string>
+    <string name="delete_pin_title">Delete pin</string>
 </resources>

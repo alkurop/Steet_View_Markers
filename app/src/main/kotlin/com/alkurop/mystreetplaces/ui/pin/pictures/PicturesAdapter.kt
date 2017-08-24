@@ -1,7 +1,6 @@
 package com.alkurop.mystreetplaces.ui.pin.pictures
 
 import android.graphics.Bitmap
-import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,7 @@ import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.assist.FailReason
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener
-import kotlinx.android.synthetic.main.item_add_picture.view.*
 import kotlinx.android.synthetic.main.item_existing_picture.view.*
 
 class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
@@ -20,7 +17,6 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
 
     lateinit var li: LayoutInflater
 
-    var onAddPictureClick: (() -> Unit)? = null
     var onPictureClick: ((Int) -> Unit)? = null
 
     fun setItems(newPictures: List<PictureWrapper>) {
@@ -36,8 +32,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PictureVH {
-        return if (viewType == 0 && getOffset() > 0) createAddPictureVh(parent)
-        else createExistingPictureVh(parent)
+        return createExistingPictureVh(parent)
     }
 
     private fun createExistingPictureVh(parent: ViewGroup?): ExistingPictureVh {
@@ -45,18 +40,12 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
         return ExistingPictureVh(view)
     }
 
-    private fun createAddPictureVh(parent: ViewGroup?): AddPictureVh {
-        val view = li.inflate(R.layout.item_add_picture, parent, false)
-        return AddPictureVh(view)
-    }
-
     override fun getItemCount(): Int {
-        return pictures.size + getOffset()
+        return pictures.size
     }
 
-    fun getItem(position: Int): PictureWrapper = pictures[position - getOffset()]
+    fun getItem(position: Int): PictureWrapper = pictures[position]
 
-    private fun getOffset() = if (onAddPictureClick == null) 0 else 1
 
     override fun onBindViewHolder(holder: PictureVH?, position: Int) {
         if (holder is ExistingPictureVh) {
@@ -70,18 +59,10 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
 
     abstract class PictureVH(view: View?) : RecyclerView.ViewHolder(view)
 
-    inner class AddPictureVh(view: View?) : PictureVH(view) {
-        init {
-            itemView.addContainer.setOnClickListener {
-                onAddPictureClick?.invoke()
-            }
-        }
-    }
-
     inner class ExistingPictureVh(view: View?) : PictureVH(view) {
         init {
             itemView.pictureContainer.setOnClickListener {
-                onPictureClick?.invoke(adapterPosition - getOffset())
+                onPictureClick?.invoke(adapterPosition)
             }
         }
 
@@ -98,7 +79,6 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
 
                 override fun onLoadingFailed(imageUri: String?, view: View?, failReason: FailReason?) {
                     itemView.progress_bar.visibility = View.GONE
-                    itemView.photoView.setImageResource(R.mipmap.ic_launcher_round)
                 }
             })
         }

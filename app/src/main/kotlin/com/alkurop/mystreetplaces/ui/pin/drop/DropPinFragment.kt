@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -21,6 +22,8 @@ import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContain
 import com.alkurop.mystreetplaces.ui.pin.pictures.PicturesAdapter
 import com.alkurop.mystreetplaces.utils.CameraPictureHelper
 import com.alkurop.mystreetplaces.utils.CameraPictureHelperImpl
+import com.alkurop.mystreetplaces.utils.MediaPicker
+import com.alkurop.mystreetplaces.utils.MediaType
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
 import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.model.LatLng
@@ -28,6 +31,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_drop_pin.*
+import java.io.File
 import javax.inject.Inject
 
 class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
@@ -58,6 +62,10 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     @Inject lateinit var presenter: DropPinPresenter
     var alert: AlertDialog? = null
     var shouldReturnResult = false
+    var filePicker: MediaPicker? = null
+    var mediauri: Uri? = null
+    var pendingType: MediaType? = null
+    var selectedType: MediaType? = null
 
     override fun getSubject(): Observable<DropPinViewModel> = presenter.viewBus
 
@@ -72,13 +80,13 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         photoHelper = CameraPictureHelperImpl(this)
-        photoHelper.setRequestCode(301)
+        photoHelper.setRequestCode(3021)
 
         submit.setOnClickListener { presenter.submit() }
         delete.setOnClickListener {
             AlertDialog.Builder(activity)
-                    .setTitle("Delete pin")
-                    .setMessage("Would you like to delete this pin?")
+                    .setTitle(getString(R.string.delete_pin_title))
+                    .setMessage(getString(R.string.delet_pin_msg))
                     .setPositiveButton(android.R.string.ok, { _, _ ->
                         presenter.deletePin()
                     })
@@ -90,13 +98,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
         val picturesAdapter = PicturesAdapter()
-        picturesAdapter.onAddPictureClick = {
-            setUpPermissionsManager({
-                photoHelper.execute({ file ->
-                    presenter.onAddPicture(file)
-                })
-            })
-        }
+
         picturesAdapter.onPictureClick = { presenter.onPictureClick(it, picturesAdapter.getItems()) }
 
         recyclerView.adapter = picturesAdapter
@@ -105,6 +107,28 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
         val pinId = arguments.getString(ID_KEY)
         pinId?.let { presenter.start(pinId) }
+
+        filePicker = MediaPicker({ it ->
+            val map: HashMap<String, PermissionOptionalDetails> = HashMap()
+            map.put(it, PermissionOptionalDetails(getString(R.string.storage_permission_rationale_title), getString(R.string.storage_permission_rationale)))
+            if (permissionManager == null) permissionManager = PermissionsManager(this)
+            permissionManager?.setRequestCode(202)
+            permissionManager?.clearPermissions()
+            permissionManager?.clearPermissionsListeners()
+            permissionManager?.addPermissions(map)
+            permissionManager?.addPermissionsListener { }
+            permissionManager?.makePermissionRequest()
+        })
+        galeryPicture.setOnClickListener {
+            filePicker?.fromGallery(this, MediaType.PHOTO)
+        }
+        picture.setOnClickListener{
+            setUpPermissionsManager({
+                photoHelper.execute({ file ->
+                    presenter.onAddPicture(file)
+                })
+            })
+        }
     }
 
     private fun setUpPermissionsManager(function: () -> Unit) {
@@ -173,10 +197,22 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
             pictureModel?.let { reloadList(it.picturesList) }
             shouldReturnResult = true
         }
+        filePicker?.handleResult(requestCode, resultCode, data, { uri ->
+            mediauri = uri
+            selectedType = pendingType
+            applyUri()
+        })
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun reloadList(pictures:List<PictureWrapper>) {
+    private fun applyUri() {
+        mediauri?.let {
+            presenter.onAddPicture(File(it.path))
+        }
+    }
+
+    private fun reloadList(pictures: List<PictureWrapper>) {
         presenter.reloadPictureList(pictures)
     }
 
@@ -184,5 +220,4 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         activity.setResult(Activity.RESULT_OK)
         activity.finish()
     }
-
 }
