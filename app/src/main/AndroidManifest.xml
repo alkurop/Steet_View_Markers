@@ -24,6 +24,7 @@
             android:name="io.fabric.ApiKey"
             android:value="4aae25af2081154334599c1ad33d7a5623cf878e" />
         <activity
+            android:theme="@style/LandingTheme"
             android:name=".ui.home.MainActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
