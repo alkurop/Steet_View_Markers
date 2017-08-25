@@ -1,5 +1,6 @@
 package com.alkurop.mystreetplaces.domain.pin
 
+import com.alkurop.mystreetplaces.data.pin.AddressDto
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.google.android.gms.maps.model.LatLng
 import io.realm.RealmList
@@ -22,6 +23,7 @@ open class PinDto : RealmModel {
     var pictures = RealmList<PictureWrapper>()
     var isSynchronized: Boolean = false
     var timeStamp: Long = 0
+    var address: AddressDto? = null
 
     constructor()
 

@@ -43,7 +43,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="share">Share</string>
-    
+
     <string name="search">Search</string>
     <string name="share_create_title">Creating sharing data</string>
     <string name="share_create_msg">Please wait</string>
@@ -59,4 +59,9 @@
     <string name="drop">Drop</string>
     <string name="edit_pin">Edit place</string>
     <string name="here">here</string>
+    <string name="loading_address_failed">Loading address failed</string>
+    <string name="click_to_select_address">Click to select address</string>
+    <string name="address">Address</string>
+    <string name="select_address">Select address</string>
+    <string name="cancel">Cancel</string>
 </resources>

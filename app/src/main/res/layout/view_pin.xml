@@ -8,10 +8,11 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextAppearance.Subtitle.Medium"
+        style="@style/TextAppearance.Subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title" />
+        android:text="@string/title"
+        android:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/title"
@@ -22,13 +23,15 @@
         tools:text="titlwqee qwewqe qw ee" />
 
     <TextView
-        style="@style/TextAppearance.Subtitle.Medium"
+        android:id="@+id/textView2"
+        style="@style/TextAppearance.Subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/location" />
+        android:text="@string/location"
+        android:textColor="@color/colorAccent" />
 
     <TextView
-        android:id="@+id/location"
+        android:id="@+id/location_view"
         style="@style/TextAppearance.Normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,13 +39,30 @@
         tools:text="text" />
 
     <TextView
-        style="@style/TextAppearance.Subtitle.Medium"
+        android:id="@+id/description_title"
+        style="@style/TextAppearance.Subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/description" />
+        android:text="@string/description"
+        android:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/description"
+        style="@style/TextAppearance.Normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp" />
+
+    <TextView
+        android:id="@+id/address_title"
+        style="@style/TextAppearance.Subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/address"
+        android:textColor="@color/colorAccent" />
+
+    <TextView
+        android:id="@+id/address"
         style="@style/TextAppearance.Normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

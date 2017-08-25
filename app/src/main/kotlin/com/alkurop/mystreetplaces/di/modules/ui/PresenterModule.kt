@@ -19,7 +19,9 @@ import com.alkurop.mystreetplaces.ui.settings.SettingsPresenter
 import com.alkurop.mystreetplaces.ui.settings.SettingsPresenterImpl
 import com.alkurop.mystreetplaces.ui.street.StreetPresenterImpl
 import com.alkurop.mystreetplaces.ui.street.StreetPresenter
+import com.alkurop.mystreetplaces.utils.AddressUtil
 import com.alkurop.mystreetplaces.utils.ShareUtil
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 
@@ -36,11 +38,9 @@ class PresenterModule {
 
     @Provides fun provideSettingsPresenter(): SettingsPresenter = SettingsPresenterImpl()
 
-    @Provides fun provideDropPinPresenter(pinRepo: PinRepo): DropPinPresenter {
-        return DropPinPresenterImpl(pinRepo)
-    }
+    @Provides fun provideDropPinPresenter(pinRepo: PinRepo, addressUtil: AddressUtil ): DropPinPresenter = DropPinPresenterImpl(pinRepo, addressUtil)
 
-    @Provides fun provideViewPinPresenter(pinRepo: PinRepo, shareUtil: ShareUtil): PinViewPresenter = PinViewPresenterImpl(pinRepo, shareUtil)
+@Provides fun provideViewPinPresenter(pinRepo: PinRepo, shareUtil: ShareUtil): PinViewPresenter = PinViewPresenterImpl(pinRepo, shareUtil)
 
     @Provides fun providePreviewPictureContainerPresenter(pinRepo: PinRepo): PicturePreviewContainerPresenter = PicturePreviewContainerPresenterImpl(pinRepo)
 

@@ -3,7 +3,7 @@ package com.alkurop.mystreetplaces.ui.pin.drop
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
+import android.location.Address
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,7 +13,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
+import android.widget.ArrayAdapter
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
@@ -131,6 +131,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 })
             })
         }
+        location_view.setOnClickListener { presenter.lookForAddress() }
     }
 
     private fun setUpPermissionsManager(function: () -> Unit) {
@@ -166,12 +167,26 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         viewDisposable.clear()
         with(viewModel) {
             pinDto?.let { pin ->
-                location.text = "lat = ${pin.lat} lon = ${pin.lon}"
+                location_view.text = pin.address?.addressLine ?: getString(R.string.click_to_select_address)
                 title.setText(pin.title)
                 description.setText(pin.description)
                 pin.id?.let { delete.visibility = View.VISIBLE }
                 pin.id?.let { (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_pin) }
                 (recyclerView.adapter as PicturesAdapter).setItems(pin.pictures)
+            }
+            addressList?.let {
+                val adapter = ArrayAdapter<String>(context, android.R.layout.select_dialog_item)
+                val transform: (Address) -> String = { it.getAddressLine(0) }
+                val map = it.filter { it.maxAddressLineIndex >= 0 }.map(transform)
+                adapter.addAll(map)
+
+                alert = AlertDialog.Builder(context)
+                        .setAdapter(adapter, { _, item ->
+                            presenter.onAddressSelected(addressList[item])
+                        })
+                        .setTitle(getString(R.string.select_address))
+                        .setNegativeButton(getString(R.string.cancel), { _, _ -> })
+                        .show()
             }
         }
         val disposable = RxTextView.textChangeEvents(title)

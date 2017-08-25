@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.view.View
 import android.widget.TextView
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpView
@@ -24,6 +25,9 @@ class PinView @JvmOverloads constructor(context: Context,
     lateinit var locationView: TextView
     lateinit var titleView: TextView
     lateinit var descritionView: TextView
+    lateinit var descritionTitle: TextView
+    lateinit var addressView: TextView
+    lateinit var addressTitle: TextView
     lateinit var recyclerView: RecyclerView
     lateinit var id: String
 
@@ -37,9 +41,12 @@ class PinView @JvmOverloads constructor(context: Context,
 
         component().inject(this)
         super.onAttachedToWindow()
-        locationView = findViewById(R.id.location) as TextView
+        locationView = findViewById(R.id.location_view) as TextView
         titleView = findViewById(R.id.title) as TextView
+        descritionTitle = findViewById(R.id.description_title) as TextView
         descritionView = findViewById(R.id.description) as TextView
+        addressView = findViewById(R.id.address) as TextView
+        addressTitle = findViewById(R.id.address_title) as TextView
         recyclerView = findViewById(R.id.recyclerView) as RecyclerView
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
@@ -85,6 +92,11 @@ class PinView @JvmOverloads constructor(context: Context,
             descritionView.text = description
             locationView.text = "$lat     $lon"
             (recyclerView.adapter as PicturesAdapter).setItems(pictures)
+            descritionTitle.visibility = if (description.isNullOrEmpty()) View.GONE else View.VISIBLE
+            descritionView.visibility = if (description.isNullOrEmpty()) View.GONE else View.VISIBLE
+            addressView.visibility = if (address == null) View.GONE else View.VISIBLE
+            addressTitle.visibility = if (address == null) View.GONE else View.VISIBLE
+            addressView.text = address?.addressLine
         }
     }
 
