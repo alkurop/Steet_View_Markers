@@ -4,5 +4,5 @@
     <item
         android:id="@+id/addMarker"
         android:title="@string/drop"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView|ifRoom" />
 </menu>
