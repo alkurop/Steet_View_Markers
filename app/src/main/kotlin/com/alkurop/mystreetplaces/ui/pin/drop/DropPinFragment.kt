@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_drop_pin.*
 import java.io.File
 import javax.inject.Inject
@@ -122,7 +124,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         galeryPicture.setOnClickListener {
             filePicker?.fromGallery(this, MediaType.PHOTO)
         }
-        picture.setOnClickListener{
+        picture.setOnClickListener {
             setUpPermissionsManager({
                 photoHelper.execute({ file ->
                     presenter.onAddPicture(file)
@@ -168,15 +170,18 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 title.setText(pin.title)
                 description.setText(pin.description)
                 pin.id?.let { delete.visibility = View.VISIBLE }
+                pin.id?.let { (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_pin) }
                 (recyclerView.adapter as PicturesAdapter).setItems(pin.pictures)
             }
         }
         val disposable = RxTextView.textChangeEvents(title)
+                .observeOn(Schedulers.io())
                 .subscribe({
                     val text = it.text().toString()
                     presenter.onTitleChange(text)
                 })
         val disposable1 = RxTextView.textChangeEvents(description)
+                .observeOn(Schedulers.io())
                 .subscribe({
                     val text = it.text().toString()
                     presenter.onDescriptionChange(text)

@@ -40,9 +40,9 @@ data class MapsConfig(
 
 
     /**
-     * marker will not scale down when moving away less then 20%
+     * marker will not scale down when moving away less then 40%
      */
-    @JvmField val minMarkerSize: Double = 0.2,
+    @JvmField val minMarkerSize: Double = 0.4,
 
 
     /**

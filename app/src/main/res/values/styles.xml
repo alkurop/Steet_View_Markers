@@ -39,8 +39,9 @@
         <item name="android:textColor">@color/text_color_white</item>
     </style>
 
-    <style name="AppButtonTextAppearance.ButtonAccent" parent="TextAppearance.Header">
+    <style name="AppButtonTextAppearance.ButtonAccent" parent="TextAppearance.Header.Medium">
         <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="AppButton.Red" parent="AppButton">

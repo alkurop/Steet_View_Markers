@@ -13,7 +13,8 @@
         <TextView
             android:id="@+id/location"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -45,7 +46,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pin_details_image_recycler_height" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -75,7 +76,7 @@
 
         <Button
             android:id="@+id/delete"
-            style="@style/AppButton.Green"
+            style="@style/AppButton.Red"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"

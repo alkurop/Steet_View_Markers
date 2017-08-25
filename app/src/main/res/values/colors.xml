@@ -10,6 +10,6 @@
   <color name="street_fab_tint">#666666</color>
   <color name="green">#00cc33</color>
   <color name="red">#ff0000</color>
-  <color name="transparent">00000000</color>
+  <color name="transparent">#00000000</color>
 
 </resources>

@@ -71,12 +71,11 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
     }
 
     override fun run() {
-        var canvas: Canvas?
+        var canvas: Canvas? = null
         while (runFlag) {
             if (calcFlag)
                 calculate()
 
-            canvas = null
             try {
                 screenHeight = surfaceHolder.surfaceFrame.height().toDouble()
                 screenWidth = surfaceHolder.surfaceFrame.width().toDouble()
@@ -97,7 +96,8 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
                 e.printStackTrace()
             } finally {
                 try {
-                    surfaceHolder.unlockCanvasAndPost(canvas)
+                    if (canvas != null)
+                        surfaceHolder.unlockCanvasAndPost(canvas)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

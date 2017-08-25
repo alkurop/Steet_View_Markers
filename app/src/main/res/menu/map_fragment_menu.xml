@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/addMarker"
-        android:title="@string/add_marker"
+        android:title="@string/drop"
         app:showAsAction="always" />
 </menu>
