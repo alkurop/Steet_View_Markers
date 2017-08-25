@@ -5,4 +5,8 @@
         android:id="@+id/addMarker"
         android:title="@string/drop"
         app:showAsAction="collapseActionView|ifRoom" />
+    <item
+        android:id="@+id/donate"
+        android:title="Donate"
+        app:showAsAction="never" />
 </menu>

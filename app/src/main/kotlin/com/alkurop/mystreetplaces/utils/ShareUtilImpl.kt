@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.os.Environment
 import android.support.v4.content.FileProvider
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.pin.AddressDto
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.github.alkurop.streetviewmarker.CameraPosition
 import com.github.alkurop.streetviewmarker.StreetMarkerView
@@ -31,6 +32,7 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
     }
 
     override fun createShareIntentFromStreetProjection(markerView: StreetMarkerView, cameraPosition: CameraPosition): Observable<Intent> {
+        val addressObservable = AddressUtilImpl(markerView.context).getAddress(cameraPosition.location)
         val streetViewObservable = Observable.create<Bitmap> {
             val target = object : PicassoTarget {
                 override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
@@ -76,13 +78,18 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
                     combineBitmap
                 })
 
-        return Observable.fromCallable {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "text/plain"
-            intent.putExtra(android.content.Intent.EXTRA_TEXT, getStreetSharingText(context, cameraPosition.location))
-            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.sharing_street_view_subject))
-            intent
+        return addressObservable.flatMapObservable { addressList ->
+            Observable.fromCallable {
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                val address = if (addressList.size > 0) AddressDto(addressList[0]) else null
+
+                intent.putExtra(android.content.Intent.EXTRA_TEXT, getStreetSharingText(context, cameraPosition.location, address))
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.sharing_street_view_subject))
+                intent
+            }
         }
+
     }
 
     fun combineBitmap(background: Bitmap, foreground: Bitmap): Bitmap {
@@ -110,10 +117,13 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
 
     fun getMapUrl(latLng: LatLng): String = "http://maps.google.com/maps?daddr=${latLng.latitude},${latLng.longitude}"
 
-    fun getStreetSharingText(context: Context, latLng: LatLng): String {
+    fun getStreetSharingText(context: Context, latLng: LatLng, addressDto: AddressDto?): String {
         val mapText = getMapUrl(latLng)
         val stringBuilder = StringBuilder()
         stringBuilder.append(context.getString(R.string.sharing_pin_msg_description))
+        if (addressDto != null) {
+            stringBuilder.append(context.getString(R.string.sharing_address, addressDto.addressLine))
+        }
         stringBuilder.append(context.getString(R.string.sharing_map, mapText))
         stringBuilder.append("\n")
 
@@ -126,6 +136,10 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
         stringBuilder.append(context.getString(R.string.sharing_pin_msg_description))
         stringBuilder.append(context.getString(R.string.sharing_pin_title, pin.title))
         stringBuilder.append(context.getString(R.string.sharing_pin_description, pin.description))
+        val address = pin.address
+        if (address != null) {
+            stringBuilder.append(context.getString(R.string.sharing_address, address.addressLine))
+        }
         stringBuilder.append(context.getString(R.string.sharing_map, mapText))
 
         return stringBuilder.toString()
