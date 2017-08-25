@@ -6,12 +6,14 @@ import android.support.multidex.MultiDex
 import com.alkurop.mystreetplaces.di.components.ApplicationComponent
 import com.alkurop.mystreetplaces.di.components.DaggerApplicationComponent
 import com.alkurop.mystreetplaces.di.modules.ui.ApplicationModule
+import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
+import io.fabric.sdk.android.Fabric
 import io.realm.Realm
 import timber.log.Timber
 
@@ -24,6 +26,13 @@ class MyStreetPlacesApp : Application() {
         initRealm()
         initStetho()
         initUniversalImageLoader()
+        initCrashlytics()
+    }
+
+    private fun initCrashlytics() {
+        if (BuildConfig.DEBUG.not()) {
+            Fabric.with(this, Crashlytics())
+        }
     }
 
     fun installMultiDex() {
