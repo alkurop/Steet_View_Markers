@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,15 +7,14 @@
     <com.github.alkurop.streetviewmarker.StreetMarkerView
         android:id="@+id/marker_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <Button
+        android:id="@+id/drop_btn"
+        style="@style/AppButton.Drop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="32dp"
-        app:backgroundTint="@color/street_fab_tint"
-        app:borderWidth="0dp"
-        android:src="@drawable/ic_pin_drop"/>
+        android:text="@string/drop" />
 </FrameLayout>

@@ -23,10 +23,8 @@ import com.squareup.picasso.Target as PicassoTarget
 class ShareUtilImpl(val context: Context) : ShareUtil {
 
     override fun createShareIntentFromPin(pin: PinDto): Intent {
-
         val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "image/*"
-
+        intent.type = "text/plain"
         intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.sharing_street_view_subject))
         intent.putExtra(Intent.EXTRA_TEXT, getPinSharingText(context, pin))
         return intent
@@ -115,7 +113,7 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
     fun getStreetSharingText(context: Context, latLng: LatLng): String {
         val mapText = getMapUrl(latLng)
         val stringBuilder = StringBuilder()
-        stringBuilder.append(context.getString(R.string.sharing_street_description))
+        stringBuilder.append(context.getString(R.string.sharing_pin_msg_description))
         stringBuilder.append(context.getString(R.string.sharing_map, mapText))
         stringBuilder.append("\n")
 

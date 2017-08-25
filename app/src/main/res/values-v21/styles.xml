@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppButton.Red" parent="AppButton">
+        <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonWhite</item>
+        <item name="android:backgroundTint">@color/red</item>
+    </style>
+
+    <style name="AppButton.Green" parent="AppButton">
+        <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonWhite</item>
+        <item name="android:backgroundTint">@color/green</item>
+    </style>
+
+    <style name="AppButton.Drop" parent="AppButton">
+        <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonAccent</item>
+        <item name="android:backgroundTint">@color/transparent</item>
+    </style>
+
+</resources>

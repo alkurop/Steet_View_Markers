@@ -14,7 +14,6 @@ import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.LocationTracker
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
 import com.github.alkurop.jpermissionmanager.PermissionsManager
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -74,7 +73,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
         super.onViewCreated(view, savedInstanceState)
         setUpPermissionsManager()
         mapView.onCreate(savedInstanceState)
-        fab.setOnClickListener { presenter.onGoToStreetView() }
+        drop_btn.setOnClickListener { presenter.onGoToStreetView() }
         presenter.isPermissionGranted = false
         permissionManager?.makePermissionRequest()
     }

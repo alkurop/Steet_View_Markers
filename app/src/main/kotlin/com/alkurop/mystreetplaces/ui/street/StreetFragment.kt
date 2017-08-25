@@ -1,7 +1,6 @@
 package com.alkurop.mystreetplaces.ui.street
 
 import android.app.ProgressDialog
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
@@ -9,10 +8,7 @@ import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
-import com.alkurop.mystreetplaces.utils.MediaPicker
-import com.alkurop.mystreetplaces.utils.MediaType
 import com.alkurop.mystreetplaces.utils.ShareUtil
-import com.github.alkurop.jpermissionmanager.PermissionsManager
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -65,7 +61,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
         marker_view.focusToLocation(focusLocation)
         setStreetViewListeners()
-        fab.setOnClickListener { presenter.dropPin() }
+        drop_btn.setOnClickListener { presenter.dropPin() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {

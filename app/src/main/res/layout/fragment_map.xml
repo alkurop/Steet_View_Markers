@@ -11,16 +11,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <Button
+        android:id="@+id/drop_btn"
+        style="@style/AppButton.Drop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="32dp"
-        android:src="@drawable/ic_explore" />
+        android:text="@string/street" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:srcCompat="@drawable/ic_path345"/>
+        app:srcCompat="@drawable/ic_path345" />
 </FrameLayout>

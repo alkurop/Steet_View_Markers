@@ -23,10 +23,39 @@
     </style>
 
     <style name="ActionButton">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
         <item name="android:clickable">true</item>
         <item name="android:layout_width">@dimen/action_button_size</item>
         <item name="android:layout_height">@dimen/action_button_size</item>
         <item name="android:tint">@color/street_fab_tint</item>
         <item name="android:layout_margin">8dp</item>
     </style>
+
+    <style name="AppButton" parent="Widget.AppCompat.Button" />
+
+    <style name="AppButtonTextAppearance" parent="TextAppearance.Content" />
+
+    <style name="AppButtonTextAppearance.ButtonWhite" parent="TextAppearance.Header">
+        <item name="android:textColor">@color/text_color_white</item>
+    </style>
+
+    <style name="AppButtonTextAppearance.ButtonAccent" parent="TextAppearance.Header">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="AppButton.Red" parent="AppButton">
+        <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonWhite</item>
+        <item name="colorButtonNormal">@color/red</item>
+    </style>
+
+    <style name="AppButton.Green" parent="AppButton">
+        <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonWhite</item>
+        <item name="colorButtonNormal">@color/green</item>
+    </style>
+
+    <style name="AppButton.Drop" parent="AppButton">
+        <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonAccent</item>
+        <item name="colorButtonNormal">@color/transparent</item>
+    </style>
+
 </resources>
