@@ -23,7 +23,7 @@ import timber.log.Timber
 
 class StreetPresenterImpl(val pinRepo: PinRepo) : StreetPresenter {
     companion object {
-        val METERS_TO_OFFSET_MARKER = 5
+        val METERS_TO_OFFSET_MARKER = 15
     }
 
     val subscribeToPinsUpdatesDisposable = CompositeDisposable()

@@ -2,8 +2,6 @@ package com.alkurop.mystreetplaces.ui.pin.drop
 
 import android.location.Address
 import android.os.Bundle
-import com.alkurop.mystreetplaces.R
-import com.alkurop.mystreetplaces.data.pin.AddressDto
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.domain.pin.PinDto
@@ -15,8 +13,8 @@ import com.alkurop.mystreetplaces.ui.navigation.NoArgsNavigation
 import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
 import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContainerStateModel
 import com.alkurop.mystreetplaces.utils.AddressUtil
+import com.crashlytics.android.Crashlytics
 import com.google.android.gms.maps.model.LatLng
-import com.google.gson.Gson
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
@@ -52,6 +50,10 @@ class DropPinPresenterImpl(val pinRepo: PinRepo, val addressUtil: AddressUtil) :
 
     override fun onTitleChange(title: String) {
         pinDto.title = title
+    }
+
+    override fun onAddressTextChange(text: String) {
+        pinDto.address = text
     }
 
     override fun onDescriptionChange(title: String) {
@@ -108,35 +110,6 @@ class DropPinPresenterImpl(val pinRepo: PinRepo, val addressUtil: AddressUtil) :
         viewBus.onNext(model)
     }
 
-    override fun lookForAddress() {
-        val subscribe = addressUtil
-                .getAddress(LatLng(pinDto.lat, pinDto.lon))
-                .doOnSubscribe {
-                    val model = DropPinViewModel(isLoading = true)
-                    viewBus.onNext(model)
-                }
-                .doAfterTerminate {
-                    val model = DropPinViewModel(isLoading = false)
-                    viewBus.onNext(model)
-                }
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        {
-                            Timber.d(it.toString())
-                            if (it.isEmpty()) {
-                                throw IllegalStateException("Address list came empty")
-                            }
-                            val model = DropPinViewModel(addressList = it)
-                            viewBus.onNext(model)
-                        },
-                        {
-                            val model = DropPinViewModel(errorRes = R.string.loading_address_failed, isLoading = false)
-                            viewBus.onNext(model)
-                        })
-        compositeDisposable.addAll(subscribe)
-
-    }
-
     private fun lookUpAddressInternal() {
 
         val subscribe = addressUtil
@@ -154,9 +127,18 @@ class DropPinPresenterImpl(val pinRepo: PinRepo, val addressUtil: AddressUtil) :
         compositeDisposable.addAll(subscribe)
     }
 
-    override fun onAddressSelected(address: Address) {
-        pinDto.address = AddressDto(address)
+    fun onAddressSelected(address: Address) {
+        pinDto.address = address.getSimpleAddress()
         val model = DropPinViewModel(pinDto)
         viewBus.onNext(model)
+    }
+}
+
+fun Address.getSimpleAddress(): String? {
+    return try {
+        this.getAddressLine(0)
+    } catch (e: Exception) {
+        Crashlytics.logException(e)
+        null
     }
 }

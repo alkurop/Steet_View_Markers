@@ -23,6 +23,7 @@
         tools:text="titlwqee qwewqe qw ee" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/textView2"
         style="@style/TextAppearance.Subtitle"
         android:layout_width="match_parent"
@@ -31,6 +32,7 @@
         android:textColor="@color/colorAccent" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/location_view"
         style="@style/TextAppearance.Normal"
         android:layout_width="match_parent"

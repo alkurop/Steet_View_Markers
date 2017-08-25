@@ -130,12 +130,12 @@ class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
     override fun onStart() {
         super.onStart()
         mapView.onStart()
+        presenter.refresh()
     }
 
     override fun onResume() {
         super.onResume()
         mapView.onResume()
-        presenter.refresh()
     }
 
     override fun onPause() {

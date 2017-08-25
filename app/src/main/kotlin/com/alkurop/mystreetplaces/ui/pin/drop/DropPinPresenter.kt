@@ -1,6 +1,5 @@
 package com.alkurop.mystreetplaces.ui.pin.drop
 
-import android.location.Address
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
@@ -26,6 +25,8 @@ interface DropPinPresenter {
 
     fun onDescriptionChange(title: String)
 
+    fun onAddressTextChange(text: String)
+
     fun submit()
 
     fun deletePin()
@@ -35,6 +36,5 @@ interface DropPinPresenter {
     fun onPictureClick(position: Int, items: List<PictureWrapper>)
 
     fun reloadPictureList(pictures:List<PictureWrapper>)
-    fun lookForAddress()
-    fun onAddressSelected(address: Address)
+
 }

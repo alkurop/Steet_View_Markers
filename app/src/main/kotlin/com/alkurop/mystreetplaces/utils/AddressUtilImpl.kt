@@ -5,6 +5,7 @@ import android.location.Address
 import com.google.android.gms.maps.model.LatLng
 import android.location.Geocoder
 import io.reactivex.Single
+import timber.log.Timber
 import java.util.*
 
 class AddressUtilImpl(val context: Context) : AddressUtil {
@@ -14,7 +15,9 @@ class AddressUtilImpl(val context: Context) : AddressUtil {
     override fun getAddress(location: LatLng): Single<MutableList<Address>> {
         return Single.fromCallable {
             geocoder.getFromLocation(location.latitude, location.longitude, 10)
+        }.onErrorReturn {
+            Timber.e(it)
+            listOf()
         }
-
     }
 }

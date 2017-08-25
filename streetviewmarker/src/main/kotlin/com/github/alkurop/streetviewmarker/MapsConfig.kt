@@ -23,7 +23,7 @@ data class MapsConfig(
     /**
      * only markers that are 500 meters away will be shown in street view.
      */
-    @JvmField  val markersToShowStreetRadius: Double = 500.toDouble(),
+    @JvmField  val markersToShowStreetRadius: Double = 200.toDouble(),
 
 
     /**

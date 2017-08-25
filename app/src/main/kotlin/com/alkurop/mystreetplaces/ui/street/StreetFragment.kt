@@ -119,6 +119,11 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        marker_view.onStart()
+    }
+
     override fun onResume() {
         super.onResume()
         marker_view.onResume()

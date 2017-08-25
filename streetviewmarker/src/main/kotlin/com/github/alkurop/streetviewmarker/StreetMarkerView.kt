@@ -169,9 +169,6 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
         val arrayOfPlaces = markerDataList.toTypedArray()
         bundle.putParcelableArray("markerModels", arrayOfPlaces)
         bundle.putBoolean("shouldFocusToMyLocation", shouldFocusToMyLocation)
-        val streetBundle = Bundle()
-        streetView.onSaveInstanceState(streetBundle)
-        bundle.putBundle("steetView", streetBundle)
         markerDataList.clear()
         return bundle
     }
@@ -186,9 +183,11 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
         streetView.onPause()
     }
 
+    fun onStart(){
+    }
+
     fun onDestroy() {
         markerView.stop()
-        streetView.onLowMemory()
         streetView.onDestroy()
     }
 

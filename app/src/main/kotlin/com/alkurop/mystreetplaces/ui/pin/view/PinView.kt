@@ -96,7 +96,7 @@ class PinView @JvmOverloads constructor(context: Context,
             descritionView.visibility = if (description.isNullOrEmpty()) View.GONE else View.VISIBLE
             addressView.visibility = if (address == null) View.GONE else View.VISIBLE
             addressTitle.visibility = if (address == null) View.GONE else View.VISIBLE
-            addressView.text = address?.addressLine
+            addressView.text = address
         }
     }
 

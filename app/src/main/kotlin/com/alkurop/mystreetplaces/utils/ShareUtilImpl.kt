@@ -3,14 +3,12 @@ package com.alkurop.mystreetplaces.utils
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Bitmap.CompressFormat
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Environment
-import android.support.v4.content.FileProvider
 import com.alkurop.mystreetplaces.R
-import com.alkurop.mystreetplaces.data.pin.AddressDto
 import com.alkurop.mystreetplaces.domain.pin.PinDto
+import com.alkurop.mystreetplaces.ui.pin.drop.getSimpleAddress
 import com.github.alkurop.streetviewmarker.CameraPosition
 import com.github.alkurop.streetviewmarker.StreetMarkerView
 import com.google.android.gms.maps.model.LatLng
@@ -18,7 +16,6 @@ import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import java.io.File
-import java.io.FileOutputStream
 import com.squareup.picasso.Target as PicassoTarget
 
 class ShareUtilImpl(val context: Context) : ShareUtil {
@@ -82,7 +79,7 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
             Observable.fromCallable {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
-                val address = if (addressList.size > 0) AddressDto(addressList[0]) else null
+                val address = if (addressList.size > 0) addressList[0].getSimpleAddress() else null
 
                 intent.putExtra(android.content.Intent.EXTRA_TEXT, getStreetSharingText(context, cameraPosition.location, address))
                 intent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.sharing_street_view_subject))
@@ -117,12 +114,12 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
 
     fun getMapUrl(latLng: LatLng): String = "http://maps.google.com/maps?daddr=${latLng.latitude},${latLng.longitude}"
 
-    fun getStreetSharingText(context: Context, latLng: LatLng, addressDto: AddressDto?): String {
+    fun getStreetSharingText(context: Context, latLng: LatLng, address: String?): String {
         val mapText = getMapUrl(latLng)
         val stringBuilder = StringBuilder()
         stringBuilder.append(context.getString(R.string.sharing_pin_msg_description))
-        if (addressDto != null) {
-            stringBuilder.append(context.getString(R.string.sharing_address, addressDto.addressLine))
+        if (address != null) {
+            stringBuilder.append(context.getString(R.string.sharing_address, address))
         }
         stringBuilder.append(context.getString(R.string.sharing_map, mapText))
         stringBuilder.append("\n")
@@ -138,7 +135,7 @@ class ShareUtilImpl(val context: Context) : ShareUtil {
         stringBuilder.append(context.getString(R.string.sharing_pin_description, pin.description))
         val address = pin.address
         if (address != null) {
-            stringBuilder.append(context.getString(R.string.sharing_address, address.addressLine))
+            stringBuilder.append(context.getString(R.string.sharing_address, address))
         }
         stringBuilder.append(context.getString(R.string.sharing_map, mapText))
 
