@@ -208,8 +208,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
             SearchTopic.MAP_ITEM_ID -> {
                 presenter.navigateToItem(query)
             }
-            else -> {
-            }
         }
     }
 }

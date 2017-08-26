@@ -47,6 +47,7 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
         supportFragmentManager.addOnBackStackChangedListener(backStackListener)
         presenter.currentModel = savedInstanceState?.getParcelable(MODEL_KEY)
         presenter.start()
+        toolbarTitleTv.text = getString(R.string.app_name)
     }
 
     private fun initSearchView() {
@@ -80,7 +81,7 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
 
     override fun renderView(viewModel: MainActivityView) {
         with(viewModel) {
-            viewModel.toolbarTitleRes.takeIf { it != -1 }?.let { toolbarTitleTv.text = getString(viewModel.toolbarTitleRes) }
+           // viewModel.toolbarTitleRes.takeIf { it != -1 }?.let { toolbarTitleTv.text = getString(viewModel.toolbarTitleRes) }
             searchView.visibility = if (viewModel.shouldShowSearch) View.VISIBLE else View.GONE
         }
     }

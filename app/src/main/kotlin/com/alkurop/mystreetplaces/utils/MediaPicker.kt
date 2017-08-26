@@ -128,13 +128,13 @@ class MediaPicker(val permissionsRequiredCallback: ((permission: String) -> Unit
 
     private fun copyToLocal(uri: Uri): Observable<Uri> {
         return Observable.just(uri)
-                .flatMap { uri: Uri ->
+                .flatMap { localUri: Uri ->
                     var bufferedOutputStream: BufferedOutputStream? = null
                     var bufferedInputStream: BufferedInputStream? = null
                     var file: File? = null
                     try {
                         val contentResolver = context.applicationContext.contentResolver
-                        val type = contentResolver.getType(uri)
+                        val type = contentResolver.getType(localUri)
                         val singleton = MimeTypeMap.getSingleton()
                         var ext = singleton.getExtensionFromMimeType(type)
                         ext = if (null === ext) {
@@ -144,7 +144,7 @@ class MediaPicker(val permissionsRequiredCallback: ((permission: String) -> Unit
                         }
                         file = File(getFileDirectory(), createFileName(ext))
                         bufferedOutputStream = file.outputStream().buffered()
-                        bufferedInputStream = contentResolver.openInputStream(uri).buffered()
+                        bufferedInputStream = contentResolver.openInputStream(localUri).buffered()
                         bufferedInputStream.copyTo(bufferedOutputStream)
                     } catch (e: Throwable) {
                         e.printStackTrace()

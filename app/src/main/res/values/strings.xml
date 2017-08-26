@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Place</string>
+    <string name="app_name">My Places</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyD-VPyj7IwXBWFcSKEW0HgTgNJMDK1sMvM</string>
 
     <!--Drawer menu-->

@@ -5,8 +5,7 @@ import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.realm.Case
-import io.realm.RealmList
+import io.realm.*
 
 class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
     override fun addOrUpdatePin(pin: PinDto): Single<PinDto> {
@@ -88,13 +87,26 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
     }
 
     override fun searchSync(query: String): List<PinDto> {
+        val wordsSplit = query.split(" ")
         val realm = realmProvider.provideRealm()
-        val searchResult = realm.where(PinDto::class.java)
+        var searchRequest = realm.where(PinDto::class.java)
+        wordsSplit.forEach {
+            searchRequest = searchRequest.addQuery(it)
+        }
+        val request = searchRequest
+                .findAll()
+                .take(10)
+        return realm.copyFromRealm(request)
+    }
+
+    fun <E : RealmModel> RealmQuery<E>.addQuery(query: String):RealmQuery<E> {
+       return this
+                .beginGroup()
                 .contains("title", query, Case.INSENSITIVE)
                 .or()
                 .contains("description", query, Case.INSENSITIVE)
-                .findAll()
-                .take(6)
-        return realm.copyFromRealm(searchResult)
+                .or()
+                .contains("address", query, Case.INSENSITIVE)
+                .endGroup()
     }
 }

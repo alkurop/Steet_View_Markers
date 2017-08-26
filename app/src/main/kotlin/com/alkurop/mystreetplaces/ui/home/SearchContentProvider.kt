@@ -37,7 +37,7 @@ class SearchContentProvider : ContentProvider() {
         val list = pinRepo.searchSync(uri.lastPathSegment)
         list.forEach {
             val elements = it.id?.hashCode() ?: 0
-            cursor.addRow(arrayOf(elements, it.title, it.description, it.id))
+            cursor.addRow(arrayOf(elements, it.title, it.address, it.id))
         }
         return cursor
     }
