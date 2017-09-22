@@ -99,7 +99,7 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
 
     fun hasFragmentInBackStack(tag: String): Boolean {
         val backStackCount = childFragmentManager.backStackEntryCount
-        (0..backStackCount - 1)
+        (0 until backStackCount)
                 .forEach {
                     val name = childFragmentManager.getBackStackEntryAt(it).name
                     if (name == tag) {
@@ -119,6 +119,10 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
             if (action.isShouldFinish) {
                 activity.finish()
             }
+        }
+        val overrideAnimation = action.overrideAnimation
+        if(overrideAnimation != null ){
+            activity.overridePendingTransition(overrideAnimation[0], overrideAnimation[1])
         }
     }
 

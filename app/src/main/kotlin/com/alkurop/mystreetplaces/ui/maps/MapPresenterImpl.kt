@@ -3,26 +3,26 @@ package com.alkurop.mystreetplaces.ui.maps
 import android.os.Bundle
 import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.domain.pin.PinDto
+import com.alkurop.mystreetplaces.intercom.SearchBus
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.BottomsheetFragmentNavigationAction
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
-import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
+import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.VisibleRegion
-import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
 
-class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
+class MapPresenterImpl(val pinRepo: PinRepo, val searchBus: SearchBus) : MapPresenter {
     override val viewBus: Subject<MapViewModel> = createViewSubject()
 
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
@@ -38,6 +38,13 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
         } else {
             viewBus.onNext(MapViewModel(shouldAskForPermission = true))
         }
+    }
+
+    override fun attach() {
+        val sub = searchBus.pinSearch.
+                subscribe({ navigateToItem(it.pinDto.id!!) })
+        markersDisposable.add(sub)
+
     }
 
     override fun onCameraPositionChanged(visibleRegion: VisibleRegion?) {
@@ -88,20 +95,10 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
 
     override fun unsubscribe() {
         markersDisposable.clear()
+
     }
 
-    override fun runSearchQuery(query: String) {
-        val subscribe = pinRepo.search(query).subscribe({
-            it.takeIf { it.isNotEmpty() }
-                    ?.first()
-                    ?.let {
-                        focusViewToMarker(it)
-                    }
-        }, { Timber.e(it) })
-        markersDisposable.add(subscribe)
-    }
-
-    override fun navigateToItem(itemId: String) {
+    fun navigateToItem(itemId: String) {
         val subscribe = pinRepo.getPinDetails(itemId).subscribe({
             focusViewToMarker(it)
         }, { Timber.e(it) })
@@ -122,4 +119,5 @@ class MapPresenterImpl(val pinRepo: PinRepo) : MapPresenter {
         val action = BottomsheetFragmentNavigationAction(endpoint = PinFragment::class.java, args = args)
         navBus.onNext(action)
     }
+
 }

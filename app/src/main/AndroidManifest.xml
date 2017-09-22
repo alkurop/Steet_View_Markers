@@ -11,8 +11,6 @@
 
     <application
         android:name=".MyStreetPlacesApp"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher"
@@ -23,19 +21,12 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4aae25af2081154334599c1ad33d7a5623cf878e" />
+
         <activity
-            android:theme="@style/LandingTheme"
             android:name=".ui.home.MainActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/LandingTheme">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,6 +38,11 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SearchActivity" />
 
         <activity
             android:name=".ui.street.StreetActivity"
@@ -69,11 +65,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <provider
-            android:exported="true"
-            android:authorities="com.alkurop.mystreetplaces.ui.home.SearchContentProvider"
-            android:name=".ui.home.SearchContentProvider"
-            />
     </application>
 
 </manifest>

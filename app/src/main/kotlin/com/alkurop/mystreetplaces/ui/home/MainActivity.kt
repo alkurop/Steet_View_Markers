@@ -1,7 +1,5 @@
 package com.alkurop.mystreetplaces.ui.home
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
@@ -15,7 +13,6 @@ import javax.inject.Inject
 
 class MainActivity : BaseMvpActivity<MainActivityView>() {
     companion object {
-
         val MODEL_KEY = "model"
     }
 
@@ -51,8 +48,7 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
     }
 
     private fun initSearchView() {
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView.setOnClickListener { presenter.onSearchClicked() }
     }
 
     private fun initDrawerComponents() {
@@ -81,8 +77,11 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
 
     override fun renderView(viewModel: MainActivityView) {
         with(viewModel) {
-           // viewModel.toolbarTitleRes.takeIf { it != -1 }?.let { toolbarTitleTv.text = getString(viewModel.toolbarTitleRes) }
+            // viewModel.toolbarTitleRes.takeIf { it != -1 }?.let { toolbarTitleTv.text = getString(viewModel.toolbarTitleRes) }
             searchView.visibility = if (viewModel.shouldShowSearch) View.VISIBLE else View.GONE
+            toolbarTitleTv.visibility = if (!viewModel.shouldShowSearch) View.VISIBLE else View.GONE
+
+            search?.let { searchTv.text = it.query }
         }
     }
 
@@ -113,29 +112,5 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
-            if (query != null) sendSearchResult(query, SearchTopic.MAP_QUERY)
-            val id = intent.data?.lastPathSegment
-            if (id != null) sendSearchResult(id, SearchTopic.MAP_ITEM_ID)
 
-        }
-    }
-
-    private fun sendSearchResult(query: String, topic: SearchTopic) {
-        supportFragmentManager.fragments
-                ?.filter { it != null && it.isAdded }
-                ?.filter { it is Searchable }
-                ?.forEach { fragment ->
-                    (fragment as Searchable).onSearch(topic, query)
-                    fragment.childFragmentManager.fragments
-                            ?.filter { it != null && it.isAdded }
-                            ?.filter { it is Searchable }
-                            ?.forEach { child ->
-                                (child as Searchable).onSearch(topic, query)
-                            }
-                }
-    }
 }

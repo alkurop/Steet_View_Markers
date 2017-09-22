@@ -23,8 +23,7 @@ interface MapPresenter {
 
     fun refresh()
 
-    fun navigateToItem(itemId: String)
+    fun attach()
 
-    fun runSearchQuery(query: String)
 }
 

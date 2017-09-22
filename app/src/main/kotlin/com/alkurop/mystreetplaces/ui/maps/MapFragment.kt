@@ -8,8 +8,6 @@ import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.pin.PinPlace
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
-import com.alkurop.mystreetplaces.ui.home.SearchTopic
-import com.alkurop.mystreetplaces.ui.home.Searchable
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.LocationTracker
 import com.github.alkurop.jpermissionmanager.PermissionOptionalDetails
@@ -26,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_map.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
+class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     @Inject lateinit var presenter: MapPresenter
     private var permissionManager: PermissionsManager? = null
@@ -76,6 +74,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
         drop_btn.setOnClickListener { presenter.onGoToStreetView() }
         presenter.isPermissionGranted = false
         permissionManager?.makePermissionRequest()
+        presenter.attach()
     }
 
     fun initClusterManager(map: GoogleMap) {
@@ -200,14 +199,4 @@ class MapFragment : BaseMvpFragment<MapViewModel>(), Searchable {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onSearch(topic: SearchTopic, query: String) {
-        when (topic) {
-            SearchTopic.MAP_QUERY -> {
-                presenter.runSearchQuery(query)
-            }
-            SearchTopic.MAP_ITEM_ID -> {
-                presenter.navigateToItem(query)
-            }
-        }
-    }
 }

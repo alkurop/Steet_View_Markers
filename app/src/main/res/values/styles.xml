@@ -14,7 +14,6 @@
     </style>
 
     <style name="LandingTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
@@ -61,6 +60,17 @@
     <style name="AppButton.Drop" parent="AppButton">
         <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonAccent</item>
         <item name="colorButtonNormal">@color/transparent</item>
+    </style>
+
+    <style name="SearchActivity" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
 
 </resources>

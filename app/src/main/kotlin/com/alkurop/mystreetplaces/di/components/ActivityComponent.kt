@@ -5,6 +5,7 @@ import com.alkurop.mystreetplaces.di.modules.ui.ActivityModule
 import com.alkurop.mystreetplaces.ui.home.MainActivity
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
+import com.alkurop.mystreetplaces.ui.search.SearchActivity
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import dagger.Subcomponent
 
@@ -19,5 +20,7 @@ interface ActivityComponent {
     fun inject(pinActivity: DropPinActivity)
 
     fun inject(pictureActivity: PictureActivity)
+
+    fun inject(activitySearch: SearchActivity)
 }
 

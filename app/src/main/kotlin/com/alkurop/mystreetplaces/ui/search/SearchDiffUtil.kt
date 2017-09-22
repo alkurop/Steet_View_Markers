@@ -1,9 +1,10 @@
-package com.alkurop.mystreetplaces.ui.pin.pictures
+package com.alkurop.mystreetplaces.ui.search
 
 import android.support.v7.util.DiffUtil
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
+import com.alkurop.mystreetplaces.domain.pin.PinDto
 
-class PicturesDiffUtil(val oldList: List<PictureWrapper>, val newList: List<PictureWrapper>) : DiffUtil.Callback() {
+class SearchDiffUtil(val oldList: List<PinDto>, val newList: List<PinDto>) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldList.size
     override fun getNewListSize(): Int = newList.size

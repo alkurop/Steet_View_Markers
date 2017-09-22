@@ -3,8 +3,9 @@ package com.alkurop.mystreetplaces.ui.home
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.annotation.StringRes
+import com.alkurop.mystreetplaces.intercom.SearchBus
 
-data class MainActivityView(@StringRes val toolbarTitleRes: Int = -1, val shouldShowSearch: Boolean = false) : Parcelable {
+data class MainActivityView(@StringRes val toolbarTitleRes: Int = -1, val shouldShowSearch: Boolean = false, val search: SearchBus.SearchModel? = null) : Parcelable {
     companion object {
         @JvmField
         val CREATOR: Parcelable.Creator<MainActivityView> = object : Parcelable.Creator<MainActivityView> {
