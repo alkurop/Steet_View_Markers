@@ -6,5 +6,5 @@ import io.reactivex.subjects.PublishSubject
 class SearchBus {
     val pinSearch = PublishSubject.create<SearchModel>()
 
-    data class SearchModel(val pinDto: PinDto, val query: String)
+    data class SearchModel(val pinDto: PinDto?, val query: String)
 }

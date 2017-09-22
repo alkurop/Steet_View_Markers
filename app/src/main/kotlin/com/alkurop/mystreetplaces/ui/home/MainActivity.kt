@@ -81,7 +81,7 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
             searchView.visibility = if (viewModel.shouldShowSearch) View.VISIBLE else View.GONE
             toolbarTitleTv.visibility = if (!viewModel.shouldShowSearch) View.VISIBLE else View.GONE
 
-            search?.let { searchTv.text = it.query }
+            query?.let { searchTv.text = it }
         }
     }
 

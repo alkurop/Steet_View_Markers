@@ -28,7 +28,7 @@ class MainActivityPresenterImpl(val searchBus: SearchBus) : MainActivityPresente
 
     override fun start() {
         val sub = searchBus.pinSearch.subscribe {
-            val model = MainActivityView(search = it, shouldShowSearch = true)
+            val model = MainActivityView(query = it.query, shouldShowSearch = true)
             viewBus.onNext(model)
             query = it.query
         }
