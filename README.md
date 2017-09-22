@@ -10,4 +10,4 @@ https://github.com/alkurop/Steet_View_Markers/blob/master/app/src/main/kotlin/co
 
 https://play.google.com/store/apps/details?id=com.alkurop.mystreetplaces
 
-https://cdn.rawgit.com/alkurop/gif-repo/c9677188/demo.gif
+![](https://rawgit.com/alkurop/gif-repo/master/demo.gif)
