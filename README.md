@@ -1,4 +1,4 @@
-# Steet_View_Markers
+# Steet View Markers
 [![](https://jitpack.io/v/alkurop/Steet_View_Markers.svg)](https://jitpack.io/#alkurop/Steet_View_Markers)
 
 
@@ -10,4 +10,4 @@ https://github.com/alkurop/Steet_View_Markers/blob/master/app/src/main/kotlin/co
 
 https://play.google.com/store/apps/details?id=com.alkurop.mystreetplaces
 
-![](https://rawgit.com/alkurop/gif-repo/master/demo.gif)
+![](https://github.com/alkurop/gif-repo/raw/master/demo.gif)
