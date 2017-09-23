@@ -22,7 +22,7 @@ class MainActivityPresenterImpl(val searchBus: SearchBus) : MainActivityPresente
     override var currentModel: MainActivityView? = null
     val containerId = R.id.fragment_container
     var currentTab: Int = 0
-    var query: String = ""
+    override var query: String = ""
 
     val dis = CompositeDisposable()
 

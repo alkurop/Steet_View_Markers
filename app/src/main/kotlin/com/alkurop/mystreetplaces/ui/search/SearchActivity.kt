@@ -3,11 +3,13 @@ package com.alkurop.mystreetplaces.ui.search
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import android.view.View
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_search.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -37,7 +39,17 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
 
         RxTextView.afterTextChangeEvents(et_search)
                 .debounce(250, TimeUnit.MILLISECONDS)
-                .subscribe { presenter.onSearchQuerySubmit(it.editable()?.toString() ?: "") }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    val query = it.editable()?.toString() ?: ""
+                    presenter.onSearchQuerySubmit(query)
+                    icClose.visibility = if (query.isNullOrEmpty()) View.INVISIBLE else View.VISIBLE
+
+                }
+
+        icClose.setOnClickListener {
+            et_search.text = null
+        }
 
         container.setOnClickListener {
             onBackPressed()

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="top"
-    android:id="@+id/container"
     android:clickable="true"
     android:orientation="vertical">
 
@@ -18,14 +18,35 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Light">
 
-        <EditText
-            android:id="@+id/et_search"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/search"
-            android:imeOptions="actionSearch"
-            android:singleLine="true"
-            android:maxLines="1" />
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/icClose"
+                android:layout_toStartOf="@+id/icClose"
+                android:hint="@string/search"
+                android:imeOptions="actionSearch"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/icClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:padding="4dp"
+                android:visibility="invisible"/>
+        </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
 

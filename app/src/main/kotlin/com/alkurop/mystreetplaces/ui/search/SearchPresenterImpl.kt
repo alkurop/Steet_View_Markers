@@ -33,6 +33,6 @@ class SearchPresenterImpl(val pinRepo: PinRepo, val searchBus: SearchBus) : Sear
     }
 
     override fun onSearchItemSelected(pinDto: PinDto) {
-        searchBus.pinSearch.onNext(SearchBus.SearchModel(pinDto, query))
+        searchBus.pinSearch.onNext(SearchBus.SearchModel(pinDto, if (query.isNullOrBlank()) pinDto.title else query))
     }
 }

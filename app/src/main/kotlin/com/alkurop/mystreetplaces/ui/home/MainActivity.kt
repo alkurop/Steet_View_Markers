@@ -7,6 +7,7 @@ import android.view.View
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
@@ -45,6 +46,16 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
         presenter.currentModel = savedInstanceState?.getParcelable(MODEL_KEY)
         presenter.start()
         toolbarTitleTv.text = getString(R.string.app_name)
+        RxTextView.afterTextChangeEvents(searchTv)
+                .subscribe {
+                    var query = it.editable()?.toString()
+                    icClose.visibility = if (query.isNullOrBlank()) View.INVISIBLE else View.VISIBLE
+                }
+
+        icClose.setOnClickListener {
+            searchTv.text = null
+            presenter.query = ""
+        }
     }
 
     private fun initSearchView() {

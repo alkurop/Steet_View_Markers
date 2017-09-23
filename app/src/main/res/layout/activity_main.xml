@@ -38,15 +38,16 @@
                         android:gravity="center_vertical"
                         android:visibility="gone" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/searchView"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent">
 
                         <ImageView
+                            android:id="@+id/searchIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
                             android:src="@android:drawable/ic_menu_search" />
 
                         <TextView
@@ -55,10 +56,26 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="28dp"
                             android:layout_marginRight="28dp"
+                            android:layout_toEndOf="@+id/searchIcon"
+                            android:layout_toLeftOf="@+id/icClose"
+                            android:layout_toRightOf="@+id/searchIcon"
+                            android:layout_toStartOf="@+id/icClose"
                             android:gravity="center_vertical"
-                            android:textSize="18sp"
-                            android:hint="@string/search" />
-                    </LinearLayout>
+                            android:hint="@string/search"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:id="@+id/icClose"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:visibility="invisible"
+                            android:padding="4dp"
+                            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+                    </RelativeLayout>
                 </FrameLayout>
 
             </android.support.v7.widget.Toolbar>

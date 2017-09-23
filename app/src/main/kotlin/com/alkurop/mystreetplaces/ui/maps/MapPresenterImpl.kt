@@ -31,6 +31,8 @@ class MapPresenterImpl(val pinRepo: PinRepo, val searchBus: SearchBus) : MapPres
     var visibleRegion: VisibleRegion? = null
 
     val markersDisposable = CompositeDisposable()
+    val generalPurposeDisposable = CompositeDisposable()
+
     override fun onAddMarker() {
         val tmp = visibleRegion
         if (tmp != null) {
@@ -42,9 +44,8 @@ class MapPresenterImpl(val pinRepo: PinRepo, val searchBus: SearchBus) : MapPres
 
     override fun attach() {
         val sub = searchBus.pinSearch.
-                subscribe({ navigateToItem(it.pinDto.id!!) })
-        markersDisposable.add(sub)
-
+                subscribe({ navigateToItem(it.pinDto?.id!!) })
+        generalPurposeDisposable.add(sub)
     }
 
     override fun onCameraPositionChanged(visibleRegion: VisibleRegion?) {
@@ -95,7 +96,7 @@ class MapPresenterImpl(val pinRepo: PinRepo, val searchBus: SearchBus) : MapPres
 
     override fun unsubscribe() {
         markersDisposable.clear()
-
+        generalPurposeDisposable.clear()
     }
 
     fun navigateToItem(itemId: String) {

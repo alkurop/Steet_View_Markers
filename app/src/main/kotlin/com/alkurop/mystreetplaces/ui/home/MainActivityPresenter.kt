@@ -8,6 +8,7 @@ interface MainActivityPresenter {
     val viewBus: Subject<MainActivityView>
     val navBus: Subject<NavigationAction>
     var currentModel: MainActivityView?
+    var query: String
 
     fun start()
 
