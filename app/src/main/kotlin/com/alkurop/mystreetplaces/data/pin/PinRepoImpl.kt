@@ -63,11 +63,6 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
     }
 
     override fun search(query: String): Single<List<PinDto>> {
-        return Single.fromCallable { searchSync(query) }
+        return Single.fromCallable { pinCahe.searchSync(query) }
     }
-
-    override fun searchSync(query: String): List<PinDto> {
-        return pinCahe.searchSync(query)
-    }
-
 }

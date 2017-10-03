@@ -3,7 +3,7 @@ package com.alkurop.mystreetplaces.ui.maps
 import android.os.Bundle
 import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.domain.pin.PinDto
-import com.alkurop.mystreetplaces.intercom.SearchBus
+import com.alkurop.mystreetplaces.intercom.AppDataBus
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
@@ -22,7 +22,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
 
-class MapPresenterImpl(val pinRepo: PinRepo, val searchBus: SearchBus) : MapPresenter {
+class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPresenter {
     override val viewBus: Subject<MapViewModel> = createViewSubject()
 
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
@@ -43,14 +43,18 @@ class MapPresenterImpl(val pinRepo: PinRepo, val searchBus: SearchBus) : MapPres
     }
 
     override fun attach() {
-        val sub = searchBus.pinSearch.
+        val sub = appDataBus.pinSearch.
                 subscribe({ navigateToItem(it.pinDto?.id!!) })
         generalPurposeDisposable.add(sub)
     }
 
     override fun onCameraPositionChanged(visibleRegion: VisibleRegion?) {
         this.visibleRegion = visibleRegion
-        visibleRegion?.let { getPinsForLocationFromRepo(it) }
+
+        visibleRegion?.let {
+            getPinsForLocationFromRepo(it)
+            appDataBus.mapLocation.onNext(AppDataBus.MapLocationModel(it))
+        }
     }
 
     override fun refresh() {

@@ -3,7 +3,6 @@ package com.alkurop.mystreetplaces.ui.home
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.annotation.StringRes
-import com.alkurop.mystreetplaces.intercom.SearchBus
 
 data class MainActivityView(@StringRes val toolbarTitleRes: Int = -1, val shouldShowSearch: Boolean, val query:String? = null) : Parcelable {
     companion object {

@@ -1,7 +1,7 @@
 package com.alkurop.mystreetplaces.di.modules
 
 import android.content.Context
-import com.alkurop.mystreetplaces.intercom.SearchBus
+import com.alkurop.mystreetplaces.intercom.AppDataBus
 import com.alkurop.mystreetplaces.utils.*
 import dagger.Module
 import dagger.Provides
@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Module
 open class UtilityModule {
-    val searchBus = SearchBus()
+    val searchBus = AppDataBus()
 
     @Provides
     fun provideLocationTracker(): LocationTracker {

@@ -1,7 +1,7 @@
 package com.alkurop.mystreetplaces.di.modules.ui
 
 import com.alkurop.mystreetplaces.data.pin.PinRepo
-import com.alkurop.mystreetplaces.intercom.SearchBus
+import com.alkurop.mystreetplaces.intercom.AppDataBus
 import com.alkurop.mystreetplaces.ui.home.MainActivityPresenter
 import com.alkurop.mystreetplaces.ui.home.MainActivityPresenterImpl
 import com.alkurop.mystreetplaces.ui.maps.MapPresenter
@@ -30,10 +30,10 @@ import dagger.Provides
 @Module
 class PresenterModule {
     @Provides
-    fun provideMainPresenter(searchBus: SearchBus): MainActivityPresenter = MainActivityPresenterImpl(searchBus)
+    fun provideMainPresenter(appDataBus: AppDataBus): MainActivityPresenter = MainActivityPresenterImpl(appDataBus)
 
     @Provides
-    fun provideMapPresenter(pinRepo: PinRepo, searchBus: SearchBus): MapPresenter = MapPresenterImpl(pinRepo, searchBus)
+    fun provideMapPresenter(pinRepo: PinRepo, appDataBus: AppDataBus): MapPresenter = MapPresenterImpl(pinRepo, appDataBus)
 
     @Provides
     fun provideStreetPresenter(pinRepo: PinRepo): StreetPresenter = StreetPresenterImpl(pinRepo)
@@ -57,6 +57,6 @@ class PresenterModule {
     fun providePreviewPicturePresenter(): PreviewPicturePresenter = PreviewPicturePresenterImpl()
 
     @Provides
-    fun provideSearchPresenter(pinRepo: PinRepo, searchBus: SearchBus): SearchPresenter = SearchPresenterImpl(pinRepo, searchBus)
+    fun provideSearchPresenter(pinRepo: PinRepo, appDataBus: AppDataBus): SearchPresenter = SearchPresenterImpl(pinRepo, appDataBus)
 }
 

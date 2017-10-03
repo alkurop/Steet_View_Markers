@@ -2,7 +2,7 @@ package com.alkurop.mystreetplaces.ui.home
 
 import android.os.Bundle
 import com.alkurop.mystreetplaces.R
-import com.alkurop.mystreetplaces.intercom.SearchBus
+import com.alkurop.mystreetplaces.intercom.AppDataBus
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
 import com.alkurop.mystreetplaces.ui.createViewSubject
 import com.alkurop.mystreetplaces.ui.maps.MapFragment
@@ -15,7 +15,7 @@ import com.alkurop.mystreetplaces.ui.settings.SettingsFragment
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
 
-class MainActivityPresenterImpl(val searchBus: SearchBus) : MainActivityPresenter {
+class MainActivityPresenterImpl(val appDataBus: AppDataBus) : MainActivityPresenter {
     override val viewBus: Subject<MainActivityView> = createViewSubject()
     override val navBus: Subject<NavigationAction> = createNavigationSubject()
 
@@ -27,7 +27,7 @@ class MainActivityPresenterImpl(val searchBus: SearchBus) : MainActivityPresente
     val dis = CompositeDisposable()
 
     override fun start() {
-        val sub = searchBus.pinSearch.subscribe {
+        val sub = appDataBus.pinSearch.subscribe {
             val model = MainActivityView(query = it.query, shouldShowSearch = true)
             viewBus.onNext(model)
             query = it.query
