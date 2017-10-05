@@ -12,6 +12,7 @@ import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.places.PlacesFragment
 import com.alkurop.mystreetplaces.ui.search.SearchActivity
 import com.alkurop.mystreetplaces.ui.settings.SettingsFragment
+import com.google.android.gms.maps.model.LatLng
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
 
@@ -25,6 +26,7 @@ class MainActivityPresenterImpl(val appDataBus: AppDataBus) : MainActivityPresen
     override var query: String = ""
 
     val dis = CompositeDisposable()
+    var location: LatLng? = null
 
     override fun start() {
         val sub = appDataBus.pinSearch.subscribe {
@@ -32,12 +34,19 @@ class MainActivityPresenterImpl(val appDataBus: AppDataBus) : MainActivityPresen
             viewBus.onNext(model)
             query = it.query
         }
-        dis.add(sub)
         currentModel?.let {
             viewBus.onNext(it)
         }
-        if (currentModel == null)
+        if (currentModel == null) {
             onDrawerAction(R.id.map)
+        }
+
+        val sub2 = appDataBus.mapLocation.subscribe({ region ->
+            val latLngBounds = region.visibleRegion?.latLngBounds ?: return@subscribe
+            location = latLngBounds.center
+
+        })
+        dis.addAll(sub, sub2)
     }
 
     override fun onDrawerAction(action: Int) {
@@ -83,11 +92,13 @@ class MainActivityPresenterImpl(val appDataBus: AppDataBus) : MainActivityPresen
     }
 
     override fun onSearchClicked() {
+        if (location == null) return
         val animation = IntArray(2)
         animation[0] = R.anim.fade_in
         animation[1] = R.anim.fade_out
         val args = Bundle()
-        args.putString(SearchActivity.QUERY, query)
+        args.putString(SearchActivity.KEY_QUERY, query)
+        args.putParcelable(SearchActivity.KEY_LOCATION, location)
         val action = ActivityNavigationAction(SearchActivity::class.java,
                 overrideAnimation = animation, args = args)
 

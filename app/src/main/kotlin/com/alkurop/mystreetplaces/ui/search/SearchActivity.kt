@@ -7,6 +7,7 @@ import android.view.View
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.google.android.gms.maps.model.LatLng
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,18 +21,27 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
     lateinit var adapter: SearchAdapter
 
     companion object {
-        val QUERY = "QUERY"
+        val KEY_QUERY = "KEY_QUERY"
+        val KEY_LOCATION = "location"
     }
+
+    private lateinit var location: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
         setupRootView(R.layout.activity_search)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        adapter = SearchAdapter {
+        adapter = SearchAdapter()
+        adapter.pinClickListener = {
             presenter.onSearchItemSelected(it)
             onBackPressed()
         }
+        adapter.predictionClickListener = {
+            presenter.onPredictionClicked(it)
+            onBackPressed()
+        }
+        presenter.googlePlacesSearch = GooglePlacesSearchImpl(this)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
@@ -42,7 +52,7 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     val query = it.editable()?.toString() ?: ""
-                    presenter.onSearchQuerySubmit(query)
+                    presenter.onSearchQuerySubmit(query, location)
                     icClose.visibility = if (query.isNullOrEmpty()) View.INVISIBLE else View.VISIBLE
 
                 }
@@ -54,7 +64,8 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
         container.setOnClickListener {
             onBackPressed()
         }
-        val query = intent.getBundleExtra(BaseMvpActivity.ARGS_KEY).getString(QUERY)
+        val query = intent.getBundleExtra(BaseMvpActivity.ARGS_KEY).getString(KEY_QUERY)
+        location = intent.getBundleExtra(BaseMvpActivity.ARGS_KEY).getParcelable<LatLng>(KEY_LOCATION)
         et_search.setText(query)
         et_search.setSelection(query.length)
 

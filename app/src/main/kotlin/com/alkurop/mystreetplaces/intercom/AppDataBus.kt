@@ -6,8 +6,9 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 class AppDataBus {
-    val pinSearch = PublishSubject.create<SearchModel>()
+    val pinSearch = PublishSubject.create<PinSearchModel>()
     val mapLocation = BehaviorSubject.create<MapLocationModel>()
+    val googlePlacesSearch = PublishSubject.create<GooglePlaceSearchModel>()
 
     init {
         mapLocation.startWith(MapLocationModel(null))
@@ -15,5 +16,8 @@ class AppDataBus {
 
     data class MapLocationModel(val visibleRegion: VisibleRegion?)
 
-    data class SearchModel(val pinDto: PinDto?, val query: String)
+    data class PinSearchModel(val pinDto: PinDto?, val query: String)
+
+    data class GooglePlaceSearchModel(val placeId: String, val query: String)
+
 }

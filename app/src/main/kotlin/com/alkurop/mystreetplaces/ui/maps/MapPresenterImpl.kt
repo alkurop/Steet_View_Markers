@@ -29,7 +29,6 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
     override var isPermissionGranted: Boolean = false
 
     var visibleRegion: VisibleRegion? = null
-
     val markersDisposable = CompositeDisposable()
     val generalPurposeDisposable = CompositeDisposable()
 
@@ -45,7 +44,14 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
     override fun attach() {
         val sub = appDataBus.pinSearch.
                 subscribe({ navigateToItem(it.pinDto?.id!!) })
-        generalPurposeDisposable.add(sub)
+        val sub2 = appDataBus.googlePlacesSearch.subscribe({
+            loadPlace(it)
+        })
+        generalPurposeDisposable.addAll(sub, sub2)
+    }
+
+    fun loadPlace(searchModel: AppDataBus.GooglePlaceSearchModel) {
+        
     }
 
     override fun onCameraPositionChanged(visibleRegion: VisibleRegion?) {

@@ -95,7 +95,7 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
         }
         val request = searchRequest
                 .findAllSorted("timeStamp", Sort.DESCENDING)
-                .take(5)
+                .take(10)
         return realm.copyFromRealm(request)
     }
 

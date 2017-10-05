@@ -1,6 +1,7 @@
 package com.alkurop.mystreetplaces.utils
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 
 object LocationUtils {
     fun moveAlongBearing(location: LatLng, bearing: Double, distanceMeters: Int): LatLng {
@@ -12,7 +13,6 @@ object LocationUtils {
 
         val lat2 = Math.asin(Math.sin(lat1) * Math.cos(d / R) +
                 Math.cos(lat1) * Math.sin(d / R) * Math.cos(brng))
-
 
         val lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(d / R) * Math.cos(lat1),
                 Math.cos(d / R) - Math.sin(lat1) * Math.sin(lat2))
@@ -37,5 +37,10 @@ object LocationUtils {
         val maxPoint = LatLng(topPoint.latitude, leftPoint.longitude)
 
         return arrayOf(minPoint, maxPoint)
+    }
+
+    fun getBounds(location: LatLng, distanceMeters: Int): LatLngBounds {
+        val squareOfDistanceMeters = getSquareOfDistanceMeters(location, distanceMeters)
+        return LatLngBounds(squareOfDistanceMeters[0], squareOfDistanceMeters[1])
     }
 }
