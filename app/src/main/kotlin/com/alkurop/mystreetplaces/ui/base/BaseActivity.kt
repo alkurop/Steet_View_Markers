@@ -30,7 +30,7 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     protected open fun setupRootView(@LayoutRes layoutId: Int) {
         setContentView(layoutId)
-        toolbar = this.findViewById(R.id.toolbar) as Toolbar
+        toolbar = this.findViewById(R.id.toolbar)
         if (toolbar != null) {
             setSupportActionBar(toolbar)
         }

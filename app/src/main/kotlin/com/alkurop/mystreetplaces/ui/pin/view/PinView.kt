@@ -38,25 +38,24 @@ class PinView @JvmOverloads constructor(context: Context,
     @Inject lateinit var presenter: PinViewPresenter
 
     override fun onAttachedToWindow() {
-
         component().inject(this)
         super.onAttachedToWindow()
-        locationView = findViewById(R.id.location_view) as TextView
-        titleView = findViewById(R.id.title) as TextView
-        descritionTitle = findViewById(R.id.description_title) as TextView
-        descritionView = findViewById(R.id.description) as TextView
-        addressView = findViewById(R.id.address) as TextView
-        addressTitle = findViewById(R.id.address_title) as TextView
-        recyclerView = findViewById(R.id.recyclerView) as RecyclerView
+        locationView = findViewById(R.id.location_view)
+        titleView = findViewById(R.id.title)
+        descritionTitle = findViewById(R.id.description_title)
+        descritionView = findViewById(R.id.description)
+        addressView = findViewById(R.id.address)
+        addressTitle = findViewById(R.id.address_title)
+        recyclerView = findViewById(R.id.recyclerView)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
         val picturesAdapter = PicturesAdapter()
         picturesAdapter.onPictureClick = { position -> presenter.onPictureClick(picturesAdapter.getItems(), position) }
         recyclerView.adapter = picturesAdapter
-        findViewById(R.id.editBtn).setOnClickListener { presenter.onEdit() }
-        findViewById(R.id.navigateBtn).setOnClickListener { presenter.onNavigate() }
-        findViewById(R.id.shareBtn).setOnClickListener { presenter.onShare() }
+        findViewById<View>(R.id.editBtn).setOnClickListener { presenter.onEdit() }
+        findViewById<View>(R.id.navigateBtn).setOnClickListener { presenter.onNavigate() }
+        findViewById<View>(R.id.shareBtn).setOnClickListener { presenter.onShare() }
         presenter.loadPinDetails(id)
     }
 

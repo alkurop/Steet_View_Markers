@@ -32,7 +32,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     private var clusterManager: ClusterManager<MapClusterItem>? = null
 
     private val compositeDisposable = CompositeDisposable()
-    private val DEFAULT_CAMERA_ZOOM = 14f
+    private val DEFAULT_CAMERA_ZOOM = 16f
 
     override fun getSubject(): Observable<MapViewModel> = presenter.viewBus
 

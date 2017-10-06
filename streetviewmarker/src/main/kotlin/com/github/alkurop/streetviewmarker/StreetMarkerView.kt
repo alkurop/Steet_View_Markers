@@ -41,9 +41,9 @@ class StreetMarkerView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     init {
         inflate(context, R.layout.vsm_view_street_marker, this)
-        markerView = findViewById(R.id.overlay) as StreetOverlayView
-        streetView = findViewById(R.id.panorama) as StreetViewPanoramaView
-        touchOverlay = findViewById(R.id.touch) as TouchOverlayView
+        markerView = findViewById(R.id.overlay)
+        streetView = findViewById(R.id.panorama)
+        touchOverlay = findViewById(R.id.touch)
     }
 
     override fun onLocationUpdate(location: LatLng) {

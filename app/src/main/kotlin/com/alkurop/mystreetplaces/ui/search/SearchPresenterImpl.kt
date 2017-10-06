@@ -11,6 +11,7 @@ import com.google.android.gms.location.places.AutocompletePrediction
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
@@ -26,16 +27,21 @@ class SearchPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : Se
         this.query = query
         val searchObservable = pinRepo.search(query).toObservable().share()
         val bounds = LocationUtils.getBounds(location, 10000)
-        val searchObservableWithGoogle = searchObservable.filter { it.size < 10 }
+        val filter = searchObservable.filter { it.size < 10 }
+        val searchObservableWithGoogle = filter
                 .switchMap { localPredictions ->
                     googlePlacesSearch
                             .getPlaces(query, bounds)
-                            .toObservable().map { googlePredictions ->
-                        val list = mutableListOf<Any>()
-                        list.addAll(localPredictions)
-                        list.addAll(googlePredictions)
-                        list.take(10)
-                    }
+                            .toObservable()
+                            .map { googlePredictions ->
+                                val list = mutableListOf<Any>()
+                                list.addAll(localPredictions)
+                                list.addAll(googlePredictions)
+                                list.take(10)
+                            }
+                            .doOnError { Timber.e(it) }
+                            .onErrorResumeNext(Observable.just(localPredictions))
+
                 }
         val searchObservableWithoutGoogle = searchObservable.filter { it.size >= 10 }
 

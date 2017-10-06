@@ -1,10 +1,7 @@
 package com.alkurop.mystreetplaces.ui.search
 
 import android.app.Activity
-import com.google.android.gms.location.places.AutocompletePrediction
-import com.google.android.gms.location.places.GeoDataClient
-import com.google.android.gms.location.places.Place
-import com.google.android.gms.location.places.Places
+import com.google.android.gms.location.places.*
 import com.google.android.gms.maps.model.LatLngBounds
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
@@ -14,7 +11,8 @@ class GooglePlacesSearchImpl(val activity: Activity) : GooglePlacesSearch {
 
     override fun getPlaces(query: String, bounds: LatLngBounds): Single<List<AutocompletePrediction>> {
         val publisher = PublishSubject.create<List<AutocompletePrediction>>()
-        geoClient.getAutocompletePredictions(query, bounds, null)
+        val filter = AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_NONE).build()
+        geoClient.getAutocompletePredictions(query, bounds, filter)
                 .continueWith {
                     it.addOnSuccessListener { publisher.onNext(it.map { it }) }
                     it.addOnFailureListener(publisher::onError)
