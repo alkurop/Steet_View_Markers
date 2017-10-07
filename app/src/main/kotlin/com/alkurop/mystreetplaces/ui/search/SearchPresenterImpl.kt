@@ -1,6 +1,8 @@
 package com.alkurop.mystreetplaces.ui.search
 
 import com.alkurop.mystreetplaces.data.pin.PinRepo
+import com.alkurop.mystreetplaces.data.search.GooglePlace
+import com.alkurop.mystreetplaces.data.search.GooglePlacesSearch
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.intercom.AppDataBus
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
@@ -11,7 +13,6 @@ import com.google.android.gms.location.places.AutocompletePrediction
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
@@ -62,7 +63,7 @@ class SearchPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : Se
         appDataBus.pinSearch.onNext(AppDataBus.PinSearchModel(pinDto, if (query.isNullOrBlank()) pinDto.title else query))
     }
 
-    override fun onPredictionClicked(prediction: AutocompletePrediction) {
-        appDataBus.googlePlacesSearch.onNext(AppDataBus.GooglePlaceSearchModel(prediction.placeId!!, query))
+    override fun onPlaceClicked(place: GooglePlace) {
+        appDataBus.googlePlacesSearch.onNext(AppDataBus.GooglePlaceSearchModel(place, query))
     }
 }

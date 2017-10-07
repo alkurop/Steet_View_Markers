@@ -1,5 +1,7 @@
 package com.alkurop.mystreetplaces.ui.search
 
+import com.alkurop.mystreetplaces.data.search.GooglePlace
+import com.alkurop.mystreetplaces.data.search.GooglePlacesSearch
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.location.places.AutocompletePrediction
@@ -17,5 +19,5 @@ interface SearchPresenter {
 
     fun onSearchItemSelected(pinDto: PinDto)
 
-    fun onPredictionClicked(prediction: AutocompletePrediction)
+    fun onPlaceClicked(place: GooglePlace)
 }

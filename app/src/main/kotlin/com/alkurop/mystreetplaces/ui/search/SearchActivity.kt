@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.search.GooglePlacesSearchImpl
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.maps.model.LatLng
@@ -29,19 +30,20 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val googlePlacesSearch = GooglePlacesSearchImpl(this)
         component().inject(this)
         setupRootView(R.layout.activity_search)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        adapter = SearchAdapter()
+        adapter = SearchAdapter(googlePlacesSearch)
         adapter.pinClickListener = {
             presenter.onSearchItemSelected(it)
             onBackPressed()
         }
-        adapter.predictionClickListener = {
-            presenter.onPredictionClicked(it)
+        adapter.googlePlaceClickListener = {
+            presenter.onPlaceClicked(it)
             onBackPressed()
         }
-        presenter.googlePlacesSearch = GooglePlacesSearchImpl(this)
+        presenter.googlePlacesSearch = googlePlacesSearch
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
@@ -65,7 +67,7 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
             onBackPressed()
         }
         val query = intent.getBundleExtra(BaseMvpActivity.ARGS_KEY).getString(KEY_QUERY)
-        location = intent.getBundleExtra(BaseMvpActivity.ARGS_KEY).getParcelable<LatLng>(KEY_LOCATION)
+        location = intent.getBundleExtra(BaseMvpActivity.ARGS_KEY).getParcelable(KEY_LOCATION)
         et_search.setText(query)
         et_search.setSelection(query.length)
 

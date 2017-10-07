@@ -1,5 +1,6 @@
 package com.alkurop.mystreetplaces.intercom
 
+import com.alkurop.mystreetplaces.data.search.GooglePlace
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.google.android.gms.maps.model.VisibleRegion
 import io.reactivex.subjects.BehaviorSubject
@@ -18,6 +19,6 @@ class AppDataBus {
 
     data class PinSearchModel(val pinDto: PinDto?, val query: String)
 
-    data class GooglePlaceSearchModel(val placeId: String, val query: String)
+    data class GooglePlaceSearchModel(val placeId: GooglePlace, val query: String)
 
 }
