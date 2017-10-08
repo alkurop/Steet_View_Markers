@@ -19,13 +19,12 @@ import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenterImpl
 import com.alkurop.mystreetplaces.ui.places.GooglePlaceViewViewStartModel
 import kotlinx.android.synthetic.main.fragment_place_details.view.*
 
-class PinDetailsFragment : BottomSheetDialogFragment() {
+class PlaceDetailsFragment : BottomSheetDialogFragment() {
     companion object {
-        val KEY_PALCE = "key_place"
+        val KEY_PLACE = "key_place"
     }
 
     private lateinit var placeStartModel: GooglePlaceViewViewStartModel
-
 
     private val mBottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -40,7 +39,7 @@ class PinDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        placeStartModel = arguments.getParcelable(KEY_PALCE)
+        placeStartModel = arguments.getParcelable(KEY_PLACE)
     }
 
     override fun setupDialog(dialog: Dialog, style: Int) {

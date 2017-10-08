@@ -19,6 +19,6 @@ class AppDataBus {
 
     data class PinSearchModel(val pinDto: PinDto?, val query: String)
 
-    data class GooglePlaceSearchModel(val placeId: GooglePlace, val query: String)
+    data class GooglePlaceSearchModel(val place: GooglePlace, val query: String)
 
 }

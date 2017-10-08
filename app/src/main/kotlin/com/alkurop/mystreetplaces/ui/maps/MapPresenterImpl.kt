@@ -2,6 +2,7 @@ package com.alkurop.mystreetplaces.ui.maps
 
 import android.os.Bundle
 import com.alkurop.mystreetplaces.data.pin.PinRepo
+import com.alkurop.mystreetplaces.data.search.GooglePlace
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.intercom.AppDataBus
 import com.alkurop.mystreetplaces.ui.createNavigationSubject
@@ -11,8 +12,11 @@ import com.alkurop.mystreetplaces.ui.navigation.BottomsheetFragmentNavigationAct
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
+import com.alkurop.mystreetplaces.ui.pin.placedetails.PlaceDetailsFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel
+import com.alkurop.mystreetplaces.ui.places.GooglePlaceViewViewStartModel
+import com.alkurop.mystreetplaces.ui.places.PlacesFragment
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
 import com.google.android.gms.maps.model.LatLng
@@ -51,7 +55,7 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
     }
 
     fun loadPlace(searchModel: AppDataBus.GooglePlaceSearchModel) {
-        
+        focusViewToPlace(searchModel.place)
     }
 
     override fun onCameraPositionChanged(visibleRegion: VisibleRegion?) {
@@ -116,11 +120,16 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
         markersDisposable.add(subscribe)
     }
 
-    private fun focusViewToMarker(it: PinDto) {
+    fun focusViewToMarker(it: PinDto) {
         val model = MapViewModel(focusMarker = it)
         viewBus.onNext(model)
         showMarkerDetails(it.id!!)
+    }
 
+    fun focusViewToPlace(it: GooglePlace) {
+        val model = MapViewModel(focusPlace = it)
+        viewBus.onNext(model)
+        showPlaceDetails(it)
     }
 
     fun showMarkerDetails(markerId: String) {
@@ -131,4 +140,11 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
         navBus.onNext(action)
     }
 
+    fun showPlaceDetails(googlePlace: GooglePlace) {
+        val args = Bundle()
+        val model = GooglePlaceViewViewStartModel(shoudShowStreetNavigation = true, shouldShowMap = false, place = googlePlace)
+        args.putParcelable(PlaceDetailsFragment.KEY_PLACE, model)
+        val action = BottomsheetFragmentNavigationAction(endpoint = PlaceDetailsFragment::class.java, args = args)
+        navBus.onNext(action)
+    }
 }
