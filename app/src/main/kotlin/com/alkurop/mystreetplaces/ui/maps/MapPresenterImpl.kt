@@ -15,8 +15,7 @@ import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.pin.placedetails.PlaceDetailsFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewStartModel
-import com.alkurop.mystreetplaces.ui.places.GooglePlaceViewViewStartModel
-import com.alkurop.mystreetplaces.ui.places.PlacesFragment
+import com.alkurop.mystreetplaces.ui.googleplaces.GooglePlaceViewViewStartModel
 import com.alkurop.mystreetplaces.ui.street.StreetActivity
 import com.alkurop.mystreetplaces.ui.street.StreetFragment
 import com.google.android.gms.maps.model.LatLng

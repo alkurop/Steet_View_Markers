@@ -1,4 +1,4 @@
-package com.alkurop.mystreetplaces.ui.places
+package com.alkurop.mystreetplaces.ui.googleplaces
 
 import android.os.Parcel
 import android.os.Parcelable

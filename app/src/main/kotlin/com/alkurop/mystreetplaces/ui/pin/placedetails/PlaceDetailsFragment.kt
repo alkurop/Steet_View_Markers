@@ -16,7 +16,7 @@ import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
 import com.alkurop.mystreetplaces.ui.pin.view.PinFragment
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenterImpl
-import com.alkurop.mystreetplaces.ui.places.GooglePlaceViewViewStartModel
+import com.alkurop.mystreetplaces.ui.googleplaces.GooglePlaceViewViewStartModel
 import kotlinx.android.synthetic.main.fragment_place_details.view.*
 
 class PlaceDetailsFragment : BottomSheetDialogFragment() {

@@ -1,4 +1,4 @@
-package com.alkurop.mystreetplaces.ui.places
+package com.alkurop.mystreetplaces.ui.googleplaces
 
 import android.app.Activity
 import android.content.Context

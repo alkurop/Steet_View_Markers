@@ -14,8 +14,8 @@ import com.alkurop.mystreetplaces.ui.pin.picture.view.PreviewPicturePresenter
 import com.alkurop.mystreetplaces.ui.pin.picture.view.PreviewPicturePresenterImpl
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenter
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenterImpl
-import com.alkurop.mystreetplaces.ui.places.GooglePlaceViewPresenter
-import com.alkurop.mystreetplaces.ui.places.GooglePlaceViewPresenterImpl
+import com.alkurop.mystreetplaces.ui.googleplaces.GooglePlaceViewPresenter
+import com.alkurop.mystreetplaces.ui.googleplaces.GooglePlaceViewPresenterImpl
 import com.alkurop.mystreetplaces.ui.places.PlacesPresenter
 import com.alkurop.mystreetplaces.ui.places.PlacesPresenterImpl
 import com.alkurop.mystreetplaces.ui.search.SearchPresenter

@@ -1,6 +1,8 @@
 package com.alkurop.mystreetplaces.data.search
 
+import android.accounts.NetworkErrorException
 import android.app.Activity
+import android.graphics.Bitmap
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.places.*
 import com.google.android.gms.maps.model.LatLngBounds
@@ -47,16 +49,18 @@ class GooglePlacesSearchImpl(val activity: Activity) : GooglePlacesSearch {
         return publisher.take(1).singleOrError()
     }
 
-    fun getPhoto(client: GoogleApiClient, data: PlacePhotoMetadata) {
+    override fun getPhoto(client: GoogleApiClient, data: PlacePhotoMetadata): Single<Bitmap> {
+        val publisher = PublishSubject.create<Bitmap>()
         data.getPhoto(client)
-                .setResultCallback{
-                    if (it.status.isSuccess) {
-
+                .setResultCallback {
+                    val status = it.status
+                    if (status.isSuccess) {
+                        publisher.onNext(it.bitmap)
+                        publisher.onComplete()
+                    } else{
+                        publisher.onError(NetworkErrorException("Request failed $status"))
                     }
-                    if (it.status.isCanceled) {
-
-                    }
-                    it.status.statusCode
                 }
+        return publisher.take(1).singleOrError()
     }
 }
