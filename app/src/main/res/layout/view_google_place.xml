@@ -41,21 +41,6 @@
         tools:text="text" />
 
     <TextView
-        android:id="@+id/description_title"
-        style="@style/TextAppearance.Subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/description"
-        android:textColor="@color/colorAccent" />
-
-    <TextView
-        android:id="@+id/description"
-        style="@style/TextAppearance.Normal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp" />
-
-    <TextView
         android:id="@+id/address_title"
         style="@style/TextAppearance.Subtitle"
         android:layout_width="match_parent"

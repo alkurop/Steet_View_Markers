@@ -4,9 +4,10 @@
     android:layout_height="match_parent"
     android:background="#fff">
 
-    <com.alkurop.mystreetplaces.ui.pin.view.PinView
-        android:id="@+id/viewPin"
+    <com.alkurop.mystreetplaces.ui.places.GooglePlaceView
+        android:id="@+id/googlePlaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="16dp" />
+
 </FrameLayout>

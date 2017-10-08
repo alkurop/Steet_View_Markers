@@ -14,6 +14,8 @@ import com.alkurop.mystreetplaces.ui.pin.picture.view.PreviewPicturePresenter
 import com.alkurop.mystreetplaces.ui.pin.picture.view.PreviewPicturePresenterImpl
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenter
 import com.alkurop.mystreetplaces.ui.pin.view.PinViewPresenterImpl
+import com.alkurop.mystreetplaces.ui.places.GooglePlaceViewPresenter
+import com.alkurop.mystreetplaces.ui.places.GooglePlaceViewPresenterImpl
 import com.alkurop.mystreetplaces.ui.places.PlacesPresenter
 import com.alkurop.mystreetplaces.ui.places.PlacesPresenterImpl
 import com.alkurop.mystreetplaces.ui.search.SearchPresenter
@@ -49,6 +51,9 @@ class PresenterModule {
 
     @Provides
     fun provideViewPinPresenter(pinRepo: PinRepo, shareUtil: ShareUtil): PinViewPresenter = PinViewPresenterImpl(pinRepo, shareUtil)
+
+    @Provides
+    fun provideViewGooglePlacePresenter(pinRepo: PinRepo, shareUtil: ShareUtil): GooglePlaceViewPresenter = GooglePlaceViewPresenterImpl(pinRepo, shareUtil)
 
     @Provides
     fun providePreviewPictureContainerPresenter(pinRepo: PinRepo): PicturePreviewContainerPresenter = PicturePreviewContainerPresenterImpl(pinRepo)

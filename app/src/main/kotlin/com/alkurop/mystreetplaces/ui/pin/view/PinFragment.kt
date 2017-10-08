@@ -73,6 +73,4 @@ class PinFragment : BottomSheetDialogFragment() {
             handler.postDelayed({ dismiss() }, 200)
         }
     }
-
-
 }
