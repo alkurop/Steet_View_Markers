@@ -16,8 +16,6 @@ import android.view.View.MeasureSpec
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 
-
-
 data class PinPlace(val pinId: String,
                     val pinLocation: LatLng,
                     val title: String,
@@ -41,12 +39,13 @@ data class PinPlace(val pinId: String,
         return 0
     }
 
-    override fun getBitmap(context:Context): Bitmap? {
+    override fun getBitmap(context: Context, distanceMeters: Int): Bitmap? {
         val li = LayoutInflater.from(context)
         val view = FrameLayout(context)
         val childView = li.inflate(R.layout.view_street_marker, view, true)
 
         childView.textView.text = title
+        childView.distanceTv.text = "${distanceMeters}m"
 
         //Provide it with a layout params. It should necessarily be wrapping the
         //content as we not really going to have a parent for it.

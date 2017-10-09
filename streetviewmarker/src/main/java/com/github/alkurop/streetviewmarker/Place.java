@@ -22,5 +22,5 @@ public interface Place extends Parcelable {
 
   @DrawableRes int getDrawableRes();
 
-  @Nullable Bitmap getBitmap(Context context);
+  @Nullable Bitmap getBitmap(Context context, int distanceMeters);
 }

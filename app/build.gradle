@@ -21,8 +21,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         applicationId "com.alkurop.mystreetplaces"
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true

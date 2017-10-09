@@ -122,7 +122,7 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
                     val key = matrixData.data.id
                     if (matrixData.shouldShow) {
                         with(matrixData) {
-                            val bitmap: Bitmap? = getBitmapFromModel(key)
+                            val bitmap: Bitmap? = getBitmapFromModel(key, (data.distance * 1000).toInt())
 
                             val xLeft = (xLoc - (initX / 2.toDouble() * scale))
                             val yTop = yLoc - initY / 2.toDouble() * scale
@@ -197,7 +197,7 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
         }
     }
 
-    private fun MarkerMatrixData.getBitmapFromModel(key: String): Bitmap? {
+    private fun MarkerMatrixData.getBitmapFromModel(key: String, distanceMeters: Int): Bitmap? {
         val containsKey = bitmapMap.containsKey(key)
         val bitmap: Bitmap? = when {
             containsKey -> bitmapMap[key]!!
@@ -206,7 +206,7 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
                 bitmap
             }
             else -> {
-                val modelBitmap = data.place.getBitmap(context)
+                val modelBitmap = data.place.getBitmap(context, distanceMeters)
                 modelBitmap?.let {
                     bitmapMap.put(key, it)
                 }
@@ -246,8 +246,10 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
     }
 
     override fun updateCamera(location: LatLng, bearing: Float, tilt: Float, zoom: Float) {
-        if (mLocation?.equals(location) != true)
+        if (mLocation?.equals(location) != true){
             locBufferMap.clear()
+            bitmapMap.clear()
+        }
         mLocation = location
         mBearing = bearing.toDouble()
         mTilt = tilt.toDouble()
@@ -311,10 +313,12 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
 
                     } else mBearing
 
-            xLoc = ((geoData.azimuth - correctedProjectionBearing) * xTransitionDim) +
-                    screenWidth / 2.toDouble()
+            xLoc = ((geoData.azimuth - correctedProjectionBearing) * xTransitionDim) + screenWidth / 2.toDouble()
 
-            yLoc = (screenHeight / 2.toDouble() + (mTilt * yTransitionDim)) * (1.toDouble() - mapsConfig.yOffset)
+            val lowerForCloser = (mapsConfig.markersToShowStreetRadius / 2 - geoData.distance * 1000) / mapsConfig.markersToShowStreetRadius
+
+            yLoc = (screenHeight / 2.toDouble() + (mTilt * yTransitionDim)) * (1.toDouble() - mapsConfig.yOffset + lowerForCloser / 2)
+
         }
 
         val mat = MarkerMatrixData(
