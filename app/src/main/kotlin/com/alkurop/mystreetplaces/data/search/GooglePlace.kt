@@ -10,16 +10,16 @@ import java.util.*
 
 data class GooglePlace(val id: String,
                        val placeTypes: List<Int>,
-                       val address: String,
-                       val locale: Locale,
+                       val address: String?,
+                       val locale: Locale?,
                        val name: String,
                        val latLon: LatLng,
-                       val viewPort: LatLngBounds,
-                       val webSiteUri: Uri,
-                       val phoneNumber: String,
+                       val viewPort: LatLngBounds?,
+                       val webSiteUri: Uri?,
+                       val phoneNumber: String?,
                        val rating: Float,
                        val priceLevel: Int,
-                       val attributions: String) : Parcelable {
+                       val attributions: String?) : Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
             ArrayList<Int>().apply { source.readList(this, Int::class.java.classLoader) },
@@ -38,16 +38,16 @@ data class GooglePlace(val id: String,
     constructor(place: Place) : this(
             place.id,
             place.placeTypes,
-            place.address.toString(),
+            place.address?.toString(),
             place.locale,
             place.name.toString(),
             place.latLng,
             place.viewport,
             place.websiteUri,
-            place.phoneNumber.toString(),
+            place.phoneNumber?.toString(),
             place.rating,
             place.priceLevel,
-            place.attributions.toString()
+            place.attributions?.toString()
     )
 
     override fun describeContents() = 0

@@ -6,6 +6,7 @@ import com.google.android.gms.location.places.AutocompletePrediction
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.PlacePhotoMetadata
 import com.google.android.gms.maps.model.LatLngBounds
+import io.reactivex.Observable
 import io.reactivex.Single
 
 interface GooglePlacesSearch {
@@ -16,4 +17,6 @@ interface GooglePlacesSearch {
     fun getPlacePicturesMetadata(place: GooglePlace): Single<List<PlacePhotoMetadata>>
 
     fun getPhoto(client: GoogleApiClient, data: PlacePhotoMetadata): Single<Bitmap>
+
+    fun getPhotoScaled(client: GoogleApiClient, data: PlacePhotoMetadata, x: Int, y: Int): Single<Bitmap>
 }

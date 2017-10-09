@@ -128,7 +128,7 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
     fun focusViewToPlace(it: GooglePlace) {
         val model = MapViewModel(focusPlace = it)
         viewBus.onNext(model)
-        showPlaceDetails(it)
+       // showPlaceDetails(it)
     }
 
     fun showMarkerDetails(markerId: String) {

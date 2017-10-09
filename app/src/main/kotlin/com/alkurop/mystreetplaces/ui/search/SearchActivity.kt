@@ -8,11 +8,15 @@ import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.search.GooglePlacesSearchImpl
 import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.places.Places
+import com.google.android.gms.location.places.Places.GeoDataApi
 import com.google.android.gms.maps.model.LatLng
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_search.*
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -34,7 +38,13 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
         component().inject(this)
         setupRootView(R.layout.activity_search)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        adapter = SearchAdapter(googlePlacesSearch)
+        val googleApiClient = GoogleApiClient.Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .enableAutoManage(this, {
+                    Timber.e(it.errorMessage)
+                })
+                .build()
+        adapter = SearchAdapter(googlePlacesSearch, googleApiClient)
         adapter.pinClickListener = {
             presenter.onSearchItemSelected(it)
             onBackPressed()
@@ -52,6 +62,7 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
         RxTextView.afterTextChangeEvents(et_search)
                 .debounce(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter { it.toString().length > 1 }
                 .subscribe {
                     val query = it.editable()?.toString() ?: ""
                     presenter.onSearchQuerySubmit(query, location)

@@ -63,9 +63,8 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_map, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
+            inflater?.inflate(R.layout.fragment_map, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -177,6 +176,13 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
                 mapView.getMapAsync { map ->
                     val letLon = LatLng(nonNullMarker.lat, nonNullMarker.lon)
                     val cameraUpdate = CameraUpdateFactory.newLatLng(letLon)
+                    map.animateCamera(cameraUpdate)
+                }
+            }
+            focusPlace?.let { nonNullPlace ->
+                mapView.getMapAsync { map ->
+                    val latLon = nonNullPlace.latLon
+                    val cameraUpdate = CameraUpdateFactory.newLatLng(latLon)
                     map.animateCamera(cameraUpdate)
                 }
             }

@@ -20,16 +20,18 @@ class GooglePlaceViewPresenterImpl(val pinRepo: PinRepo,
     val compositeDisposable = CompositeDisposable()
 
     override fun onStart(googlePlace: GooglePlace) {
+        val model = GooglePlaceViewModel(googlePlace)
+        viewBus.onNext(model)
     }
 
     override fun unsubscribe() {
+        compositeDisposable.clear()
     }
 
     override fun onShare() {
     }
 
     override fun onNavigate() {
-        compositeDisposable.clear()
     }
 
     override fun onSave() {}

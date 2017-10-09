@@ -55,6 +55,7 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
         recyclerView.visibility = View.GONE
         val activity = context as Activity
         presenter.googleSearch = GooglePlacesSearchImpl(activity)
+        presenter.onStart(mPlace.place)
     }
 
     override fun onSaveInstanceState(): Parcelable {
@@ -73,10 +74,13 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
     }
 
     override fun renderView(viewModel: GooglePlaceViewModel) {
-        with(viewModel.googlePlace) {
-            titleView.text = name
-            addressView.text = address
+        viewModel.googlePlace?.let { place ->
+            with(place) {
+                titleView.text = name
+                addressView.text = address
+            }
         }
+        viewModel.pictures?.let { pictures -> }
     }
 
     override fun unsubscribe() {
@@ -85,6 +89,5 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
 
     fun setStartModel(googlePlace: GooglePlaceViewViewStartModel) {
         mPlace = googlePlace
-        presenter.onStart(mPlace.place)
     }
 }

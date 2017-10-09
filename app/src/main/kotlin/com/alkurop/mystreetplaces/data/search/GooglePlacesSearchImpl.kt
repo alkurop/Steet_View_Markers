@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.places.*
 import com.google.android.gms.maps.model.LatLngBounds
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 
@@ -28,11 +29,14 @@ class GooglePlacesSearchImpl(val activity: Activity) : GooglePlacesSearch {
         val publisher = PublishSubject.create<List<Place>>()
 
         geoClient.getPlaceById(prediction.placeId).continueWith {
-            it.addOnCompleteListener { publisher.onComplete() }
-            it.addOnSuccessListener { publisher.onNext(it.map { it }) }
-            it.addOnFailureListener(publisher::onError)
+            it.addOnSuccessListener {
+                publisher.onNext(it.map { it })
+            }
+            it.addOnFailureListener {
+                publisher.onError(it)
+            }
         }
-        return publisher.take(1).singleOrError().map { it.map { GooglePlace(it) } }
+        return publisher.map { it.map { GooglePlace(it) }}.take(1).singleOrError()
     }
 
     override fun getPlacePicturesMetadata(place: GooglePlace): Single<List<PlacePhotoMetadata>> {
@@ -42,8 +46,8 @@ class GooglePlacesSearchImpl(val activity: Activity) : GooglePlacesSearch {
                 .addOnSuccessListener {
                     val list = it.photoMetadata.map { it }
                     publisher.onNext(list)
+                    publisher.onComplete()
                 }
-                .addOnCompleteListener { publisher.onComplete() }
                 .addOnFailureListener(publisher::onError)
 
         return publisher.take(1).singleOrError()
@@ -57,7 +61,22 @@ class GooglePlacesSearchImpl(val activity: Activity) : GooglePlacesSearch {
                     if (status.isSuccess) {
                         publisher.onNext(it.bitmap)
                         publisher.onComplete()
-                    } else{
+                    } else {
+                        publisher.onError(NetworkErrorException("Request failed $status"))
+                    }
+                }
+        return publisher.take(1).singleOrError()
+    }
+
+    override fun getPhotoScaled(client: GoogleApiClient, data: PlacePhotoMetadata, x: Int, y: Int): Single<Bitmap> {
+        val publisher = PublishSubject.create<Bitmap>()
+        data.getScaledPhoto(client, x, y)
+                .setResultCallback {
+                    val status = it.status
+                    if (status.isSuccess) {
+                        publisher.onNext(it.bitmap)
+                        publisher.onComplete()
+                    } else {
                         publisher.onError(NetworkErrorException("Request failed $status"))
                     }
                 }
