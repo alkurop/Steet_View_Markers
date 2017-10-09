@@ -40,17 +40,11 @@ class StreetActivity : BaseMvpActivity<Any>() {
     }
 
     private fun addStreetFragment(focusLocation: LatLng) {
-        val sub = Single.fromCallable {
-            return@fromCallable StreetFragment.getNewInstance(focusLocation)
-        }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    supportFragmentManager.beginTransaction()
-                            .replace(R.id.container, it)
-                            .commit()
-                }, { Timber.e(it) })
-        compositeDis.add(sub)
+        val newInstance = StreetFragment.getNewInstance(focusLocation)
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, newInstance)
+                .commit()
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

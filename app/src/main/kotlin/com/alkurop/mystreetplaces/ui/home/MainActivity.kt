@@ -48,7 +48,7 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
         toolbarTitleTv.text = getString(R.string.app_name)
         RxTextView.afterTextChangeEvents(searchTv)
                 .subscribe {
-                    var query = it.editable()?.toString()
+                    val query = it.editable()?.toString()
                     icClose.visibility = if (query.isNullOrBlank()) View.INVISIBLE else View.VISIBLE
                 }
 
