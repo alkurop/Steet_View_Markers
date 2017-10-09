@@ -21,7 +21,6 @@ import javax.inject.Inject
 class StreetFragment : BaseMvpFragment<StreetViewModel>() {
 
     companion object {
-        val APP_PACKAGE = "com.alkurop.mystreetplaces.fileprovider"
         val FOCUS_LOCATION_KEY = "focus_location"
 
         fun getNewInstance(focusLocation: LatLng): Fragment {
@@ -60,7 +59,6 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         val focusLocation = arguments.getParcelable<LatLng>(FOCUS_LOCATION_KEY)
 
         marker_view.focusToLocation(focusLocation)
-        setStreetViewListeners()
         drop_btn.setOnClickListener { presenter.dropPin() }
     }
 
@@ -122,6 +120,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
     override fun onStart() {
         super.onStart()
         marker_view.onStart()
+        setStreetViewListeners()
     }
 
     override fun onResume() {
