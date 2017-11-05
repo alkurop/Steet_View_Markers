@@ -10,6 +10,7 @@
         <item name="android:textViewStyle">@style/TextAppearance.Base</item>
         <item name="android:editTextStyle">@style/TextAppearance.EditText</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
 
     </style>
 
@@ -52,9 +53,9 @@
         <item name="colorButtonNormal">@color/red</item>
     </style>
 
-    <style name="AppButton.Green" parent="AppButton">
+    <style name="AppButton.Accent" parent="AppButton">
         <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonWhite</item>
-        <item name="colorButtonNormal">@color/green</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
     </style>
 
     <style name="AppButton.Drop" parent="AppButton">

@@ -5,8 +5,8 @@ buildscript {
   ext.buildToolsVersion = "26.0.2"
   ext.minSdkVersion = 16
   ext.targetSdkVersion = 26
-  ext.supportLibraryVersion = "26.1.0"
   ext.kotlin_version = "1.1.4"
+  ext.supportLibraryVersion = "26.1.0"
   ext.services_version = "11.4.2"
 
   repositories {

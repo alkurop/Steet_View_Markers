@@ -61,6 +61,7 @@
                             android:layout_toRightOf="@+id/searchIcon"
                             android:layout_toStartOf="@+id/icClose"
                             android:gravity="center_vertical"
+                            android:textColorHint="@color/text_color_hint_black"
                             android:hint="@string/search"
                             android:textSize="18sp" />
 

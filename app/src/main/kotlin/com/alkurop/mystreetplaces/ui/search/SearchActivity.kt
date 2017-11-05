@@ -10,7 +10,6 @@ import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.places.Places
-import com.google.android.gms.location.places.Places.GeoDataApi
 import com.google.android.gms.maps.model.LatLng
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
@@ -55,7 +54,6 @@ class SearchActivity : BaseMvpActivity<SearchViewModel>() {
         }
         presenter.googlePlacesSearch = googlePlacesSearch
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(DividerDecorator(R.dimen.item_divider))
 

@@ -13,7 +13,7 @@ interface MapPresenter {
 
     fun onGoToStreetView()
 
-    fun onAddMarker()
+    fun onAddMarker(latLng: LatLng? =  null)
 
     fun unsubscribe()
 

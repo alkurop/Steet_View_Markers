@@ -54,6 +54,7 @@ class GooglePlacesAdapter(val googlePlacesSearch: GooglePlacesSearch,
                 icon.visibility = View.VISIBLE
                 title.text = place.name
                 description.text = place.address
+
                 setOnClickListener { googlePlaceClickListener?.invoke(place) }
                 val disposable = googlePlacesSearch.getPlacePicturesMetadata(place)
                         .toObservable().filter { !it.isEmpty() }

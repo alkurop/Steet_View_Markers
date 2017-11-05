@@ -6,9 +6,9 @@
         <item name="android:backgroundTint">@color/red</item>
     </style>
 
-    <style name="AppButton.Green" parent="AppButton">
+    <style name="AppButton.Accent" parent="AppButton">
         <item name="android:textAppearance">@style/AppButtonTextAppearance.ButtonWhite</item>
-        <item name="android:backgroundTint">@color/green</item>
+        <item name="android:backgroundTint">@color/colorAccent</item>
     </style>
 
     <style name="AppButton.Drop" parent="AppButton">

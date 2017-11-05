@@ -79,7 +79,7 @@ class SearchViewHolder(itemView: View,
              pinClickListener: ((PinDto) -> Unit)?) {
         with(itemView) {
             title.text = pinDto.title
-            description.text = pinDto.description
+            description.text = if (pinDto.description.isEmpty().not()) pinDto.description else pinDto.address
             setOnClickListener { pinClickListener?.invoke(pinDto) }
             googleSearchList.visibility = View.GONE
             dataContainer.visibility = View.VISIBLE

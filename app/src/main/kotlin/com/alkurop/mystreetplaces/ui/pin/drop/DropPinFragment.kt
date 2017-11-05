@@ -129,6 +129,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 })
             })
         }
+        RxTextView.editorActionEvents(title).subscribe({presenter.submit()})
     }
 
     private fun setUpPermissionsManager(function: () -> Unit) {

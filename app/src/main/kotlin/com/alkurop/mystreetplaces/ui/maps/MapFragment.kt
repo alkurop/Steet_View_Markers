@@ -1,12 +1,14 @@
 package com.alkurop.mystreetplaces.ui.maps
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.pin.PinPlace
+import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.LocationTracker
@@ -33,6 +35,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
 
     private val compositeDisposable = CompositeDisposable()
     private val DEFAULT_CAMERA_ZOOM = 16f
+    val previousClusterItems = mutableSetOf<MapClusterItem>()
 
     override fun getSubject(): Observable<MapViewModel> = presenter.viewBus
 
@@ -70,9 +73,11 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         setUpPermissionsManager()
         mapView.onCreate(savedInstanceState)
+
         drop_btn.setOnClickListener { presenter.onGoToStreetView() }
         presenter.isPermissionGranted = false
         permissionManager?.makePermissionRequest()
+
         presenter.attach()
     }
 
@@ -82,12 +87,15 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         clusterManager = ClusterManager(activity, map)
         val renderer = ClusterRenderer(activity, map, clusterManager!!)
         clusterManager?.renderer = renderer
+
         map.setOnMarkerClickListener(clusterManager)
         map.setOnInfoWindowClickListener(clusterManager)
         map.setOnCameraIdleListener { clusterManager?.onCameraIdle() }
+
         renderer.setOnClusterItemInfoWindowClickListener { presenter.onPinClick(it) }
     }
 
+    @SuppressLint("MissingPermission")
     private fun initLocationTracking() {
         if (clusterManager != null) return
 
@@ -115,6 +123,9 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             }
             map.setOnCameraMoveListener {
                 presenter.onCameraPositionChanged(map.projection.visibleRegion)
+            }
+            map.setOnMapLongClickListener {
+                presenter.onAddMarker(it)
             }
             initClusterManager(map)
         }
@@ -168,8 +179,14 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
             pins?.let { items ->
                 val clusterItems = items.map { MapClusterItem(PinPlace(it)) }
-                clusterManager?.clearItems()
-                clusterManager?.addItems(clusterItems)
+
+                val toRemoveItems = previousClusterItems.filter { !clusterItems.contains(it) }
+                val toAdd = clusterItems.filter { !previousClusterItems.contains(it) }
+
+                toRemoveItems.forEach { clusterManager?.removeItem(it)}
+                toAdd.forEach { clusterManager?.addItem(it) }
+
+                previousClusterItems.addAll(clusterItems)
                 clusterManager?.cluster()
             }
             focusMarker?.let { nonNullMarker ->

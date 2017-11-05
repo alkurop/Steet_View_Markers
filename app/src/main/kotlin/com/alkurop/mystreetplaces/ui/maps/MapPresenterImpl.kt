@@ -35,12 +35,12 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
     val markersDisposable = CompositeDisposable()
     val generalPurposeDisposable = CompositeDisposable()
 
-    override fun onAddMarker() {
+    override fun onAddMarker(latLng: LatLng?) {
         val tmp = visibleRegion
-        if (tmp != null) {
-            addMarker(tmp.latLngBounds.center)
-        } else {
-            viewBus.onNext(MapViewModel(shouldAskForPermission = true))
+        when {
+            latLng != null -> addMarker(latLng)
+            tmp != null -> addMarker(tmp.latLngBounds.center)
+            else -> viewBus.onNext(MapViewModel(shouldAskForPermission = true))
         }
     }
 
@@ -128,7 +128,7 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
     fun focusViewToPlace(it: GooglePlace) {
         val model = MapViewModel(focusPlace = it)
         viewBus.onNext(model)
-       // showPlaceDetails(it)
+        // showPlaceDetails(it)
     }
 
     fun showMarkerDetails(markerId: String) {
