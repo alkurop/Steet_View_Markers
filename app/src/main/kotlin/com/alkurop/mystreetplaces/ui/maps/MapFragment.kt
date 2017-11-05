@@ -178,17 +178,21 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             shouldAskForPermission.takeIf { it }?.let { permissionManager?.makePermissionRequest() }
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
             pins?.let { items ->
-                val clusterItems = items.map { MapClusterItem(PinPlace(it)) }
+                val clusterItems = items.map { MapClusterItem(PinPlace(it)) }.toHashSet()
 
                 val toRemoveItems = previousClusterItems.filter { !clusterItems.contains(it) }
                 val toAdd = clusterItems.filter { !previousClusterItems.contains(it) }
 
-                toRemoveItems.forEach { clusterManager?.removeItem(it)}
+                toRemoveItems.forEach { clusterManager?.removeItem(it) }
                 toAdd.forEach { clusterManager?.addItem(it) }
 
-                previousClusterItems.addAll(clusterItems)
-                clusterManager?.cluster()
+                if (toAdd.isEmpty().not() || toRemoveItems.isEmpty().not()) {
+                    previousClusterItems.removeAll(toRemoveItems)
+                    previousClusterItems.addAll(toAdd)
+                    clusterManager?.cluster()
+                }
             }
+
             focusMarker?.let { nonNullMarker ->
                 mapView.getMapAsync { map ->
                     val letLon = LatLng(nonNullMarker.lat, nonNullMarker.lon)
