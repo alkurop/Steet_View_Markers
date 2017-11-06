@@ -7,5 +7,6 @@
     <dimen name="custom_peek_height">@dimen/bottom_sheet_peek_height</dimen>
     <dimen name="action_button_size">36dp</dimen>
     <dimen name="item_divider">4dp</dimen>
+    <dimen name="category_item_list_size">50dp</dimen>
 
 </resources>

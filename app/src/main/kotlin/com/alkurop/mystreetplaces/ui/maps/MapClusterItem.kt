@@ -22,7 +22,6 @@ class MapClusterItem(val place: PinPlace) : ClusterItem {
         }
         return null
     }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

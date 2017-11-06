@@ -6,11 +6,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.app.AppCompatDelegate
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.category.mapCategory
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
@@ -77,7 +81,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         photoHelper = CameraPictureHelperImpl(this)
         photoHelper.setRequestCode(3021)
 
@@ -95,6 +99,13 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         recyclerView.adapter = picturesAdapter
         val location = arguments.getParcelable<LatLng>(LOCATION_KEY)
         location?.let { presenter.start(location) }
+
+        val categoriesLayoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
+        categories.layoutManager = categoriesLayoutManager
+        categories.setHasFixedSize(true)
+        categories.adapter = CategoriesAdapter {
+            presenter.onCategorySelected(it)
+        }
 
         val pinId = arguments.getString(ID_KEY)
         pinId?.let { presenter.start(pinId) }
@@ -188,6 +199,11 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 }
                 pin.id?.let { (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_pin) }
                 (recyclerView.adapter as PicturesAdapter).setItems(pin.pictures)
+                val caterory = pin.categoryId.mapCategory()
+                caterory?.let {
+                    val drawable = ContextCompat.getDrawable(context, it.icon)
+                    categoryImageView.setImageDrawable(drawable)
+                }
             }
         }
         val disposable = RxTextView.textChangeEvents(title)

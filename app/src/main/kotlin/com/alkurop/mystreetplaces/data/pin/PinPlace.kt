@@ -6,22 +6,23 @@ import android.graphics.Canvas
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.LayoutInflater
-import android.view.ViewGroup
+import android.view.View.MeasureSpec
+import android.widget.FrameLayout
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.category.PinCategory
+import com.alkurop.mystreetplaces.data.category.mapCategory
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.github.alkurop.streetviewmarker.Place
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.view_street_marker.view.*
-import android.view.View.MeasureSpec
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
 
 data class PinPlace(val pinId: String,
                     val pinLocation: LatLng,
                     val title: String,
-                    val description: String? = null) : Place, Parcelable {
+                    val description: String? = null,
+                    val category: PinCategory?) : Place, Parcelable {
 
-    constructor(pinDto: PinDto) : this(pinDto.id!!, LatLng(pinDto.lat, pinDto.lon), pinDto.title, pinDto.description)
+    constructor(pinDto: PinDto) : this(pinDto.id!!, LatLng(pinDto.lat, pinDto.lon), pinDto.title, pinDto.description, pinDto.categoryId.mapCategory())
 
     override fun getId(): String {
         return pinId
@@ -83,7 +84,8 @@ data class PinPlace(val pinId: String,
             source.readString(),
             source.readParcelable<LatLng>(LatLng::class.java.classLoader),
             source.readString(),
-            source.readString()
+            source.readString(),
+            source.readString().mapCategory()
     )
 
     override fun describeContents() = 0
@@ -93,5 +95,6 @@ data class PinPlace(val pinId: String,
         dest.writeParcelable(pinLocation, 0)
         dest.writeString(title)
         dest.writeString(description)
+        dest.writeString(category?.name)
     }
 }

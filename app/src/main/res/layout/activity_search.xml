@@ -30,10 +30,10 @@
                 android:layout_toStartOf="@+id/icClose"
                 android:background="@null"
                 android:hint="@string/search"
-                android:textColorHint="@color/text_color_hint_black"
                 android:imeOptions="actionSearch"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColorHint="@color/text_color_hint_black" />
 
             <ImageView
                 android:id="@+id/icClose"
@@ -55,6 +55,5 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -13,6 +13,7 @@ import com.google.android.gms.location.places.AutocompletePrediction
 import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
@@ -26,27 +27,23 @@ class SearchPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : Se
 
     override fun onSearchQuerySubmit(query: String, location: LatLng) {
         this.query = query
-        val searchObservable = pinRepo.search(query).toObservable().share()
+        val searchLocal = pinRepo.search(query).toObservable()
         val bounds = LocationUtils.getBounds(location, 10000)
-        val filter = searchObservable.filter { it.size < 10 }
-        val searchObservableWithGoogle = filter
-                .switchMap { localPredictions ->
-                    googlePlacesSearch
-                            .getPlaces(query, bounds)
-                            .toObservable()
-                            .map { googlePredictions ->
-                                val list = mutableListOf<Any>()
-                                list.addAll(localPredictions)
-                                list.addAll(googlePredictions)
-                                list.take(10)
-                            }
-                            .doOnError { Timber.e(it) }
-                            .onErrorResumeNext(Observable.just(localPredictions))
+        val searchGoogle =
+                googlePlacesSearch
+                        .getPlaces(query, bounds)
+                        .toObservable()
+                        .onErrorResumeNext(Observable.empty())
 
-                }
-        val searchObservableWithoutGoogle = searchObservable.filter { it.size >= 10 }
+        val compositeObservable = Observable.combineLatest(searchGoogle, searchLocal, BiFunction<List<Any>, List<Any>, List<Any>> { var1, var2 ->
+            val resLust = mutableListOf<Any>()
+            resLust.addAll(var2)
+            resLust.addAll(var1)
+            return@BiFunction resLust
 
-        val dis = Observable.merge(searchObservableWithGoogle, searchObservableWithoutGoogle)
+        })
+
+        val dis = compositeObservable
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     val viewModel = SearchViewModel(it)
@@ -60,7 +57,7 @@ class SearchPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : Se
     }
 
     override fun onSearchItemSelected(pinDto: PinDto) {
-        appDataBus.pinSearch.onNext(AppDataBus.PinSearchModel(pinDto, if (query.isNullOrBlank()) pinDto.title else query))
+        appDataBus.pinSearch.onNext(AppDataBus.PinSearchModel(pinDto, if (query.isBlank()) pinDto.title else query))
     }
 
     override fun onPlaceClicked(place: GooglePlace) {

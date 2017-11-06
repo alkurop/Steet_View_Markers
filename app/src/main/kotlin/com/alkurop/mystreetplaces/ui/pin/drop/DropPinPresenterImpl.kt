@@ -2,6 +2,7 @@ package com.alkurop.mystreetplaces.ui.pin.drop
 
 import android.location.Address
 import android.os.Bundle
+import com.alkurop.mystreetplaces.data.category.PinCategory
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.data.pin.PinRepo
 import com.alkurop.mystreetplaces.domain.pin.PinDto
@@ -129,6 +130,12 @@ class DropPinPresenterImpl(val pinRepo: PinRepo, val addressUtil: AddressUtil) :
 
     fun onAddressSelected(address: Address) {
         pinDto.address = address.getSimpleAddress()
+        val model = DropPinViewModel(pinDto)
+        viewBus.onNext(model)
+    }
+
+    override fun onCategorySelected(it: PinCategory) {
+        pinDto.categoryId = it.name
         val model = DropPinViewModel(pinDto)
         viewBus.onNext(model)
     }

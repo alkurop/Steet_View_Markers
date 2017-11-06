@@ -3,12 +3,16 @@ package com.alkurop.mystreetplaces.ui.pin.view
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.category.mapCategory
 import com.alkurop.mystreetplaces.ui.base.BaseMvpView
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.ui.pin.pictures.PicturesAdapter
@@ -29,6 +33,7 @@ class PinView @JvmOverloads constructor(context: Context,
     lateinit var addressView: TextView
     lateinit var addressTitle: TextView
     lateinit var recyclerView: RecyclerView
+    lateinit var iconView: ImageView
     lateinit var id: String
 
     init {
@@ -38,11 +43,13 @@ class PinView @JvmOverloads constructor(context: Context,
     @Inject lateinit var presenter: PinViewPresenter
 
     override fun onAttachedToWindow() {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         component().inject(this)
         super.onAttachedToWindow()
         locationView = findViewById(R.id.location_view)
         titleView = findViewById(R.id.title)
         descritionTitle = findViewById(R.id.description_title)
+        iconView = findViewById(R.id.categoryImageView)
         descritionView = findViewById(R.id.description)
         addressView = findViewById(R.id.address)
         addressTitle = findViewById(R.id.address_title)
@@ -96,6 +103,7 @@ class PinView @JvmOverloads constructor(context: Context,
             addressView.visibility = if (address == null) View.GONE else View.VISIBLE
             addressTitle.visibility = if (address == null) View.GONE else View.VISIBLE
             addressView.text = address
+            categoryId.mapCategory()?.let { iconView.setImageDrawable(ContextCompat.getDrawable(context, it.icon)) }
         }
     }
 

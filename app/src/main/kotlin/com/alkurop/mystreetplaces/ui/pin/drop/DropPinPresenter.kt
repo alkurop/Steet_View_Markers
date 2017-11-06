@@ -1,5 +1,6 @@
 package com.alkurop.mystreetplaces.ui.pin.drop
 
+import com.alkurop.mystreetplaces.data.category.PinCategory
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
@@ -36,5 +37,7 @@ interface DropPinPresenter {
     fun onPictureClick(position: Int, items: List<PictureWrapper>)
 
     fun reloadPictureList(pictures:List<PictureWrapper>)
+
+    fun onCategorySelected(it: PinCategory)
 
 }

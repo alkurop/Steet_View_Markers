@@ -1,5 +1,7 @@
 package com.alkurop.mystreetplaces.ui.search
 
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatDelegate
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.category.mapCategory
 import com.alkurop.mystreetplaces.data.search.GooglePlace
 import com.alkurop.mystreetplaces.data.search.GooglePlacesSearch
 import com.alkurop.mystreetplaces.domain.pin.PinDto
@@ -29,6 +32,7 @@ class SearchAdapter(val googlePlacesSearch: GooglePlacesSearch,
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         li = LayoutInflater.from(recyclerView.context)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): SearchViewHolder {
@@ -83,12 +87,19 @@ class SearchViewHolder(itemView: View,
             setOnClickListener { pinClickListener?.invoke(pinDto) }
             googleSearchList.visibility = View.GONE
             dataContainer.visibility = View.VISIBLE
+            icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_image_gray_24dp))
+            pinDto.categoryId.mapCategory()?.let {
+                icon.setImageDrawable(ContextCompat.getDrawable(context, it.icon))
+            }
+            icon.visibility = View.VISIBLE
+
         }
     }
 
     fun bind(googlePrediction: AutocompletePrediction,
              googlePlaceClickListener: ((GooglePlace) -> Unit)?) {
         with(itemView) {
+            icon.visibility = View.GONE
             title.text = googlePrediction.getPrimaryText(null)
             description.text = googlePrediction.getSecondaryText(null)
             googleSearchList.visibility = View.GONE
