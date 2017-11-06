@@ -23,6 +23,9 @@ open class PinDto : RealmModel {
     var isSynchronized: Boolean = false
     var timeStamp: Long = 0
     var address: String? = null
+    var categoryId: String? = null
+    var isFromGoogle: Boolean = false
+    var isTemp: Boolean = false
 
     constructor()
 

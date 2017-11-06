@@ -9,9 +9,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
@@ -66,6 +64,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     var mediauri: Uri? = null
     var pendingType: MediaType? = null
     var selectedType: MediaType? = null
+    var isDeleteVisible = false
 
     override fun getSubject(): Observable<DropPinViewModel> = presenter.viewBus
 
@@ -82,18 +81,10 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         photoHelper = CameraPictureHelperImpl(this)
         photoHelper.setRequestCode(3021)
 
+        setHasOptionsMenu(true)
+
         submit.setOnClickListener { presenter.submit() }
-        delete.setOnClickListener {
-            AlertDialog.Builder(activity)
-                    .setTitle(getString(R.string.delete_pin_title))
-                    .setMessage(getString(R.string.delet_pin_msg))
-                    .setPositiveButton(android.R.string.ok, { _, _ ->
-                        presenter.deletePin()
-                    })
-                    .setNegativeButton(android.R.string.cancel, { _, _ -> })
-                    .show()
-        }
-        delete.visibility = View.GONE
+
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
@@ -129,7 +120,30 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 })
             })
         }
-        RxTextView.editorActionEvents(title).subscribe({presenter.submit()})
+        RxTextView.editorActionEvents(title).subscribe({ presenter.submit() })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.drop_menu, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        menu?.findItem(R.id.delete)?.isVisible = isDeleteVisible
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.delete) {
+            AlertDialog.Builder(activity)
+                    .setTitle(getString(R.string.delete_pin_title))
+                    .setMessage(getString(R.string.delet_pin_msg))
+                    .setPositiveButton(android.R.string.ok, { _, _ ->
+                        presenter.deletePin()
+                    })
+                    .setNegativeButton(android.R.string.cancel, { _, _ -> })
+                    .show()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setUpPermissionsManager(function: () -> Unit) {
@@ -168,7 +182,10 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 location_view.setText(pin.address ?: "")
                 title.setText(pin.title)
                 description.setText(pin.description)
-                pin.id?.let { delete.visibility = View.VISIBLE }
+                pin.id?.let {
+                    isDeleteVisible = true
+                    activity.invalidateOptionsMenu()
+                }
                 pin.id?.let { (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_pin) }
                 (recyclerView.adapter as PicturesAdapter).setItems(pin.pictures)
             }

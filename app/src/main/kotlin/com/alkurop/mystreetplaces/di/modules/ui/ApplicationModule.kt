@@ -13,7 +13,9 @@ import dagger.Module
 import dagger.Provides
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import io.realm.DynamicRealm
 import io.realm.RealmConfiguration
+import io.realm.RealmMigration
 import javax.inject.Singleton
 
 typealias IntercomBus = Subject<IntercomEvent>
@@ -49,7 +51,18 @@ open class ApplicationModule(private val application: MyStreetPlacesApp) {
 
     @Provides
     @Singleton open fun provideRealmProvider(): RealmProvider {
-        return RealmProviderImpl(RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build())
+        return RealmProviderImpl(RealmConfiguration.Builder()
+                .schemaVersion(1)
+                .migration { realm, oldVersion, _ ->
+                    if (oldVersion < 1) {
+                        val schema = realm.schema
+                        val pinSchema = schema.get("PinDto")
+                        pinSchema.addField("categoryId", String::class.java)
+                        pinSchema.addField("isFromGoogle", Boolean::class.javaPrimitiveType)
+                        pinSchema.addField("isTemp", Boolean::class.javaPrimitiveType)
+                    }
+                }
+                .build())
     }
 
     @Provides
