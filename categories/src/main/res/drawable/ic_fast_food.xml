@@ -1,0 +1,24 @@
+<vector android:height="24dp" android:viewportHeight="99.99999"
+    android:viewportWidth="100.0" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillAlpha="1" android:fillColor="#c5a179"
+        android:fillType="nonZero"
+        android:pathData="m100,50c0,27.61 -22.39,50 -50,50 -27.61,0 -50,-22.39 -50,-50 0,-27.61 22.39,-50 50,-50 27.61,0 50,22.39 50,50" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#ffffff"
+        android:fillType="nonZero"
+        android:pathData="m66.25,33.75 l5,0 0,-7.5c0,-2.76 -2.24,-5 -5,-5l-12.5,0 0,3.75 12.5,0 0,8.75z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#ffffff"
+        android:fillType="nonZero"
+        android:pathData="m56.25,36.25 l5,35 15,0 5,-35 -25,0z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#ffffff"
+        android:fillType="nonZero"
+        android:pathData="m26.25,71.25 l20,0c4.14,0 7.5,-3.36 7.5,-7.5l-35,0c0,4.14 3.36,7.5 7.5,7.5" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#ffffff"
+        android:fillType="nonZero"
+        android:pathData="m18.75,51.25 l0,1.25 0,1.25 6.25,0 10.04,2.2c0.8,0.2 1.63,0.2 2.43,0l10.04,-2.2 6.25,0 0,-1.25 0,-1.25 -17.5,0 -17.5,0z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#ffffff"
+        android:fillType="nonZero"
+        android:pathData="m51.25,56.25 l-3.48,0 -9.74,2.13c-0.58,0.14 -1.18,0.21 -1.78,0.21 -0.6,0 -1.2,-0.07 -1.78,-0.21l-9.74,-2.13 -3.48,0c-1.38,0 -2.5,1.12 -2.5,2.5 0,1.38 1.12,2.5 2.5,2.5l30,0c1.38,0 2.5,-1.12 2.5,-2.5 0,-1.38 -1.12,-2.5 -2.5,-2.5" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#ffffff"
+        android:fillType="nonZero"
+        android:pathData="m47.5,46.25 l-2.5,0 0,-2.5 2.5,0 0,2.5zM42.5,42.5 L40,42.5 40,40 42.5,40 42.5,42.5zM37.5,46.25 L35,46.25 35,43.75 37.5,43.75 37.5,46.25zM32.5,42.5 L30,42.5 30,40 32.5,40 32.5,42.5zM27.5,46.25 L25,46.25 25,43.75 27.5,43.75 27.5,46.25zM37.5,36.25 L35,36.25c-6.9,0 -16.25,5.6 -16.25,12.5l35,0c0,-6.9 -9.35,-12.5 -16.25,-12.5" android:strokeColor="#00000000"/>
+</vector>
