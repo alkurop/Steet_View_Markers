@@ -1,10 +1,13 @@
 package com.alkurop.mystreetplaces.data.pin
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Parcel
 import android.os.Parcelable
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatDelegate
 import android.view.LayoutInflater
 import android.view.View.MeasureSpec
 import android.widget.FrameLayout
@@ -24,22 +27,15 @@ data class PinPlace(val pinId: String,
 
     constructor(pinDto: PinDto) : this(pinDto.id!!, LatLng(pinDto.lat, pinDto.lon), pinDto.title, pinDto.description, pinDto.categoryId.mapCategory())
 
-    override fun getId(): String {
-        return pinId
-    }
+    override fun getId(): String = pinId
 
-    override fun getLocation(): LatLng {
-        return pinLocation
-    }
+    override fun getLocation(): LatLng = pinLocation
 
-    override fun getMarkerPath(): String? {
-        return null
-    }
+    override fun getMarkerPath(): String? = null
 
-    override fun getDrawableRes(): Int {
-        return 0
-    }
+    override fun getDrawableRes(): Int = 0
 
+    @SuppressLint("SetTextI18n")
     override fun getBitmap(context: Context, distanceMeters: Int): Bitmap? {
         val li = LayoutInflater.from(context)
         val view = FrameLayout(context)
@@ -47,6 +43,13 @@ data class PinPlace(val pinId: String,
 
         childView.textView.text = title
         childView.distanceTv.text = "${distanceMeters}m"
+
+        category?.let {
+            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+            val drawable = ContextCompat.getDrawable(context, it.icon)
+            childView.iconView.setImageDrawable(drawable)
+        }
+
 
         //Provide it with a layout params. It should necessarily be wrapping the
         //content as we not really going to have a parent for it.
