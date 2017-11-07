@@ -21,9 +21,12 @@ import com.alkurop.mystreetplaces.ui.street.StreetFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.VisibleRegion
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPresenter {
     override val viewBus: Subject<MapViewModel> = createViewSubject()
@@ -34,6 +37,8 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
     var visibleRegion: VisibleRegion? = null
     val markersDisposable = CompositeDisposable()
     val generalPurposeDisposable = CompositeDisposable()
+
+    val locationChangedPublisher = PublishSubject.create<VisibleRegion>()
 
     override fun onAddMarker(latLng: LatLng?) {
         val tmp = visibleRegion
@@ -51,6 +56,14 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
             loadPlace(it)
         })
         generalPurposeDisposable.addAll(sub, sub2)
+        val sub3 = locationChangedPublisher.debounce (250, TimeUnit.MILLISECONDS)
+                .subscribe({
+                    getPinsForLocationFromRepo(it)
+                })
+        generalPurposeDisposable += sub
+        generalPurposeDisposable += sub2
+        generalPurposeDisposable += sub3
+
     }
 
     fun loadPlace(searchModel: AppDataBus.GooglePlaceSearchModel) {
@@ -61,7 +74,7 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
         this.visibleRegion = visibleRegion
 
         visibleRegion?.let {
-            getPinsForLocationFromRepo(it)
+            locationChangedPublisher.onNext(it)
             appDataBus.mapLocation.onNext(AppDataBus.MapLocationModel(it))
         }
     }
@@ -128,7 +141,7 @@ class MapPresenterImpl(val pinRepo: PinRepo, val appDataBus: AppDataBus) : MapPr
     fun focusViewToPlace(it: GooglePlace) {
         val model = MapViewModel(focusPlace = it)
         viewBus.onNext(model)
-        // showPlaceDetails(it)
+        showPlaceDetails(it)
     }
 
     fun showMarkerDetails(markerId: String) {

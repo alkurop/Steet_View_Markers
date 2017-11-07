@@ -8,6 +8,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
     val locationUpdatedBus = PublishSubject.create<Any>()
@@ -35,6 +36,7 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
         val minMaxPoints = LocationUtils.getSquareOfDistanceMeters(location, radiusMeters)
         return locationUpdatedBus
                 .startWith(Any())
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .switchMapSingle {
                     pinCahe.getPinsByLocationSquare(minMaxPoints)
                 }
@@ -44,6 +46,7 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
     override fun observePinsByLocationCorners(bottomRight: LatLng, topLeft: LatLng): Observable<Array<PinDto>> {
         return locationUpdatedBus
                 .startWith(Any())
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .switchMapSingle {
                     pinCahe.getPinsByLocationSquare(arrayOf(bottomRight, topLeft))
                 }
@@ -64,5 +67,14 @@ class PinRepoImpl(val pinCahe: PinCahe) : PinRepo {
 
     override fun search(query: String): Single<List<PinDto>> {
         return Single.fromCallable { pinCahe.searchSync(query) }
+    }
+
+    override fun addTempPin(pin: PinDto): Single<PinDto> {
+        if (pin.id == null) pin.id = UUID.randomUUID().toString()
+        pin.isTemp = true
+        return pinCahe.addTempPin(pin)
+                .doOnSuccess {
+                    notifyListeners()
+                }
     }
 }

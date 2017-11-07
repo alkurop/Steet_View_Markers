@@ -1,7 +1,5 @@
 package com.alkurop.mystreetplaces.ui.googleplaces
 
-import android.graphics.Bitmap
-import com.alkurop.mystreetplaces.data.search.GooglePlace
+import com.alkurop.mystreetplaces.domain.pin.PinDto
 
-data class GooglePlaceViewModel(val googlePlace: GooglePlace? = null,
-                                val pictures: List<Bitmap>? = null)
+data class GooglePlaceViewModel(val pin: PinDto)

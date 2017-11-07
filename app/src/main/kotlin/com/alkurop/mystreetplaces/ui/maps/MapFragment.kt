@@ -180,6 +180,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
             pins?.let { items ->
                 val clusterItems = items.map { MapClusterItem(PinPlace(it)) }.toHashSet()
 
+
                 val toRemoveItems = previousClusterItems.filter { !clusterItems.contains(it) }
                 val toAdd = clusterItems.filter { !previousClusterItems.contains(it) }
 

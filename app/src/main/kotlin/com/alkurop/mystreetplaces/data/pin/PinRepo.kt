@@ -25,4 +25,6 @@ interface PinRepo {
 
     fun search(query: String): Single<List<PinDto>>
 
+    fun addTempPin(pin: PinDto): Single<PinDto>
+
 }

@@ -20,4 +20,7 @@ interface PinCahe {
     fun deletePicture(id: String): Completable
 
     fun searchSync(query: String): List<PinDto>
+
+    fun addTempPin(pin: PinDto): Single<PinDto>
+
 }

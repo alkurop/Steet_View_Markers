@@ -4,14 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import com.alkurop.mystreetplaces.R
+import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.data.search.GooglePlacesSearchImpl
 import com.alkurop.mystreetplaces.ui.base.BaseMvpView
+import com.alkurop.mystreetplaces.ui.pin.pictures.PicturesAdapter
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.places.Places
+import timber.log.Timber
 import javax.inject.Inject
 
 class GooglePlaceView @JvmOverloads constructor(context: Context,
@@ -28,10 +34,12 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
     lateinit var titleView: TextView
     lateinit var addressView: TextView
     lateinit var addressTitle: TextView
+    lateinit var descriptionView: TextView
     lateinit var recyclerView: RecyclerView
 
     @Inject lateinit var presenter: GooglePlaceViewPresenter
     private lateinit var mPlace: GooglePlaceViewViewStartModel
+    val picturesAdapter by lazy { PicturesAdapter() }
 
     init {
         inflate(context, R.layout.view_google_place, this)
@@ -48,14 +56,25 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
         titleView = findViewById(R.id.title)
         addressView = findViewById(R.id.address)
         addressTitle = findViewById(R.id.address_title)
+        descriptionView = findViewById(R.id.description)
         recyclerView = findViewById(R.id.recyclerView)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
-        recyclerView.visibility = View.GONE
+        recyclerView.adapter = picturesAdapter
         val activity = context as Activity
         presenter.googleSearch = GooglePlacesSearchImpl(activity)
+        presenter.googleApiClient = GoogleApiClient.Builder(activity)
+                .enableAutoManage(activity as FragmentActivity, 1,{})
+                .addApi(Places.GEO_DATA_API)
+                .build()
         presenter.onStart(mPlace.place)
+    }
+
+    override fun onDetachedFromWindow() {
+        presenter.googleApiClient.stopAutoManage(context as FragmentActivity)
+
+        super.onDetachedFromWindow()
     }
 
     override fun onSaveInstanceState(): Parcelable {
@@ -74,13 +93,14 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
     }
 
     override fun renderView(viewModel: GooglePlaceViewModel) {
-        viewModel.googlePlace?.let { place ->
+        viewModel.pin?.let { place ->
             with(place) {
-                titleView.text = name
+                titleView.text = title
                 addressView.text = address
+                descriptionView.text = description
+                picturesAdapter.setItems(pictures)
             }
         }
-        viewModel.pictures?.let { pictures -> }
     }
 
     override fun unsubscribe() {

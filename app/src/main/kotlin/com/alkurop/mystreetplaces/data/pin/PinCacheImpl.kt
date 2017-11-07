@@ -20,6 +20,20 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
         }
     }
 
+    override fun addTempPin(pin: PinDto): Single<PinDto> {
+        return Single.fromCallable {
+            realmProvider.provideRealm().use {
+                it.beginTransaction()
+                pin.timeStamp = System.currentTimeMillis()
+                it.where(PinDto::class.java).equalTo("isTemp", true)
+                        .findAll().deleteAllFromRealm()
+                it.insertOrUpdate(pin)
+                it.commitTransaction()
+                return@fromCallable pin
+            }
+        }
+    }
+
     override fun removePin(pin: PinDto): Single<PinDto> {
         return Single.fromCallable {
             realmProvider.provideRealm().use {
@@ -99,8 +113,8 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
         return realm.copyFromRealm(request)
     }
 
-    fun <E : RealmModel> RealmQuery<E>.addQuery(query: String):RealmQuery<E> {
-       return this
+    fun <E : RealmModel> RealmQuery<E>.addQuery(query: String): RealmQuery<E> {
+        return this
                 .beginGroup()
                 .contains("title", query, Case.INSENSITIVE)
                 .or()

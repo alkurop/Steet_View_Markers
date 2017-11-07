@@ -13,6 +13,7 @@ import com.alkurop.mystreetplaces.ui.places.PlacesFragment
 import com.alkurop.mystreetplaces.ui.search.SearchActivity
 import com.alkurop.mystreetplaces.ui.settings.SettingsFragment
 import com.google.android.gms.maps.model.LatLng
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
 
@@ -29,11 +30,15 @@ class MainActivityPresenterImpl(val appDataBus: AppDataBus) : MainActivityPresen
     var location: LatLng? = null
 
     override fun start() {
-        val sub = appDataBus.pinSearch.subscribe {
-            val model = MainActivityView(query = it.query, shouldShowSearch = true)
-            viewBus.onNext(model)
-            query = it.query
-        }
+
+        val sub = Observable
+                .merge(appDataBus.pinSearch.map { it.query },
+                        appDataBus.googlePlacesSearch.map { it.query })
+                .subscribe {
+                    val model = MainActivityView(query = it, shouldShowSearch = true)
+                    viewBus.onNext(model)
+                    query = query
+                }
         currentModel?.let {
             viewBus.onNext(it)
         }

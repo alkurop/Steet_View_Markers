@@ -97,4 +97,6 @@ data class PinPlace(val pinId: String,
         dest.writeString(description)
         dest.writeString(category?.name)
     }
+
+
 }
