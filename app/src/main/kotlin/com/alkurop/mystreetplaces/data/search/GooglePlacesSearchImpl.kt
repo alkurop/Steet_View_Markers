@@ -14,6 +14,8 @@ class GooglePlacesSearchImpl(val activity: Activity) : GooglePlacesSearch {
     val geoClient: GeoDataClient = Places.getGeoDataClient(activity, null)
 
     override fun getPlaces(query: String, bounds: LatLngBounds): Single<List<AutocompletePrediction>> {
+        if (query.length < 3)
+            return Single.just(listOf())
         val publisher = PublishSubject.create<List<AutocompletePrediction>>()
         val filter = AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_NONE).build()
         geoClient.getAutocompletePredictions(query, bounds, filter)
@@ -36,7 +38,7 @@ class GooglePlacesSearchImpl(val activity: Activity) : GooglePlacesSearch {
                 publisher.onError(it)
             }
         }
-        return publisher.map { it.map { GooglePlace(it) }}.take(1).singleOrError()
+        return publisher.map { it.map { GooglePlace(it) } }.take(1).singleOrError()
     }
 
     override fun getPlacePicturesMetadata(place: GooglePlace): Single<List<PlacePhotoMetadata>> {

@@ -1,5 +1,6 @@
 package com.alkurop.mystreetplaces.ui.googleplaces
 
+import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.alkurop.mystreetplaces.data.search.GooglePlace
 import com.alkurop.mystreetplaces.data.search.GooglePlacesSearch
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
@@ -21,4 +22,8 @@ interface GooglePlaceViewPresenter {
     fun onNavigate()
 
     fun onSave()
+
+    fun onPictureClick(items: List<PictureWrapper>, position: Int)
+
+    fun onStreet()
 }

@@ -80,10 +80,10 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/editBtn"
+            android:id="@+id/saveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/edit" />
+            android:text="@string/save" />
 
         <Button
             android:id="@+id/shareBtn"
@@ -96,6 +96,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/navigate" />
+
+        <Button
+            android:id="@+id/streetBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/street" />
 
     </LinearLayout>
 </LinearLayout>

@@ -59,7 +59,6 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         val focusLocation = arguments.getParcelable<LatLng>(FOCUS_LOCATION_KEY)
 
         marker_view.focusToLocation(focusLocation)
-        drop_btn.setOnClickListener { presenter.dropPin() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {
@@ -69,6 +68,9 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.share) {
             shareStreetView()
+        }
+        if (item?.itemId == R.id.addMarker) {
+            presenter.dropPin()
         }
         return super.onOptionsItemSelected(item)
     }

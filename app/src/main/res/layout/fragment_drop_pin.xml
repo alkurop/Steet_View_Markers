@@ -34,7 +34,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_enter_title"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:singleLine="true" />
 
@@ -98,12 +98,12 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/submit"
+            android:id="@+id/submitOption"
             style="@style/AppButton.Accent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="@string/btn_submit" />
+            android:text="@string/delete" />
 
     </LinearLayout>
 </ScrollView>

@@ -8,13 +8,4 @@
         android:id="@+id/marker_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <Button
-        android:id="@+id/drop_btn"
-        style="@style/AppButton.Drop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_margin="32dp"
-        android:text="@string/drop" />
 </FrameLayout>

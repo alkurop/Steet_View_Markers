@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
@@ -63,7 +64,9 @@ class PinView @JvmOverloads constructor(context: Context,
         findViewById<View>(R.id.editBtn).setOnClickListener { presenter.onEdit() }
         findViewById<View>(R.id.navigateBtn).setOnClickListener { presenter.onNavigate() }
         findViewById<View>(R.id.shareBtn).setOnClickListener { presenter.onShare() }
+        findViewById<View>(R.id.streetBtn).setOnClickListener { presenter.onStreet() }
         presenter.loadPinDetails(id)
+
     }
 
     override fun getSubject(): Observable<PinViewModel> = presenter.viewBus
@@ -104,6 +107,7 @@ class PinView @JvmOverloads constructor(context: Context,
             addressTitle.visibility = if (address == null) View.GONE else View.VISIBLE
             addressView.text = address
             categoryId.mapCategory()?.let { iconView.setImageDrawable(ContextCompat.getDrawable(context, it.icon)) }
+            Linkify.addLinks(descritionView, Linkify.WEB_URLS)
         }
     }
 

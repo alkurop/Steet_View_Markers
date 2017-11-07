@@ -120,5 +120,11 @@
             android:layout_height="wrap_content"
             android:text="@string/navigate" />
 
+        <Button
+            android:id="@+id/streetBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/street" />
+
     </LinearLayout>
 </LinearLayout>

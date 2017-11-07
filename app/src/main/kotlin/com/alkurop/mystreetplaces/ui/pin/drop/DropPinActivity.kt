@@ -33,7 +33,6 @@ class DropPinActivity : BaseActivity() {
     }
 
     fun addDropPinFragment(fragment: Fragment) {
-
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.container, fragment)

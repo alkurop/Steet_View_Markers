@@ -74,7 +74,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         setUpPermissionsManager()
         mapView.onCreate(savedInstanceState)
 
-        drop_btn.setOnClickListener { presenter.onGoToStreetView() }
         presenter.isPermissionGranted = false
         permissionManager?.makePermissionRequest()
 
@@ -169,6 +168,9 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.addMarker) {
             presenter.onAddMarker()
+        }
+        if (item?.itemId == R.id.street) {
+            presenter.onGoToStreetView()
         }
         return super.onOptionsItemSelected(item)
     }

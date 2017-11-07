@@ -87,7 +87,16 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
         setHasOptionsMenu(true)
 
-        submit.setOnClickListener { presenter.submit() }
+        submitOption.setOnClickListener {
+            AlertDialog.Builder(activity)
+                    .setTitle(getString(R.string.delete_pin_title))
+                    .setMessage(getString(R.string.delet_pin_msg))
+                    .setPositiveButton(android.R.string.ok, { _, _ ->
+                        presenter.deletePin()
+                    })
+                    .setNegativeButton(android.R.string.cancel, { _, _ -> })
+                    .show()
+        }
 
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
@@ -131,7 +140,6 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 })
             })
         }
-        RxTextView.editorActionEvents(title).subscribe({ presenter.submit() })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -140,19 +148,13 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
-        menu?.findItem(R.id.delete)?.isVisible = isDeleteVisible
+        menu?.findItem(R.id.submitOption)?.isVisible = isDeleteVisible
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.delete) {
-            AlertDialog.Builder(activity)
-                    .setTitle(getString(R.string.delete_pin_title))
-                    .setMessage(getString(R.string.delet_pin_msg))
-                    .setPositiveButton(android.R.string.ok, { _, _ ->
-                        presenter.deletePin()
-                    })
-                    .setNegativeButton(android.R.string.cancel, { _, _ -> })
-                    .show()
+        if (item?.itemId == R.id.submitOption) {
+            presenter.submit()
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -206,25 +208,24 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
                 }
             }
         }
-        val disposable = RxTextView.textChangeEvents(title)
+        RxTextView.textChangeEvents(title)
                 .observeOn(Schedulers.io())
                 .subscribe({
                     val text = it.text().toString()
                     presenter.onTitleChange(text)
                 })
-        val disposable1 = RxTextView.textChangeEvents(description)
+        RxTextView.textChangeEvents(description)
                 .observeOn(Schedulers.io())
                 .subscribe({
                     val text = it.text().toString()
                     presenter.onDescriptionChange(text)
                 })
-        val disposable3 = RxTextView.textChangeEvents(location_view)
+        RxTextView.textChangeEvents(location_view)
                 .observeOn(Schedulers.io())
                 .subscribe({
                     val text = it.text().toString()
                     presenter.onAddressTextChange(text)
                 })
-        viewDisposable.addAll(disposable, disposable1, disposable3)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

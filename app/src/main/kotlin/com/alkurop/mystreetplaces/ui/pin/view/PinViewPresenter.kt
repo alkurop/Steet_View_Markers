@@ -22,4 +22,6 @@ interface PinViewPresenter {
     fun onNavigate()
 
     fun onShare()
+
+    fun onStreet()
 }

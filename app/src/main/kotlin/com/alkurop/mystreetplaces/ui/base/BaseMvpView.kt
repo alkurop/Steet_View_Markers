@@ -13,7 +13,7 @@ abstract class BaseMvpView<T> @JvmOverloads constructor(context: Context,
                                                         defStyleAttr: Int = 0)
     : BaseContainerView(context, attrs, defStyleAttr) {
     lateinit var subscriptions: CompositeDisposable
-    var navigator : ((NavigationAction) -> Unit)? = null
+    var navigator: ((NavigationAction) -> Unit)? = null
 
     abstract fun getSubject(): Observable<T>
 
@@ -36,7 +36,10 @@ abstract class BaseMvpView<T> @JvmOverloads constructor(context: Context,
     private fun subscribeToPresenter() {
         val sub = getSubject()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ renderView(it) }, { Timber.e(it) })
+                .distinct()
+                .subscribe({
+                    renderView(it)
+                }, { Timber.e(it) })
         val sub2 = getNavigation()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ navigate(it) }, { Timber.e(it) })
@@ -45,7 +48,7 @@ abstract class BaseMvpView<T> @JvmOverloads constructor(context: Context,
     }
 
     private fun navigate(it: NavigationAction) {
-      navigator?.invoke(it)
+        navigator?.invoke(it)
     }
 
     abstract fun renderView(viewModel: T)

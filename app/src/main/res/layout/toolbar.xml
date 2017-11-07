@@ -7,4 +7,5 @@
     android:minHeight="?attr/actionBarSize"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/ThemeOverlay.AppCompat.Light"
+    android:background="@android:color/white"
     android:elevation="4dp"/>

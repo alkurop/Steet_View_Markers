@@ -14,8 +14,12 @@ import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinFragment
 import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
 import com.alkurop.mystreetplaces.ui.pin.picture.container.PicturePreviewContainerStateModel
+import com.alkurop.mystreetplaces.ui.street.StreetActivity
+import com.alkurop.mystreetplaces.ui.street.StreetFragment
 import com.alkurop.mystreetplaces.utils.ShareUtil
+import com.google.android.gms.maps.model.LatLng
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import timber.log.Timber
@@ -74,7 +78,6 @@ class PinViewPresenterImpl(val pinRepo: PinRepo, val shareUtil: ShareUtil) : Pin
             navBus.onNext(navAction)
         }, { Timber.e(it) })
         pinSubscription.add(subscribe)
-
     }
 
     override fun onShare() {
@@ -84,5 +87,17 @@ class PinViewPresenterImpl(val pinRepo: PinRepo, val shareUtil: ShareUtil) : Pin
             navBus.onNext(navAction)
         }, { Timber.e(it) })
         pinSubscription.add(subscribe)
+    }
+
+    override fun onStreet() {
+        fun navigateToStreetView(latLng: LatLng) {
+            val args = Bundle()
+            args.putParcelable(StreetFragment.FOCUS_LOCATION_KEY, latLng)
+            val navigationAction = ActivityNavigationAction(StreetActivity::class.java, args)
+            navBus.onNext(navigationAction)
+        }
+
+        val subscribe = pinRepo.getPinDetails(id).subscribe({ navigateToStreetView(LatLng(it.lat, it.lon)) }, { Timber.e(it) })
+        pinSubscription += subscribe
     }
 }

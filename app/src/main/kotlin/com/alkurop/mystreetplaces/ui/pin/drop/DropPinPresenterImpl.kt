@@ -62,7 +62,8 @@ class DropPinPresenterImpl(val pinRepo: PinRepo, val addressUtil: AddressUtil) :
     }
 
     override fun submit() {
-        if (pinDto.title.isNullOrBlank()) return
+        pinDto.isTemp = false
+        if (pinDto.title.isBlank()) return
         val sub = pinRepo.addOrUpdatePin(pinDto)
                 .subscribe({
                     val navigation = NoArgsNavigation.BACK_ACTION

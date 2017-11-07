@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/delete"
-        android:icon="@drawable/ic_delete_black_24dp"
-        android:title="@string/delete"
+        android:id="@+id/submitOption"
+        android:icon="@drawable/ic_check_black_24dp"
+        android:title="@string/btn_submit"
         app:showAsAction="always" />
 </menu>

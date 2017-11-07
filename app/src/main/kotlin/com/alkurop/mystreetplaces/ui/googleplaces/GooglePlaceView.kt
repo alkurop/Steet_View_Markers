@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
@@ -35,6 +36,7 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
     lateinit var addressView: TextView
     lateinit var addressTitle: TextView
     lateinit var descriptionView: TextView
+    lateinit var descriptionTitleView: TextView
     lateinit var recyclerView: RecyclerView
 
     @Inject lateinit var presenter: GooglePlaceViewPresenter
@@ -49,6 +51,7 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
 
     override fun getNavigation() = presenter.navBus
 
+
     override fun onAttachedToWindow() {
         component().inject(this)
         super.onAttachedToWindow()
@@ -57,6 +60,7 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
         addressView = findViewById(R.id.address)
         addressTitle = findViewById(R.id.address_title)
         descriptionView = findViewById(R.id.description)
+        descriptionTitleView = findViewById(R.id.description_title)
         recyclerView = findViewById(R.id.recyclerView)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
@@ -65,10 +69,16 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
         val activity = context as Activity
         presenter.googleSearch = GooglePlacesSearchImpl(activity)
         presenter.googleApiClient = GoogleApiClient.Builder(activity)
-                .enableAutoManage(activity as FragmentActivity, 1,{})
+                .enableAutoManage(activity as FragmentActivity, 1, {})
                 .addApi(Places.GEO_DATA_API)
                 .build()
+        picturesAdapter.onPictureClick = { presenter.onPictureClick(picturesAdapter.getItems(), it) }
         presenter.onStart(mPlace.place)
+
+        findViewById<View>(R.id.saveButton).setOnClickListener { presenter.onSave() }
+        findViewById<View>(R.id.shareBtn).setOnClickListener { presenter.onShare() }
+        findViewById<View>(R.id.navigateBtn).setOnClickListener { presenter.onNavigate() }
+        findViewById<View>(R.id.streetBtn).setOnClickListener { presenter.onStreet() }
     }
 
     override fun onDetachedFromWindow() {
@@ -93,12 +103,22 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
     }
 
     override fun renderView(viewModel: GooglePlaceViewModel) {
-        viewModel.pin?.let { place ->
+        viewModel.pin.let { place ->
             with(place) {
                 titleView.text = title
                 addressView.text = address
                 descriptionView.text = description
+                val descriptionVisibility = if (description.isNullOrEmpty()) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
+                descriptionView.visibility = descriptionVisibility
+                descriptionTitleView.visibility = descriptionVisibility
+
                 picturesAdapter.setItems(pictures)
+                Linkify.addLinks(descriptionView, Linkify.WEB_URLS)
+
             }
         }
     }

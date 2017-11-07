@@ -66,4 +66,5 @@
     <string name="select_address">Select address</string>
     <string name="cancel">Cancel</string>
     <string name="navigate">Navigate</string>
+    <string name="save">Save</string>
 </resources>
