@@ -18,6 +18,7 @@ import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.github.alkurop.streetviewmarker.Place
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.view_street_marker.view.*
+import java.util.*
 
 data class PinPlace(val pinId: String,
                     val pinLocation: LatLng,

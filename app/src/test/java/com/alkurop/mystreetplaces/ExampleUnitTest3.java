@@ -145,6 +145,7 @@ public class ExampleUnitTest3 {
             }
         }
 
+
         int findHeight(Node node) {
             if (node == null) {
                 return 0;

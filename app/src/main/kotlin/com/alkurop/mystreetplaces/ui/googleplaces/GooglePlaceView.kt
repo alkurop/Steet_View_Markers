@@ -52,6 +52,7 @@ class GooglePlaceView @JvmOverloads constructor(context: Context,
     override fun getNavigation() = presenter.navBus
 
 
+
     override fun onAttachedToWindow() {
         component().inject(this)
         super.onAttachedToWindow()

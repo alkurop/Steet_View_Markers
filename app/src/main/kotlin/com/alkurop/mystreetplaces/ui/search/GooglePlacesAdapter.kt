@@ -78,4 +78,8 @@ class GooglePlacesAdapter(val googlePlacesSearch: GooglePlacesSearch,
             compositeDisposable.clear()
         }
     }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+        super.onDetachedFromRecyclerView(recyclerView)
+    }
 }
