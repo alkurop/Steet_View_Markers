@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class MergeSortTest {
     int[] getData() {
-        return new int[] { 323, 22, 33456, 5, 32, 564, 763452, 345, 543526, 727, 1, 22, 333 };
+        return new int[] { 323, 22, 33456, 5, 32, 564, 763452, 345, 727, 1, 22, 333 };
     }
 
     @Test
@@ -39,12 +39,8 @@ public class MergeSortTest {
         int[] leftArray = new int[leftLength];
         int[] rightArray = new int[rightLentgh];
 
-        if (leftArray.length != 0) {
-            System.arraycopy(data, left, leftArray, 0, leftLength);
-        }
-        if (rightArray.length != 0) {
-            System.arraycopy(data, median + 1, rightArray, 0, rightLentgh);
-        }
+        System.arraycopy(data, left, leftArray, 0, leftLength);
+        System.arraycopy(data, median + 1, rightArray, 0, rightLentgh);
 
         int leftIndex = 0;
         int rightIndex = 0;
