@@ -9,6 +9,10 @@ public class HeapSortTest {
         return new int[] { 323, 22, 33456, 5, 32, 564, 763452, 345, 543526, 727, 1, 22, 333 };
     }
 
+    int[] getData2() {
+        return new int[] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+    }
+
     @Test
     public void heapSortTest() {
         int[] data = getData();
@@ -18,7 +22,7 @@ public class HeapSortTest {
 
     void sort(int[] data) {
         int n = data.length;
-        for (int i = n / 2; i >= 0; i--) {
+        for (int i = n / 2 - 1; i >= 0; i--) {
             heapify(data, n, i);
         }
         for (int i = n - 1; i >= 0; i--) {
@@ -33,9 +37,9 @@ public class HeapSortTest {
     }
 
     void heapify(int[] data, int n, int i) {
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
         int largest = i;
-        int left = 2 * i;
-        int right = 2 * i + 1;
 
         if (left < n && data[largest] < data[left]) {
             largest = left;
@@ -48,6 +52,7 @@ public class HeapSortTest {
             int temp = data[i];
             data[i] = data[largest];
             data[largest] = temp;
+            heapify(data, n, largest);
         }
     }
 }

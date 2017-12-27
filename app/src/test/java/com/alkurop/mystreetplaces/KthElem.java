@@ -55,7 +55,6 @@ public class KthElem {
             if (counter.isExpited()) return node;
 
             return findKthItemRec(counter, node.right);
-
         }
 
         class Counter {
