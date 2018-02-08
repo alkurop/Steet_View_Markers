@@ -12,7 +12,7 @@ import java.util.TreeSet;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest1 {
+public class strings {
 
     @Test
     public void mTest() {

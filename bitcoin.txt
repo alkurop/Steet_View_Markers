@@ -1,0 +1,19 @@
+ Satoshi Nakamoto
+Sybil
+DHT table
+Stripe API
+PopcornTime - movies
+Openbazaar - eBay
+Lighthouse - wallet
+Gems - messenger
+Kademlia DHT и заим- ствует некоторые идеи из Chord DHT и BitTorrent DHT.
+IPFS
+Ethereum Swarm
+StorJ
+BitAuth (https://github.com/bitpay/bitauth). 
+ OpenID (https://openid.net).
+Astralboot (https://github.com/ ipfs/astralboot).
+ Go-circuit (http://gocircuit.github.io/ circuit),
+Firechat (https://opengarden.com) — приложение для iOS, созданное компанией Open Garden. Firechat позволяет владельцам телефонов общаться друг с другом напрямую, используя новую возможность в iOS 7 с названием Multipeer Connectivity (многосторонние соединения)
+ Mercury (http://mercuryex.com) и создана разработчиком с псевдонимом Mappum. Mercury — это муль- тивалютный кошелек, использующий протокол Cross-Atomic Chain (CAC) для обмена криптовалютами. 
+Лидеры в пространстве Bitcoin, такие как Abra (https://goabra.com), даже не упоминают слово «Bitcoin».

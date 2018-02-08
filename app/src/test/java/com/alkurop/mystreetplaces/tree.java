@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+public class tree {
 
     @Test
     public void mTest() {

@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class StringTests {
+public class PeopleBirthTest {
     @Test
     public void stringTest() {
         System.out.println(super_reduced_string("baaba"));

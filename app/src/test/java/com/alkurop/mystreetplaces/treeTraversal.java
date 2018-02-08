@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest3 {
+public class treeTraversal {
 
     @Test
     public void mTest() {
