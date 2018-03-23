@@ -23,10 +23,11 @@ import javax.inject.Inject
 /**
  * Created by alkurop on 7/21/17.
  */
-class PinView @JvmOverloads constructor(context: Context,
-                                        attrs: AttributeSet? = null,
-                                        defStyleAttr: Int = 0)
-    : BaseMvpView<PinViewModel>(context, attrs, defStyleAttr) {
+class PinView @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+) : BaseMvpView<PinViewModel>(context, attrs, defStyleAttr) {
     lateinit var locationView: TextView
     lateinit var titleView: TextView
     lateinit var descritionView: TextView
@@ -41,7 +42,8 @@ class PinView @JvmOverloads constructor(context: Context,
         inflate(context, R.layout.view_pin, this)
     }
 
-    @Inject lateinit var presenter: PinViewPresenter
+    @Inject
+    lateinit var presenter: PinViewPresenter
 
     override fun onAttachedToWindow() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)

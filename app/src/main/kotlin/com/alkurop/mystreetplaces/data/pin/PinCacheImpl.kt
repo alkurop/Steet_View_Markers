@@ -26,7 +26,7 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
                 it.beginTransaction()
                 pin.timeStamp = System.currentTimeMillis()
                 it.where(PinDto::class.java).equalTo("isTemp", true)
-                        .findAll().deleteAllFromRealm()
+                    .findAll().deleteAllFromRealm()
                 it.insertOrUpdate(pin)
                 it.commitTransaction()
                 return@fromCallable pin
@@ -39,8 +39,8 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
             realmProvider.provideRealm().use {
                 it.beginTransaction()
                 it.where(PinDto::class.java)
-                        .equalTo("id", pin.id)
-                        .findAll().deleteAllFromRealm()
+                    .equalTo("id", pin.id)
+                    .findAll().deleteAllFromRealm()
                 it.commitTransaction()
                 return@fromCallable pin
             }
@@ -51,11 +51,11 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
         return Single.fromCallable {
             realmProvider.provideRealm().use {
                 val result = it.where(PinDto::class.java)
-                        .between("lat", minMaxPoints[0].latitude, minMaxPoints[1].latitude)
-                        .between("lon", minMaxPoints[0].longitude, minMaxPoints[1].longitude)
-                        .findAll()
+                    .between("lat", minMaxPoints[0].latitude, minMaxPoints[1].latitude)
+                    .between("lon", minMaxPoints[0].longitude, minMaxPoints[1].longitude)
+                    .findAll()
                 it.copyFromRealm(result)
-                        .toTypedArray()
+                    .toTypedArray()
             }
         }
     }
@@ -64,8 +64,8 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
         return Single.fromCallable {
             realmProvider.provideRealm().use {
                 val result = it.where(PinDto::class.java)
-                        .equalTo("id", id)
-                        .findFirst()
+                    .equalTo("id", id)
+                    .findFirst()
                 it.copyFromRealm(result)
             }
         }
@@ -76,11 +76,11 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
             realmProvider.provideRealm().use {
                 it.beginTransaction()
                 val result = it.where(PinDto::class.java)
-                        .equalTo("id", pinDto.id)
-                        .findFirst()
+                    .equalTo("id", pinDto.id)
+                    .findFirst()
                 val realmList = RealmList<PictureWrapper>()
                 pinDto.pictures.forEach { item -> realmList.add(it.copyToRealmOrUpdate(item)) }
-                result.pictures = realmList
+                result!!.pictures = realmList
 
                 it.commitTransaction()
             }
@@ -92,9 +92,9 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
             realmProvider.provideRealm().use {
                 it.beginTransaction()
                 it.where(PictureWrapper::class.java)
-                        .equalTo("id", id)
-                        .findFirst()
-                        ?.deleteFromRealm()
+                    .equalTo("id", id)
+                    .findFirst()
+                    ?.deleteFromRealm()
                 it.commitTransaction()
             }
         }
@@ -108,19 +108,19 @@ class PinCacheImpl(val realmProvider: RealmProvider) : PinCahe {
             searchRequest = searchRequest.addQuery(it)
         }
         val request = searchRequest
-                .findAllSorted("timeStamp", Sort.DESCENDING)
-                .take(10)
+            .findAllSorted("timeStamp", Sort.DESCENDING)
+            .take(10)
         return realm.copyFromRealm(request)
     }
 
     fun <E : RealmModel> RealmQuery<E>.addQuery(query: String): RealmQuery<E> {
         return this
-                .beginGroup()
-                .contains("title", query, Case.INSENSITIVE)
-                .or()
-                .contains("description", query, Case.INSENSITIVE)
-                .or()
-                .contains("address", query, Case.INSENSITIVE)
-                .endGroup()
+            .beginGroup()
+            .contains("title", query, Case.INSENSITIVE)
+            .or()
+            .contains("description", query, Case.INSENSITIVE)
+            .or()
+            .contains("address", query, Case.INSENSITIVE)
+            .endGroup()
     }
 }

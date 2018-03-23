@@ -46,18 +46,19 @@ class MyStreetPlacesApp : Application() {
 
     fun buildApplicationComponent(): ApplicationComponent {
         return DaggerApplicationComponent.builder()
-                .applicationModule(ApplicationModule(this))
-                .build()
+            .applicationModule(ApplicationModule(this))
+            .build()
     }
 
     fun initStetho() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             Stetho.initialize(
-                    Stetho.newInitializerBuilder(this)
-                            .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                            .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-                            .build())
+                Stetho.newInitializerBuilder(this)
+                    .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                    .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                    .build()
+            )
         }
     }
 
@@ -67,13 +68,13 @@ class MyStreetPlacesApp : Application() {
 
     fun initUniversalImageLoader() {
         val defaultOptions = DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .cacheOnDisk(true)
-                .build()
+            .cacheInMemory(true)
+            .imageScaleType(ImageScaleType.EXACTLY)
+            .cacheOnDisk(true)
+            .build()
         val config = ImageLoaderConfiguration.Builder(this)
-                .defaultDisplayImageOptions(defaultOptions)
-                .build()
+            .defaultDisplayImageOptions(defaultOptions)
+            .build()
         ImageLoader.getInstance().init(config)
     }
 }

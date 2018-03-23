@@ -10,7 +10,9 @@ import com.alkurop.mystreetplaces.data.pin.PictureWrapper
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.assist.FailReason
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener
-import kotlinx.android.synthetic.main.item_existing_picture.view.*
+import kotlinx.android.synthetic.main.item_existing_picture.view.photoView
+import kotlinx.android.synthetic.main.item_existing_picture.view.pictureContainer
+import kotlinx.android.synthetic.main.item_existing_picture.view.progress_bar
 
 class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     private var pictures = listOf<PictureWrapper>()
@@ -26,12 +28,12 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
 
     fun getItems() = pictures
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         li = LayoutInflater.from(recyclerView?.context)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PictureVH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureVH {
         return createExistingPictureVh(parent)
     }
 
@@ -47,7 +49,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
     fun getItem(position: Int): PictureWrapper = pictures[position]
 
 
-    override fun onBindViewHolder(holder: PictureVH?, position: Int) {
+    override fun onBindViewHolder(holder: PictureVH, position: Int) {
         if (holder is ExistingPictureVh) {
             holder.bind(getItem(position))
         }
@@ -84,7 +86,7 @@ class PicturesAdapter : RecyclerView.Adapter<PicturesAdapter.PictureVH>() {
         }
     }
 
-    override fun onViewRecycled(holder: PictureVH?) {
+    override fun onViewRecycled(holder: PictureVH) {
         super.onViewRecycled(holder)
         if (holder is ExistingPictureVh) {
             ImageLoader.getInstance().cancelDisplayTask(holder.itemView.photoView)

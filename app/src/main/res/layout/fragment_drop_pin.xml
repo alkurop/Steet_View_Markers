@@ -98,7 +98,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/submitOption"
+            android:id="@+id/deleteOption"
             style="@style/AppButton.Accent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

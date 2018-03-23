@@ -18,11 +18,17 @@ import com.google.android.gms.location.places.AutocompletePrediction
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.item_search.view.*
+import kotlinx.android.synthetic.main.item_search.view.dataContainer
+import kotlinx.android.synthetic.main.item_search.view.description
+import kotlinx.android.synthetic.main.item_search.view.googleSearchList
+import kotlinx.android.synthetic.main.item_search.view.icon
+import kotlinx.android.synthetic.main.item_search.view.title
 import timber.log.Timber
 
-class SearchAdapter(val googlePlacesSearch: GooglePlacesSearch,
-                    val googleApiClient: GoogleApiClient) : RecyclerView.Adapter<SearchViewHolder>() {
+class SearchAdapter(
+        val googlePlacesSearch: GooglePlacesSearch,
+        val googleApiClient: GoogleApiClient
+) : RecyclerView.Adapter<SearchViewHolder>() {
     var pinClickListener: ((PinDto) -> Unit)? = null
     var googlePlaceClickListener: ((GooglePlace) -> Unit)? = null
 
@@ -35,7 +41,7 @@ class SearchAdapter(val googlePlacesSearch: GooglePlacesSearch,
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): SearchViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val view = li.inflate(R.layout.item_search, parent, false)
         return SearchViewHolder(view, googlePlacesSearch, googleApiClient)
     }
@@ -48,7 +54,7 @@ class SearchAdapter(val googlePlacesSearch: GooglePlacesSearch,
         this.items = items
     }
 
-    override fun onBindViewHolder(holder: SearchViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val any = items[position]
         when (any) {
             is PinDto -> {
@@ -66,9 +72,11 @@ class SearchAdapter(val googlePlacesSearch: GooglePlacesSearch,
     }
 }
 
-class SearchViewHolder(itemView: View,
-                       val googlePlacesSearch: GooglePlacesSearch,
-                       val googleApiClient: GoogleApiClient) : RecyclerView.ViewHolder(itemView) {
+class SearchViewHolder(
+        itemView: View,
+        val googlePlacesSearch: GooglePlacesSearch,
+        val googleApiClient: GoogleApiClient
+) : RecyclerView.ViewHolder(itemView) {
 
     val compositeDisposable = CompositeDisposable()
 
@@ -79,8 +87,10 @@ class SearchViewHolder(itemView: View,
         }
     }
 
-    fun bind(pinDto: PinDto,
-             pinClickListener: ((PinDto) -> Unit)?) {
+    fun bind(
+            pinDto: PinDto,
+            pinClickListener: ((PinDto) -> Unit)?
+    ) {
         with(itemView) {
             title.text = pinDto.title
             description.text = if (pinDto.description.isEmpty().not()) pinDto.description else pinDto.address
@@ -96,8 +106,10 @@ class SearchViewHolder(itemView: View,
         }
     }
 
-    fun bind(googlePrediction: AutocompletePrediction,
-             googlePlaceClickListener: ((GooglePlace) -> Unit)?) {
+    fun bind(
+            googlePrediction: AutocompletePrediction,
+            googlePlaceClickListener: ((GooglePlace) -> Unit)?
+    ) {
         with(itemView) {
             icon.visibility = View.GONE
             title.text = googlePrediction.getPrimaryText(null)
@@ -105,18 +117,19 @@ class SearchViewHolder(itemView: View,
             googleSearchList.visibility = View.GONE
             dataContainer.visibility = View.VISIBLE
             val subscribe = googlePlacesSearch.getPlaceListById(googlePrediction)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        dataContainer.visibility = View.GONE
-                        googleSearchList.visibility = View.VISIBLE
-                        val adapter = GooglePlacesAdapter(
-                                googlePlacesSearch,
-                                googleApiClient,
-                                it,
-                                googlePlaceClickListener)
-                        googleSearchList.adapter = adapter
-                    }, { Timber.e(it) })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                               dataContainer.visibility = View.GONE
+                               googleSearchList.visibility = View.VISIBLE
+                               val adapter = GooglePlacesAdapter(
+                                   googlePlacesSearch,
+                                   googleApiClient,
+                                   it,
+                                   googlePlaceClickListener
+                               )
+                               googleSearchList.adapter = adapter
+                           }, { Timber.e(it) })
             compositeDisposable.add(subscribe)
         }
     }

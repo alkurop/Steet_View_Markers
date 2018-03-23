@@ -32,12 +32,14 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         }
     }
 
-    @Inject lateinit var shareUtil: ShareUtil
+    @Inject
+    lateinit var shareUtil: ShareUtil
 
     var progressDialog: ProgressDialog? = null
     val compositeDisposable = CompositeDisposable()
 
-    @Inject lateinit var presenter: StreetPresenter
+    @Inject
+    lateinit var presenter: StreetPresenter
 
     override fun getSubject(): Observable<StreetViewModel> = presenter.viewBus
 
@@ -49,14 +51,14 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_street, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         marker_view.onCreate(savedInstanceState)
-        val focusLocation = arguments.getParcelable<LatLng>(FOCUS_LOCATION_KEY)
+        val focusLocation = arguments!!.getParcelable<LatLng>(FOCUS_LOCATION_KEY)
 
         marker_view.focusToLocation(focusLocation)
     }
@@ -79,19 +81,19 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         val camera = presenter.cameraPosition ?: return
 
         val subscribe = shareUtil.createShareIntentFromStreetProjection(marker_view, camera)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    progressDialog = ProgressDialog.show(activity,
-                            getString(R.string.share_create_title),
-                            getString(R.string.share_create_msg),
-                            false,
-                            true, { subscriptions.clear() })
-                }
-                .doOnTerminate { progressDialog?.dismiss() }
-                .subscribe({
-                    startActivity(it)
-                }, { Timber.e(it) })
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                progressDialog = ProgressDialog.show(activity,
+                                                     getString(R.string.share_create_title),
+                                                     getString(R.string.share_create_msg),
+                                                     false,
+                                                     true, { subscriptions.clear() })
+            }
+            .doOnTerminate { progressDialog?.dismiss() }
+            .subscribe({
+                           startActivity(it)
+                       }, { Timber.e(it) })
         compositeDisposable.add(subscribe)
     }
 
@@ -141,7 +143,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
         super.onLowMemory()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         val markerState = marker_view.onSaveInstanceState(outState)
         super.onSaveInstanceState(markerState)
     }

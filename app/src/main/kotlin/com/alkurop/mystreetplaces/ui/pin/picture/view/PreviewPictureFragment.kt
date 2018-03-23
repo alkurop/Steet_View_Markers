@@ -19,20 +19,21 @@ class PreviewPictureFragment : BaseMvpFragment<PreviewPictureModel>() {
         val PICTURE_WRAPPER_KEY = "picture_wrapper_key"
     }
 
-    @Inject lateinit var presenter: PreviewPicturePresenter
+    @Inject
+    lateinit var presenter: PreviewPicturePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component().inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_picture_preview, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val model = arguments.getParcelable<PictureWrapper>(PICTURE_WRAPPER_KEY)
+        val model = arguments!!.getParcelable<PictureWrapper>(PICTURE_WRAPPER_KEY)
         presenter.start(model)
     }
 
@@ -54,5 +55,4 @@ class PreviewPictureFragment : BaseMvpFragment<PreviewPictureModel>() {
         if (it.equals(NoArgsNavigation.REMOVE_ACTION)) {
         }
     }
-
 }

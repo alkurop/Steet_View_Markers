@@ -48,24 +48,35 @@ open class ApplicationModule(private val application: MyStreetPlacesApp) {
     }
 
     @Provides
-    @Singleton open fun provideRealmProvider(): RealmProvider {
-        return RealmProviderImpl(RealmConfiguration.Builder()
-                .schemaVersion(1)
+    @Singleton
+    open fun provideRealmProvider(): RealmProvider {
+        return RealmProviderImpl(
+            RealmConfiguration.Builder()
+                .schemaVersion(2)
                 .migration { realm, oldVersion, _ ->
                     if (oldVersion < 1) {
                         val schema = realm.schema
-                        val pinSchema = schema.get("PinDto")
+                        val pinSchema = schema.get("PinDto")!!
                         pinSchema.addField("categoryId", String::class.java)
                         pinSchema.addField("isFromGoogle", Boolean::class.javaPrimitiveType)
                         pinSchema.addField("isTemp", Boolean::class.javaPrimitiveType)
                     }
+                    /*if (oldVersion < 2) {
+                        val schema = realm.schema
+                        val pinSchema = schema.get("PinDto")!!
+
+
+                        val pictureWrapperschema = schema.get("PictureWrapper")!!
+                        pictureWrapperschema.addField("id", String::class.java)
+                    }*/
                     realm.close()
                 }
                 .build())
     }
 
     @Provides
-    @Singleton open fun provideGson(): Gson {
+    @Singleton
+    open fun provideGson(): Gson {
         return gson
     }
 }

@@ -1,13 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply from:'../libs.gradle'
 
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdkVersion 27
+  buildToolsVersion '27.0.3'
 
   defaultConfig {
-    minSdkVersion rootProject.ext.minSdkVersion
-    targetSdkVersion rootProject.ext.targetSdkVersion
+    minSdkVersion 16
+    targetSdkVersion 27
     versionCode 1
     versionName "1.0"
   }
@@ -21,17 +22,12 @@ android {
   sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
   }
-
-}
-
-kapt {
-  generateStubs = true
 }
 
 dependencies {
-  compile "com.google.android.gms:play-services-maps:$services_version"
-  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  compile 'com.squareup.picasso:picasso:2.5.2'
+  compileOnly "com.google.android.gms:play-services-maps:$versions.playServices"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+  implementation 'com.squareup.picasso:picasso:2.5.2'
 
   testCompile 'junit:junit:4.12'
 }
@@ -41,6 +37,6 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
   }
 }

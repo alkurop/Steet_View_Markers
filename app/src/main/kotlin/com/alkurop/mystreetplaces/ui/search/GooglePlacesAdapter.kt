@@ -14,10 +14,12 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_search_google.view.*
 import timber.log.Timber
 
-class GooglePlacesAdapter(val googlePlacesSearch: GooglePlacesSearch,
-                          val googleApiClient: GoogleApiClient,
-                          val items: List<GooglePlace>,
-                          val googlePlaceClickListener: ((GooglePlace) -> Unit)?) : RecyclerView.Adapter<GooglePlacesAdapter.PlaceVH>() {
+class GooglePlacesAdapter(
+        val googlePlacesSearch: GooglePlacesSearch,
+        val googleApiClient: GoogleApiClient,
+        val items: List<GooglePlace>,
+        val googlePlaceClickListener: ((GooglePlace) -> Unit)?
+) : RecyclerView.Adapter<GooglePlacesAdapter.PlaceVH>() {
     lateinit var layoutInflater: LayoutInflater
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -29,7 +31,7 @@ class GooglePlacesAdapter(val googlePlacesSearch: GooglePlacesSearch,
         holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PlaceVH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceVH {
         val view = layoutInflater.inflate(R.layout.item_search_google, parent, false)
         return PlaceVH(view, googlePlacesSearch, googleApiClient, googlePlaceClickListener)
     }
@@ -41,11 +43,12 @@ class GooglePlacesAdapter(val googlePlacesSearch: GooglePlacesSearch,
         holder.unbind()
     }
 
-    class PlaceVH(itemView: View,
-                  val googlePlacesSearch: GooglePlacesSearch,
-                  val googleApiClient: GoogleApiClient,
-                  val googlePlaceClickListener: ((GooglePlace) -> Unit)?)
-        : RecyclerView.ViewHolder(itemView) {
+    class PlaceVH(
+            itemView: View,
+            val googlePlacesSearch: GooglePlacesSearch,
+            val googleApiClient: GoogleApiClient,
+            val googlePlaceClickListener: ((GooglePlace) -> Unit)?
+    ) : RecyclerView.ViewHolder(itemView) {
 
         val compositeDisposable = CompositeDisposable()
 
@@ -57,18 +60,18 @@ class GooglePlacesAdapter(val googlePlacesSearch: GooglePlacesSearch,
 
                 setOnClickListener { googlePlaceClickListener?.invoke(place) }
                 val disposable = googlePlacesSearch.getPlacePicturesMetadata(place)
-                        .toObservable().filter { !it.isEmpty() }
-                        .map { it.first() }
-                        .flatMap {
-                            googlePlacesSearch.getPhotoScaled(googleApiClient, it, 100, 100)
-                                    .toObservable()
-                        }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            icon.setImageBitmap(it)
+                    .toObservable().filter { !it.isEmpty() }
+                    .map { it.first() }
+                    .flatMap {
+                        googlePlacesSearch.getPhotoScaled(googleApiClient, it, 100, 100)
+                            .toObservable()
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                                   icon.setImageBitmap(it)
 
-                        }, { Timber.e(it) })
+                               }, { Timber.e(it) })
                 compositeDisposable.add(disposable)
             }
 
@@ -77,9 +80,5 @@ class GooglePlacesAdapter(val googlePlacesSearch: GooglePlacesSearch,
         fun unbind() {
             compositeDisposable.clear()
         }
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
-        super.onDetachedFromRecyclerView(recyclerView)
     }
 }

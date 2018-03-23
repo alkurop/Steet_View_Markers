@@ -39,11 +39,10 @@ class PlaceDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        placeStartModel = arguments.getParcelable(KEY_PLACE)
+        placeStartModel = arguments!!.getParcelable(KEY_PLACE)
     }
 
     override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
         val contentView = View.inflate(context, R.layout.fragment_place_details, null)
         dialog.setContentView(contentView)
         dialog.window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)

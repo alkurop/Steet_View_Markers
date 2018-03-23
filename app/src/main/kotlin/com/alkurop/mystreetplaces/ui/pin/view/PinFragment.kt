@@ -2,7 +2,6 @@ package com.alkurop.mystreetplaces.ui.pin.view
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -16,8 +15,7 @@ import com.alkurop.mystreetplaces.ui.base.BaseMvpActivity
 import com.alkurop.mystreetplaces.ui.navigation.ActivityNavigationAction
 import com.alkurop.mystreetplaces.ui.pin.drop.DropPinActivity
 import com.alkurop.mystreetplaces.ui.pin.picture.container.PictureActivity
-import kotlinx.android.synthetic.main.fragment_view_pin.*
-import kotlinx.android.synthetic.main.fragment_view_pin.view.*
+import kotlinx.android.synthetic.main.fragment_view_pin.view.viewPin
 
 class PinFragment : BottomSheetDialogFragment() {
     companion object {
@@ -29,7 +27,7 @@ class PinFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pinStartModel = arguments.getParcelable(CONFIG)
+        pinStartModel = arguments!!.getParcelable(CONFIG)
     }
 
     private val mBottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
@@ -44,7 +42,6 @@ class PinFragment : BottomSheetDialogFragment() {
     }
 
     override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
         val contentView = View.inflate(context, R.layout.fragment_view_pin, null)
         dialog.setContentView(contentView)
         dialog.window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)

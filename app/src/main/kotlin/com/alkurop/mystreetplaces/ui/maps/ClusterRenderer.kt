@@ -38,7 +38,7 @@ class ClusterRenderer(val context: Context, map: GoogleMap, clusterManager: Clus
 
     override fun onBeforeClusterItemRendered(item: MapClusterItem, markerOptions: MarkerOptions) {
         item.place.category?.let {
-            val iconBitmap = convertToBitmap(ContextCompat.getDrawable(context, it.icon), context.dpToPx(32), context.dpToPx(32))
+            val iconBitmap = convertToBitmap(ContextCompat.getDrawable(context, it.icon)!!, context.dpToPx(32), context.dpToPx(32))
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconBitmap))
         }
     }

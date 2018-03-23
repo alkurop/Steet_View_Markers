@@ -22,7 +22,7 @@ class MainActivity : BaseMvpActivity<MainActivityView>() {
     var backStackListener = FragmentManager.OnBackStackChangedListener {
         val fragmentList = supportFragmentManager.fragments
         fragmentList?.filter { it != null }?.forEach {
-            presenter.onFragmentShowed(it.tag)
+            presenter.onFragmentShowed(it.tag ?: "")
             return@forEach
         }
     }

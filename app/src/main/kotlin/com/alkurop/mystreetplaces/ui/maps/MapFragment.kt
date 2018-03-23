@@ -4,11 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.pin.PinPlace
-import com.alkurop.mystreetplaces.domain.pin.PinDto
 import com.alkurop.mystreetplaces.ui.base.BaseMvpFragment
 import com.alkurop.mystreetplaces.ui.navigation.NavigationAction
 import com.alkurop.mystreetplaces.utils.LocationTracker
@@ -22,15 +26,17 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_map.*
+import kotlinx.android.synthetic.main.fragment_map.mapView
 import timber.log.Timber
 import javax.inject.Inject
 
 class MapFragment : BaseMvpFragment<MapViewModel>() {
 
-    @Inject lateinit var presenter: MapPresenter
+    @Inject
+    lateinit var presenter: MapPresenter
     private var permissionManager: PermissionsManager? = null
-    @Inject lateinit var locationTracker: LocationTracker
+    @Inject
+    lateinit var locationTracker: LocationTracker
     private var clusterManager: ClusterManager<MapClusterItem>? = null
 
     private val compositeDisposable = CompositeDisposable()
@@ -51,9 +57,13 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         if (permissionManager != null) return
         permissionManager = PermissionsManager(this)
         permissionManager?.setRequestCode(101)
-        val permission1 = Pair(Manifest.permission.ACCESS_FINE_LOCATION,
-                PermissionOptionalDetails(getString(R.string.location_permission_rationale_title),
-                        getString(R.string.location_permission_rationale)))
+        val permission1 = Pair(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            PermissionOptionalDetails(
+                getString(R.string.location_permission_rationale_title),
+                getString(R.string.location_permission_rationale)
+            )
+        )
 
         permissionManager?.addPermissions(mapOf(permission1))
         permissionManager?.addPermissionsListener {
@@ -66,10 +76,10 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
-            inflater?.inflate(R.layout.fragment_map, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+        inflater?.inflate(R.layout.fragment_map, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpPermissionsManager()
         mapView.onCreate(savedInstanceState)
@@ -84,7 +94,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         if (clusterManager != null) return
 
         clusterManager = ClusterManager(activity, map)
-        val renderer = ClusterRenderer(activity, map, clusterManager!!)
+        val renderer = ClusterRenderer(activity!!, map, clusterManager!!)
         clusterManager?.renderer = renderer
 
         map.setOnMarkerClickListener(clusterManager)
@@ -98,7 +108,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     private fun initLocationTracking() {
         if (clusterManager != null) return
 
-        locationTracker.setUp(activity, {
+        locationTracker.setUp(activity!!, {
             Timber.e("Location tracking failed")
             Toast.makeText(activity, R.string.er_location_tracking_failed, Toast.LENGTH_SHORT).show()
         })
@@ -110,13 +120,13 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
                 presenter.onCameraPositionChanged(map.projection.visibleRegion)
                 if (map.cameraPosition.target.latitude == 0.0) {
                     val dis = locationTracker.getLastKnownLocation().firstElement()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
-                                map.moveCamera(cameraUpdate)
-                                presenter.onCameraPositionChanged(map.projection.visibleRegion)
-                            })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                                       val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), DEFAULT_CAMERA_ZOOM)
+                                       map.moveCamera(cameraUpdate)
+                                       presenter.onCameraPositionChanged(map.projection.visibleRegion)
+                                   })
                     compositeDisposable.add(dis)
                 }
             }
@@ -130,9 +140,8 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        val bundle = outState ?: Bundle()
-        mapView.onSaveInstanceState(bundle)
+    override fun onSaveInstanceState(outState: Bundle) {
+        mapView.onSaveInstanceState(outState)
     }
 
     override fun onStart() {

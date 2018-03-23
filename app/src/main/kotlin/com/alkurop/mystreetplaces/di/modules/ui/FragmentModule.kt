@@ -15,7 +15,7 @@ class FragmentModule(private val fragment: Fragment) {
   }
 
   @Provides @PerFragment internal fun activity(): Activity {
-    return fragment.activity
+    return fragment.activity as Activity
   }
 
 }

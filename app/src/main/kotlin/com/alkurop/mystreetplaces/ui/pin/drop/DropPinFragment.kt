@@ -12,7 +12,12 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import com.alkurop.mystreetplaces.R
 import com.alkurop.mystreetplaces.data.category.mapCategory
 import com.alkurop.mystreetplaces.data.pin.PictureWrapper
@@ -32,7 +37,15 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_drop_pin.*
+import kotlinx.android.synthetic.main.fragment_drop_pin.categories
+import kotlinx.android.synthetic.main.fragment_drop_pin.categoryImageView
+import kotlinx.android.synthetic.main.fragment_drop_pin.deleteOption
+import kotlinx.android.synthetic.main.fragment_drop_pin.description
+import kotlinx.android.synthetic.main.fragment_drop_pin.galeryPicture
+import kotlinx.android.synthetic.main.fragment_drop_pin.location_view
+import kotlinx.android.synthetic.main.fragment_drop_pin.picture
+import kotlinx.android.synthetic.main.fragment_drop_pin.recyclerView
+import kotlinx.android.synthetic.main.fragment_drop_pin.title
 import java.io.File
 import javax.inject.Inject
 
@@ -61,25 +74,26 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     val viewDisposable = CompositeDisposable()
     lateinit var photoHelper: CameraPictureHelper
     var permissionManager: PermissionsManager? = null
-    @Inject lateinit var presenter: DropPinPresenter
+    @Inject
+    lateinit var presenter: DropPinPresenter
     var alert: AlertDialog? = null
     var shouldReturnResult = false
     var filePicker: MediaPicker? = null
     var mediauri: Uri? = null
     var pendingType: MediaType? = null
     var selectedType: MediaType? = null
-    var isDeleteVisible = false
+    var isSubmitVisible = false
 
     override fun getSubject(): Observable<DropPinViewModel> = presenter.viewBus
 
     override fun getNavigation(): Observable<NavigationAction> = presenter.navBus
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         component().inject(this)
         return inflater?.inflate(R.layout.fragment_drop_pin, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         photoHelper = CameraPictureHelperImpl(this)
@@ -87,15 +101,16 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
         setHasOptionsMenu(true)
 
-        submitOption.setOnClickListener {
-            AlertDialog.Builder(activity)
-                    .setTitle(getString(R.string.delete_pin_title))
-                    .setMessage(getString(R.string.delet_pin_msg))
-                    .setPositiveButton(android.R.string.ok, { _, _ ->
-                        presenter.deletePin()
-                    })
-                    .setNegativeButton(android.R.string.cancel, { _, _ -> })
-                    .show()
+
+        deleteOption.setOnClickListener {
+            AlertDialog.Builder(activity!!)
+                .setTitle(getString(R.string.delete_pin_title))
+                .setMessage(getString(R.string.delet_pin_msg))
+                .setPositiveButton(android.R.string.ok, { _, _ ->
+                    presenter.deletePin()
+                })
+                .setNegativeButton(android.R.string.cancel, { _, _ -> })
+                .show()
         }
 
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -106,7 +121,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
         picturesAdapter.onPictureClick = { presenter.onPictureClick(it, picturesAdapter.getItems()) }
 
         recyclerView.adapter = picturesAdapter
-        val location = arguments.getParcelable<LatLng>(LOCATION_KEY)
+        val location = arguments?.getParcelable<LatLng>(LOCATION_KEY)
         location?.let { presenter.start(location) }
 
         val categoriesLayoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
@@ -116,10 +131,10 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
             presenter.onCategorySelected(it)
         }
 
-        val pinId = arguments.getString(ID_KEY)
+        val pinId = arguments?.getString(ID_KEY)
         pinId?.let { presenter.start(pinId) }
 
-        filePicker = MediaPicker({ it ->
+        filePicker = MediaPicker { it ->
             val map: HashMap<String, PermissionOptionalDetails> = HashMap()
             map.put(it, PermissionOptionalDetails(getString(R.string.storage_permission_rationale_title), getString(R.string.storage_permission_rationale)))
             if (permissionManager == null) permissionManager = PermissionsManager(this)
@@ -129,16 +144,16 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
             permissionManager?.addPermissions(map)
             permissionManager?.addPermissionsListener { }
             permissionManager?.makePermissionRequest()
-        })
+        }
         galeryPicture.setOnClickListener {
             filePicker?.fromGallery(this, MediaType.PHOTO)
         }
         picture.setOnClickListener {
-            setUpPermissionsManager({
+            setUpPermissionsManager {
                 photoHelper.execute({ file ->
-                    presenter.onAddPicture(file)
-                })
-            })
+                                        presenter.onAddPicture(file)
+                                    })
+            }
         }
     }
 
@@ -148,7 +163,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
-        menu?.findItem(R.id.submitOption)?.isVisible = isDeleteVisible
+        menu?.findItem(R.id.submitOption)?.isVisible = isSubmitVisible
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -162,12 +177,20 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     private fun setUpPermissionsManager(function: () -> Unit) {
         if (permissionManager == null) permissionManager = PermissionsManager(this)
         permissionManager?.setRequestCode(202)
-        val permission1 = Pair(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                PermissionOptionalDetails(getString(R.string.storage_permission_rationale_title),
-                        getString(R.string.storage_permission_rationale)))
-        val permission2 = Pair(Manifest.permission.CAMERA,
-                PermissionOptionalDetails(getString(R.string.camera_permission_rationale_title),
-                        getString(R.string.camera_permission_rationale)))
+        val permission1 = Pair(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            PermissionOptionalDetails(
+                getString(R.string.storage_permission_rationale_title),
+                getString(R.string.storage_permission_rationale)
+            )
+        )
+        val permission2 = Pair(
+            Manifest.permission.CAMERA,
+            PermissionOptionalDetails(
+                getString(R.string.camera_permission_rationale_title),
+                getString(R.string.camera_permission_rationale)
+            )
+        )
         permissionManager?.clearPermissions()
         permissionManager?.clearPermissionsListeners()
         permissionManager?.addPermissions(mapOf(permission1, permission2))
@@ -194,38 +217,41 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
             pinDto?.let { pin ->
                 location_view.setText(pin.address ?: "")
                 title.setText(pin.title)
+                isSubmitVisible = pin.title.isNotEmpty()
+                activity?.invalidateOptionsMenu()
                 description.setText(pin.description)
                 pin.id?.let {
-                    isDeleteVisible = true
-                    activity.invalidateOptionsMenu()
+                    deleteOption.visibility = View.VISIBLE
                 }
                 pin.id?.let { (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.edit_pin) }
                 (recyclerView.adapter as PicturesAdapter).setItems(pin.pictures)
                 val caterory = pin.categoryId.mapCategory()
                 caterory?.let {
-                    val drawable = ContextCompat.getDrawable(context, it.icon)
+                    val drawable = ContextCompat.getDrawable(context!!, it.icon)
                     categoryImageView.setImageDrawable(drawable)
                 }
             }
         }
         RxTextView.textChangeEvents(title)
-                .observeOn(Schedulers.io())
-                .subscribe({
-                    val text = it.text().toString()
-                    presenter.onTitleChange(text)
-                })
+            .observeOn(Schedulers.io())
+            .subscribe({
+                           val text = it.text().toString()
+                           presenter.onTitleChange(text)
+                           isSubmitVisible = text.isNotEmpty()
+                           activity?.invalidateOptionsMenu()
+                       })
         RxTextView.textChangeEvents(description)
-                .observeOn(Schedulers.io())
-                .subscribe({
-                    val text = it.text().toString()
-                    presenter.onDescriptionChange(text)
-                })
+            .observeOn(Schedulers.io())
+            .subscribe({
+                           val text = it.text().toString()
+                           presenter.onDescriptionChange(text)
+                       })
         RxTextView.textChangeEvents(location_view)
-                .observeOn(Schedulers.io())
-                .subscribe({
-                    val text = it.text().toString()
-                    presenter.onAddressTextChange(text)
-                })
+            .observeOn(Schedulers.io())
+            .subscribe({
+                           val text = it.text().toString()
+                           presenter.onAddressTextChange(text)
+                       })
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -261,7 +287,7 @@ class DropPinFragment : BaseMvpFragment<DropPinViewModel>() {
     }
 
     override fun onBackward() {
-        activity.setResult(Activity.RESULT_OK)
-        activity.finish()
+        activity?.setResult(Activity.RESULT_OK)
+        activity?.finish()
     }
 }

@@ -22,6 +22,6 @@ class PicturesPreviewAdapter(fm: FragmentManager, val items: MutableList<Picture
 
     override fun getCount(): Int = items.size
 
-    override fun getItemPosition(`object`: Any?): Int = PagerAdapter.POSITION_NONE
+    override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
 
 }

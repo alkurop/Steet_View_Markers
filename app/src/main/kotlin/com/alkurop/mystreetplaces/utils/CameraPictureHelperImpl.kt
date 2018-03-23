@@ -11,13 +11,14 @@ import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class CameraPictureHelperImpl : CameraPictureHelper {
     companion object {
         val FILE_PROVIDER = "com.alkurop.mystreetplaces.fileprovider"
     }
-    private var requestCode:Int = 2212
+
+    private var requestCode: Int = 2212
     val fragment: Fragment?
     val activity: AppCompatActivity?
     lateinit var listener: (File) -> Unit
@@ -37,10 +38,12 @@ class CameraPictureHelperImpl : CameraPictureHelper {
         this.listener = listener
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val act = activity ?: fragment!!.activity
-        photoFile = createImageFile(act)
-        val photoURI = FileProvider.getUriForFile(act,
-                FILE_PROVIDER,
-                photoFile)
+        photoFile = createImageFile(act!!)
+        val photoURI = FileProvider.getUriForFile(
+            act,
+            FILE_PROVIDER,
+            photoFile
+        )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
 
         activity?.let {
@@ -50,7 +53,7 @@ class CameraPictureHelperImpl : CameraPictureHelper {
         }
 
         fragment?.let {
-            if (takePictureIntent.resolveActivity(fragment.activity.packageManager) != null) {
+            if (takePictureIntent.resolveActivity(fragment.activity!!.packageManager) != null) {
                 fragment.startActivityForResult(takePictureIntent, requestCode)
             }
         }
@@ -59,7 +62,7 @@ class CameraPictureHelperImpl : CameraPictureHelper {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == this.requestCode && resultCode == RESULT_OK) {
             listener.invoke(photoFile)
-            galleryAddPic(photoFile.absolutePath, activity ?: fragment!!.activity)
+            galleryAddPic(photoFile.absolutePath, activity ?: fragment!!.activity as Activity)
         }
     }
 
@@ -68,9 +71,9 @@ class CameraPictureHelperImpl : CameraPictureHelper {
         val imageFileName = "JPEG_" + timeStamp + "_"
         val storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir      /* directory */
+            imageFileName,
+            ".jpg",
+            storageDir      /* directory */
         )
         return image
     }

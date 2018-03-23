@@ -24,14 +24,14 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
     abstract fun unsubscribe()
     abstract fun renderView(viewModel: T)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sub = getSubject()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ renderView(it) }, { Timber.e(it) })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ renderView(it) }, { Timber.e(it) })
         val sub2 = getNavigation()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ navigate(it) }, { Timber.e(it) })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ navigate(it) }, { Timber.e(it) })
         subscriptions.add(sub)
         subscriptions.add(sub2)
     }
@@ -43,8 +43,8 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
             navigateFragment(it)
         } else if (it == NoArgsNavigation.BACK_ACTION) {
             isAdded
-                    .takeIf { it }
-                    .let { onBackward() }
+                .takeIf { it }
+                .let { onBackward() }
         } else if (it is UriNavigationAction) {
             navigateUri(it)
         } else if (it == NoArgsNavigation.FORWARD_ACTION) {
@@ -57,11 +57,11 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
     fun navigateBottomsheet(action: BottomsheetFragmentNavigationAction) {
         val bottomSheetDialogFragment = action.endpoint.newInstance()
         bottomSheetDialogFragment.arguments = action.args
-        bottomSheetDialogFragment.show(activity.supportFragmentManager, bottomSheetDialogFragment.tag)
+        bottomSheetDialogFragment.show(activity!!.supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
     open fun onBackward() {
-        activity.onBackPressed()
+        activity?.onBackPressed()
     }
 
     open fun onForward() {
@@ -100,12 +100,12 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
     fun hasFragmentInBackStack(tag: String): Boolean {
         val backStackCount = childFragmentManager.backStackEntryCount
         (0 until backStackCount)
-                .forEach {
-                    val name = childFragmentManager.getBackStackEntryAt(it).name
-                    if (name == tag) {
-                        return true
-                    }
+            .forEach {
+                val name = childFragmentManager.getBackStackEntryAt(it).name
+                if (name == tag) {
+                    return true
                 }
+            }
         return false
     }
 
@@ -117,12 +117,12 @@ abstract class BaseMvpFragment<T> : BaseFragment() {
         } else {
             startActivity(intent)
             if (action.isShouldFinish) {
-                activity.finish()
+                activity?.finish()
             }
         }
         val overrideAnimation = action.overrideAnimation
-        if(overrideAnimation != null ){
-            activity.overridePendingTransition(overrideAnimation[0], overrideAnimation[1])
+        if (overrideAnimation != null) {
+            activity?.overridePendingTransition(overrideAnimation[0], overrideAnimation[1])
         }
     }
 
