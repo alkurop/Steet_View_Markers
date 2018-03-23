@@ -14,14 +14,14 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
-import android.support.v4.graphics.BitmapCompat
 import android.text.TextUtils
 import android.util.Log
 import android.view.SurfaceHolder
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
-import java.util.*
-import java.util.concurrent.*
+import java.util.HashMap
+import java.util.LinkedList
+import java.util.concurrent.ConcurrentHashMap
 import com.squareup.picasso.Target as PicassoTarget
 
 /**
@@ -34,13 +34,15 @@ interface IDrawThread {
     fun setSharingListener(listener: (Bitmap) -> Unit)
 }
 
-class DrawThread(private val surfaceHolder: SurfaceHolder,
-                 val resources: Resources,
-                 val markers: List<Place>,
-                 val drawData: MutableList<MarkerDrawData?>,
-                 val context: Context,
-                 var mapsConfig: MapsConfig)
-    : Thread(), IDrawThread {
+class DrawThread(
+        private var surfaceHolder: SurfaceHolder?,
+        var resources: Resources?,
+        var markers: List<Place>?,
+        var drawData: MutableList<MarkerDrawData?>?,
+        var context: Context?,
+        var mapsConfig: MapsConfig?
+) : Thread(),
+    IDrawThread {
     val TAG = DrawThread::class.java.simpleName
     private val matrixSet = hashSetOf<MarkerMatrixData>()
     private val bitmapMap = ConcurrentHashMap<String, Bitmap>()
@@ -68,6 +70,19 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
 
     override fun setRunning(run: Boolean) {
         runFlag = run
+        if (!run) {
+            surfaceHolder = null
+            bitmapMap.forEach { it.value.recycle() }
+            bitmapMap.clear()
+            resources = null
+            context = null
+            drawData = null
+            mapsConfig = null
+            markers = null
+            matrixSet.clear()
+            targetMap.clear()
+            locBufferMap.clear()
+        }
     }
 
     override fun run() {
@@ -77,31 +92,31 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
                 calculate()
 
             try {
-                screenHeight = surfaceHolder.surfaceFrame.height().toDouble()
-                screenWidth = surfaceHolder.surfaceFrame.width().toDouble()
+                screenHeight = surfaceHolder!!.surfaceFrame.height().toDouble()
+                screenWidth = surfaceHolder!!.surfaceFrame.width().toDouble()
                 if (screenWidth > screenHeight) {
-                    screenWidth = surfaceHolder.surfaceFrame.height().toDouble()
-                    screenHeight = surfaceHolder.surfaceFrame.width().toDouble()
+                    screenWidth = surfaceHolder!!.surfaceFrame.height().toDouble()
+                    screenHeight = surfaceHolder!!.surfaceFrame.width().toDouble()
                 }
 
                 initX = (screenWidth * 0.3)
                 initY = initX
-                canvas = surfaceHolder.lockCanvas(null)
-                synchronized(surfaceHolder) {
-                    canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-                    if (canvas != null)
-                        drawMarkersOnCanvas(canvas!!)
-                }
+                canvas = surfaceHolder?.lockCanvas(null)
+                canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                if (canvas != null)
+                    drawMarkersOnCanvas(canvas!!)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
                 try {
                     if (canvas != null)
-                        surfaceHolder.unlockCanvasAndPost(canvas)
+                        surfaceHolder!!.unlockCanvasAndPost(canvas)
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
+
         }
     }
 
@@ -115,80 +130,82 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
         sharingCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
 
         val drawDataList = matrixSet
-                .sortedBy { it.data.distance }
-                .reversed()
-                .map { matrixData ->
-                    var markerData: MarkerDrawData? = null
-                    val key = matrixData.data.id
-                    if (matrixData.shouldShow) {
-                        with(matrixData) {
-                            val bitmap: Bitmap? = getBitmapFromModel(key, (data.distance * 1000).toInt())
+            .sortedBy { it.data.distance }
+            .reversed()
+            .map { matrixData ->
+                var markerData: MarkerDrawData? = null
+                val key = matrixData.data.id
+                if (matrixData.shouldShow) {
+                    with(matrixData) {
+                        val bitmap: Bitmap? = getBitmapFromModel(key, (data.distance * 1000).toInt())
 
-                            val xLeft = (xLoc - (initX / 2.toDouble() * scale))
-                            val yTop = yLoc - initY / 2.toDouble() * scale
-                            val xRight = (xLoc + (initX / 2 * scale))
-                            val yBot = yLoc + initY / 2.toDouble() * scale
+                        val xLeft = (xLoc - (initX / 2.toDouble() * scale))
+                        val yTop = yLoc - initY / 2.toDouble() * scale
+                        val xRight = (xLoc + (initX / 2 * scale))
+                        val yBot = yLoc + initY / 2.toDouble() * scale
 
-                            val bufferData = BufferMarkerDrawData(xLeft, yTop, xRight, yBot)
+                        val bufferData = BufferMarkerDrawData(xLeft, yTop, xRight, yBot)
 
-                            val latestBufferList = if (locBufferMap.contains(key)) locBufferMap[key]!! else {
-                                val mList = LinkedList<BufferMarkerDrawData>()
-                                for (x in 1..5) {
-                                    mList.add(bufferData)
-                                }
-                                locBufferMap.put(key, mList)
-                                mList
+                        val latestBufferList = if (locBufferMap.contains(key)) locBufferMap[key]!! else {
+                            val mList = LinkedList<BufferMarkerDrawData>()
+                            for (x in 1..5) {
+                                mList.add(bufferData)
                             }
-                            val bufferDataCentered = BufferMarkerDrawData(xLeft, yTop, xRight, yBot)
-                            latestBufferList.forEach {
-                                bufferDataCentered.left += it.left
-                                bufferDataCentered.top += it.top
-                                bufferDataCentered.right += it.right
-                                bufferDataCentered.bottom += it.bottom
+                            locBufferMap.put(key, mList)
+                            mList
+                        }
+                        val bufferDataCentered = BufferMarkerDrawData(xLeft, yTop, xRight, yBot)
+                        latestBufferList.forEach {
+                            bufferDataCentered.left += it.left
+                            bufferDataCentered.top += it.top
+                            bufferDataCentered.right += it.right
+                            bufferDataCentered.bottom += it.bottom
+                        }
+                        bufferDataCentered.left /= latestBufferList.size + 1
+                        bufferDataCentered.top /= latestBufferList.size + 1
+                        bufferDataCentered.right /= latestBufferList.size + 1
+                        bufferDataCentered.bottom /= latestBufferList.size + 1
+
+                        latestBufferList.removeLast()
+                        latestBufferList.addFirst(bufferData)
+
+                        val rec = RectF(
+                            bufferDataCentered.left.toFloat(),
+                            bufferDataCentered.top.toFloat(),
+                            bufferDataCentered.right.toFloat(),
+                            bufferDataCentered.bottom.toFloat()
+                        )
+
+                        val paint = Paint()
+                        paint.isAntiAlias = true
+                        paint.isFilterBitmap = true
+
+                        bitmap?.let {
+                            if (sharingCanvas != null) {
+                                val sharePiece = Bitmap.createBitmap(bitmap)
+                                sharingCanvas?.drawBitmap(sharePiece, null, rec, paint)
+
                             }
-                            bufferDataCentered.left /= latestBufferList.size + 1
-                            bufferDataCentered.top /= latestBufferList.size + 1
-                            bufferDataCentered.right /= latestBufferList.size + 1
-                            bufferDataCentered.bottom /= latestBufferList.size + 1
+                            canvas.drawBitmap(bitmap, null, rec, paint)
 
-                            latestBufferList.removeLast()
-                            latestBufferList.addFirst(bufferData)
-
-                            val rec = RectF(
-                                    bufferDataCentered.left.toFloat(),
-                                    bufferDataCentered.top.toFloat(),
-                                    bufferDataCentered.right.toFloat(),
-                                    bufferDataCentered.bottom.toFloat())
-
-                            val paint = Paint()
-                            paint.isAntiAlias = true
-                            paint.isFilterBitmap = true
-
-                            bitmap?.let {
-                                if (sharingCanvas != null) {
-                                    val sharePiece = Bitmap.createBitmap(bitmap)
-                                    sharingCanvas?.drawBitmap(sharePiece, null, rec, paint)
-
-                                }
-                                canvas.drawBitmap(bitmap, null, rec, paint)
-
-                                markerData = MarkerDrawData(
-                                        matrixData,
-                                        bufferDataCentered.left.toFloat(),
-                                        bufferDataCentered.top.toFloat(),
-                                        bufferDataCentered.right.toFloat(),
-                                        bufferDataCentered.bottom.toFloat())
-                            }
+                            markerData = MarkerDrawData(
+                                matrixData,
+                                bufferDataCentered.left.toFloat(),
+                                bufferDataCentered.top.toFloat(),
+                                bufferDataCentered.right.toFloat(),
+                                bufferDataCentered.bottom.toFloat()
+                            )
                         }
                     }
-                    if (!matrixData.shouldShow) {
-                        locBufferMap.remove(key)
-                    }
-                    markerData
                 }
-                .filter { it != null }
-        drawData.clear()
-        drawData.addAll(drawDataList)
+                if (!matrixData.shouldShow) {
+                    locBufferMap.remove(key)
+                }
+                markerData
+            }
+            .filter { it != null }
+        drawData?.clear()
+        drawData?.addAll(drawDataList)
         if (isSharing && mSharingListener != null && sharingBitmap != null) {
             isSharing = false
             Thread().run {
@@ -246,7 +263,7 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
     }
 
     override fun updateCamera(location: LatLng, bearing: Float, tilt: Float, zoom: Float) {
-        if (mLocation?.equals(location) != true){
+        if (mLocation?.equals(location) != true) {
             locBufferMap.clear()
             bitmapMap.clear()
         }
@@ -254,8 +271,8 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
         mBearing = bearing.toDouble()
         mTilt = tilt.toDouble()
         mZoom = 1.0 + zoom.toDouble()
-        xCalcAngle = mapsConfig.xMapCameraAngle / mZoom
-        yCalcAngle = mapsConfig.yMapCameraAngle / mZoom
+        xCalcAngle = mapsConfig?.xMapCameraAngle ?: 0 / mZoom
+        yCalcAngle = mapsConfig?.yMapCameraAngle ?: 0 / mZoom
         calcFlag = true
         xTransitionDim = screenWidth / xCalcAngle
         yTransitionDim = screenHeight / yCalcAngle
@@ -263,10 +280,12 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
 
     private fun calculate() {
         if (mLocation !== null) {
-            val geoData = markers.map { calculateGeoData(mLocation!!, it) }
-            val data = geoData.map { generateMatrix(it) }
-            matrixSet.removeAll(data)
-            matrixSet.addAll(data)
+            val geoData = markers?.map { calculateGeoData(mLocation!!, it) }
+            val data = geoData?.map { generateMatrix(it) }
+            if (data != null) {
+                matrixSet.removeAll(data)
+                matrixSet.addAll(data)
+            }
         }
         calcFlag = false
 
@@ -274,7 +293,7 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
 
     private fun generateMatrix(geoData: MarkerGeoData): MarkerMatrixData {
 
-        val isInRange = geoData.distance * 1000 <= mapsConfig.markersToShowStreetRadius
+        val isInRange = geoData.distance * 1000 <= mapsConfig?.markersToShowStreetRadius ?: 0.0
         var xLoc = 0.toDouble()
         var yLoc = 0.toDouble()
         var scale = 0.toDouble()
@@ -287,46 +306,47 @@ class DrawThread(private val surfaceHolder: SurfaceHolder,
         } else {
             shouldShow = Math.abs(geoData.azimuth - mBearing) < xCalcAngle
         }
-        if (mapsConfig.showIgnoringAzimuth) shouldShow = true
+        if (mapsConfig?.showIgnoringAzimuth == true) shouldShow = true
         if (!isInRange) shouldShow = false
 
         if (shouldShow) {
-            scale = ((mapsConfig.markerScaleRadius - geoData.distance * 1000.toDouble())
-                    / mapsConfig.markerScaleRadius)
+            scale = ((mapsConfig?.markerScaleRadius ?: 0-geoData.distance * 1000.toDouble())
+                    / (mapsConfig?.markerScaleRadius ?: 1.0))
 
             if (scale > 1) {
                 scale = 1.toDouble()
             }
-            if (scale <= mapsConfig.minMarkerSize &&
-                    mapsConfig.markersToShowStreetRadius - geoData.distance * 1000.toDouble() > 0) {
-                scale = mapsConfig.minMarkerSize
+            if (scale <= mapsConfig?.minMarkerSize ?: 0.0 &&
+                mapsConfig?.markersToShowStreetRadius ?: 0 - geoData.distance * 1000.toDouble() > 0) {
+                scale = mapsConfig?.minMarkerSize ?: 0.0
 
-            } else if (scale <= mapsConfig.minMarkerSize) {
+            } else if (scale <= mapsConfig?.minMarkerSize ?: 0.0) {
                 scale = 0.toDouble()
             }
             scale *= (mZoom - 1) / 2 + 1
             val correctedProjectionBearing =
-                    if (geoData.azimuth - mBearing >= mapsConfig.xMapCameraAngle * 1.5) {
-                        mBearing + 360
-                    } else if (mBearing - geoData.azimuth >= mapsConfig.xMapCameraAngle * 1.5) {
-                        mBearing - 360
+                if (geoData.azimuth - mBearing >= mapsConfig?.xMapCameraAngle ?: 0.0 * 1.5) {
+                    mBearing + 360
+                } else if (mBearing - geoData.azimuth >= mapsConfig?.xMapCameraAngle ?: 0 * 1.5) {
+                    mBearing - 360
 
-                    } else mBearing
+                } else mBearing
 
             xLoc = ((geoData.azimuth - correctedProjectionBearing) * xTransitionDim) + screenWidth / 2.toDouble()
 
-            val lowerForCloser = (mapsConfig.markersToShowStreetRadius / 2 - geoData.distance * 1000) / mapsConfig.markersToShowStreetRadius
+            val lowerForCloser = (mapsConfig?.markersToShowStreetRadius ?: 0 / 2-geoData.distance * 1000) / (mapsConfig?.markersToShowStreetRadius ?: 0.0)
 
-            yLoc = (screenHeight / 2.toDouble() + (mTilt * yTransitionDim)) * (1.toDouble() - mapsConfig.yOffset + lowerForCloser / 2)
+            yLoc = (screenHeight / 2.toDouble() + (mTilt * yTransitionDim)) * (1.toDouble() - (mapsConfig?.yOffset ?: 0.0) + lowerForCloser / 2)
 
         }
 
         val mat = MarkerMatrixData(
-                geoData,
-                shouldShow,
-                scale,
-                xLoc,
-                yLoc)
+            geoData,
+            shouldShow,
+            scale,
+            xLoc,
+            yLoc
+        )
         return mat
     }
 

@@ -163,6 +163,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onStop() {
         super.onStop()
         mapView.onStop()
+        locationTracker.deactivate()
     }
 
     override fun onDestroyView() {

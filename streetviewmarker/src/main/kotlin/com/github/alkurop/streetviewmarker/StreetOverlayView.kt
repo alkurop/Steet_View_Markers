@@ -16,7 +16,7 @@ import java.util.concurrent.*
 interface IStreetOverlayView {
     fun onLocationUpdate(location: LatLng)
     fun onCameraUpdate(cameraPosition: StreetViewPanoramaCamera)
-    fun addMarkers(markers: HashSet<Place>)
+    fun setMarkers(markers: HashSet<Place>)
     fun onClick()
     fun onLongClick()
     fun setLocalClickListener(onClickListener: ((data: MarkerDrawData) -> Unit)?)
@@ -26,8 +26,9 @@ interface IStreetOverlayView {
     fun setSharingListener(listener: (Bitmap) -> Unit)
 }
 
-class StreetOverlayView : SurfaceView, IStreetOverlayView,
-        SurfaceHolder.Callback {
+class StreetOverlayView : SurfaceView,
+                          IStreetOverlayView,
+                          SurfaceHolder.Callback {
     override var mapsConfig: MapsConfig = MapsConfig()
     val TAG = StreetOverlayView::class.java.simpleName
     private val mMarkers = CopyOnWriteArrayList<Place>()
@@ -46,16 +47,50 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
     constructor  (context: Context) : super(context)
 
     init {
-        holder.addCallback(this)
+
         holder.setFormat(PixelFormat.TRANSPARENT)
     }
 
     fun stop() {
+        mDrawThread?.setRunning(false)
+        var retry = true
 
+        while (retry) {
+            try {
+                mDrawThread?.join()
+                retry = false
+                mDrawThread = null
+            } catch (e: InterruptedException) {
+            }
+
+        }
     }
 
     fun pause() {
     }
+
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        holder.addCallback(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        holder.removeCallback(this)
+        var retry = true
+
+        while (retry) {
+            try {
+                mDrawThread?.join()
+                retry = false
+                mDrawThread = null
+            } catch (e: InterruptedException) {
+            }
+
+        }
+    }
+
 
     override fun onLocationUpdate(location: LatLng) {
         this.mLocation = location
@@ -74,11 +109,9 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
         }
     }
 
-    override fun addMarkers(markers: HashSet<Place>) {
-        val filteredAdd = this.mMarkers.toHashSet()
-        filteredAdd.addAll(markers)
+    override fun setMarkers(markers: HashSet<Place>) {
         this.mMarkers.clear()
-        this.mMarkers.addAll(filteredAdd)
+        this.mMarkers.addAll(markers)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
@@ -86,6 +119,17 @@ class StreetOverlayView : SurfaceView, IStreetOverlayView,
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
         mDrawThread?.setRunning(false)
+        var retry = true
+
+        while (retry) {
+            try {
+                mDrawThread?.join()
+                retry = false
+                mDrawThread = null
+            } catch (e: InterruptedException) {
+            }
+
+        }
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {

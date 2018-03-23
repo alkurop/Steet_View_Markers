@@ -67,7 +67,7 @@ class LocationTrackerImpl : LocationTracker {
     fun executeSettingsRequest() {
         val activity = weakActivity.get() ?: return
         val builder = LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest)
+            .addLocationRequest(locationRequest)
         val client = LocationServices.getSettingsClient(activity)
         val task = client.checkLocationSettings(builder.build())
         task.addOnSuccessListener { executeLocationsRequest() }
@@ -78,8 +78,9 @@ class LocationTrackerImpl : LocationTracker {
                     val resolvable = it as ResolvableApiException
 
                     resolvable.startResolutionForResult(
-                            activity,
-                            REQUEST_CHECK_SETTINGS)
+                        activity,
+                        REQUEST_CHECK_SETTINGS
+                    )
                 }
                 LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
                     onRequestFailed()
@@ -104,6 +105,6 @@ class LocationTrackerImpl : LocationTracker {
     }
 
     override fun deactivate() {
-        fuseClient?.requestLocationUpdates(locationRequest, locationCallback, null)
+        fuseClient?.removeLocationUpdates(locationCallback)
     }
 }

@@ -117,7 +117,7 @@ class StreetFragment : BaseMvpFragment<StreetViewModel>() {
     override fun renderView(viewModel: StreetViewModel) {
         with(viewModel) {
             errorRes?.let { Toast.makeText(activity, it, Toast.LENGTH_SHORT).show() }
-            places?.let { marker_view.addMarkers(it.toHashSet()) }
+            places?.let { marker_view.setMarkers(it.toHashSet()) }
         }
     }
 

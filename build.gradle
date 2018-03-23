@@ -1,6 +1,11 @@
 buildscript {
     apply from: 'libs.gradle'
 
+    ext.compileSdkVersion = 26
+    ext.buildToolsVersion = "26.0.2"
+    ext.minSdkVersion = 16
+    ext.targetSdkVersion = 26
+
     repositories {
         google()
         jcenter()

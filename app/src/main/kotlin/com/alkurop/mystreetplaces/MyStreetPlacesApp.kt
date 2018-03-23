@@ -12,6 +12,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.core.assist.ImageScaleType
+import com.squareup.leakcanary.LeakCanary
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
 import io.fabric.sdk.android.Fabric
 import io.realm.Realm
@@ -22,6 +23,12 @@ class MyStreetPlacesApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this)
         component = buildApplicationComponent()
         initRealm()
         initStetho()
