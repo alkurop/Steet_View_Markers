@@ -85,7 +85,6 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
         mapView.onCreate(savedInstanceState)
 
         presenter.isPermissionGranted = false
-        permissionManager?.makePermissionRequest()
 
         presenter.attach()
     }
@@ -147,6 +146,7 @@ class MapFragment : BaseMvpFragment<MapViewModel>() {
     override fun onStart() {
         super.onStart()
         mapView.onStart()
+        permissionManager?.makePermissionRequest()
         presenter.refresh()
     }
 
