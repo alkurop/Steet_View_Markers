@@ -1,6 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
 apply from:'../libs.gradle'
+
+group='com.github.alkurop'
+
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion

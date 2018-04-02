@@ -28,6 +28,5 @@ proguard/
 *.iml
 /.idea/
 /.idea/
-gradle/
 
 .DS_Store

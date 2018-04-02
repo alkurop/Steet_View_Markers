@@ -1,5 +1,5 @@
 # Street View Markers
-[![](https://jitpack.io/v/alkurop/Steet_View_Markers.svg)](https://jitpack.io/#alkurop/Steet_View_Markers)
+[![](https://jitpack.io/v/alkurop/Street_View_Markers.svg)](https://jitpack.io/#alkurop/Steet_View_Markers)
 
 
 Add clickable markers to android street view.
