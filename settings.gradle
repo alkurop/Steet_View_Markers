@@ -1,1 +1,1 @@
-include ':app', ':streetviewmarker', ':categories'
+include ':demo', ':streetviewmarker'

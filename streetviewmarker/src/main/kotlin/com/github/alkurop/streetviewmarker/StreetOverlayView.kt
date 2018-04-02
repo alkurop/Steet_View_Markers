@@ -23,7 +23,6 @@ interface IStreetOverlayView {
     var mapsConfig: MapsConfig
 
     fun setLongClickListener(onClickListener: ((MarkerDrawData) -> Unit)?)
-    fun setSharingListener(listener: (Bitmap) -> Unit)
 }
 
 class StreetOverlayView : SurfaceView,
@@ -194,9 +193,5 @@ class StreetOverlayView : SurfaceView,
 
     override fun setLongClickListener(onClickListener: ((MarkerDrawData) -> Unit)?) {
         this.longClickListener = onClickListener
-    }
-
-    override fun setSharingListener(listener: (Bitmap) -> Unit) {
-        mDrawThread?.setSharingListener(listener)
     }
 }

@@ -1,7 +1,6 @@
 package com.github.alkurop.streetviewmarker
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -10,7 +9,7 @@ import com.google.android.gms.maps.StreetViewPanorama
 import com.google.android.gms.maps.StreetViewPanoramaView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera
-import java.util.*
+import java.util.HashSet
 
 class StreetMarkerView @JvmOverloads constructor(
         context: Context,
@@ -19,25 +18,23 @@ class StreetMarkerView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr),
     IStreetOverlayView {
 
-    val markerView: StreetOverlayView
-    val streetView: StreetViewPanoramaView
-    val touchOverlay: TouchOverlayView
-    var onStreetLoadedSuccess: ((Boolean) -> Unit)? = null
+    internal val markerView: StreetOverlayView
+    internal val streetView: StreetViewPanoramaView
+    internal val touchOverlay: TouchOverlayView
 
+    var onStreetLoadedSuccess: ((Boolean) -> Unit)? = null
     var onCameraUpdateListener: ((CameraPosition) -> Unit)? = null
     var onMarkerClickListener: ((Place) -> Unit)? = null
     var onMarkerLongClickListener: ((Place) -> Unit)? = null
     override var mapsConfig: MapsConfig
         set(value) {
-            markerView?.mapsConfig = value
+            markerView.mapsConfig = value
         }
-        get() = markerView?.mapsConfig ?: MapsConfig()
+        get() = markerView.mapsConfig
 
-    var shouldFocusToMyLocation = true
-
-    var markerDataList = hashSetOf<Place>()
-    var cam: StreetViewPanoramaCamera = StreetViewPanoramaCamera(0f, 0f, 0f)
-    var position: LatLng? = null
+    internal var markerDataList = hashSetOf<Place>()
+    internal var cam: StreetViewPanoramaCamera = StreetViewPanoramaCamera(0f, 0f, 0f)
+    internal var position: LatLng? = null
     lateinit var callback: (StreetViewPanorama) -> Unit
 
     init {
@@ -48,23 +45,23 @@ class StreetMarkerView @JvmOverloads constructor(
     }
 
     override fun onLocationUpdate(location: LatLng) {
-        markerView?.onLocationUpdate(location)
+        markerView.onLocationUpdate(location)
     }
 
     override fun onCameraUpdate(cameraPosition: StreetViewPanoramaCamera) {
-        markerView?.onCameraUpdate(cameraPosition)
+        markerView.onCameraUpdate(cameraPosition)
     }
 
     override fun onClick() {
-        markerView?.onClick()
+        markerView.onClick()
     }
 
     override fun onLongClick() {
-        markerView?.onLongClick()
+        markerView.onLongClick()
     }
 
     override fun setLocalClickListener(onClickListener: ((data: MarkerDrawData) -> Unit)?) {
-        markerView?.setLocalClickListener(onClickListener)
+        markerView.setLocalClickListener(onClickListener)
     }
 
     private fun sendCameraPosition() {
@@ -81,7 +78,8 @@ class StreetMarkerView @JvmOverloads constructor(
     }
 
     fun onMarkerClicker(geoData: MarkerGeoData) {
-        if (geoData.distance >= mapsConfig.markerMinPositionToMoveToMarker / 1000.toDouble()) {
+        if (geoData.distance >= mapsConfig.markerMinPositionToMoveToMarker / 1000.toDouble()
+            && mapsConfig.navigateToLocationOnMarkerClick) {
             focusToLocation(geoData.place.location)
         }
         onMarkerClickListener?.invoke(geoData.place)
@@ -94,7 +92,7 @@ class StreetMarkerView @JvmOverloads constructor(
     //CONTROLS
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return markerView?.onTouchEvent(event) ?: false
+        return markerView.onTouchEvent(event)
     }
 
     override fun setLongClickListener(onClickListener: ((MarkerDrawData) -> Unit)?) {
@@ -110,7 +108,7 @@ class StreetMarkerView @JvmOverloads constructor(
     }
 
     override fun setMarkers(markers: HashSet<Place>) {
-        markerView?.setMarkers(markers)
+        markerView.setMarkers(markers)
         markerDataList.clear()
         markerDataList.addAll(markers)
     }
@@ -121,15 +119,15 @@ class StreetMarkerView @JvmOverloads constructor(
         val streetBundle = state?.getBundle("streetView")
         streetView.onCreate(streetBundle)
         callback = { panorama ->
-            markerView?.onCameraUpdate(panorama.panoramaCamera)
+            markerView.onCameraUpdate(panorama.panoramaCamera)
             panorama.setOnStreetViewPanoramaCameraChangeListener { cameraPosition ->
                 cam = cameraPosition
-                markerView?.onCameraUpdate(cameraPosition)
+                markerView.onCameraUpdate(cameraPosition)
                 sendCameraPosition()
             }
             panorama.setOnStreetViewPanoramaChangeListener { cameraPosition ->
                 if (cameraPosition !== null && cameraPosition.position !== null) {
-                    markerView?.onLocationUpdate(cameraPosition.position)
+                    markerView.onLocationUpdate(cameraPosition.position)
                     position = cameraPosition.position
                 }
                 sendCameraPosition()
@@ -144,61 +142,56 @@ class StreetMarkerView @JvmOverloads constructor(
         }
         streetView.getStreetViewPanoramaAsync(callback)
         touchOverlay.onTouchListener = {
-            markerView?.onTouchEvent(it)
+            markerView.onTouchEvent(it)
         }
 
-        markerView?.setLongClickListener { onMarkerLongClicker(it.matrixData.data) }
+        markerView.setLongClickListener { onMarkerLongClicker(it.matrixData.data) }
 
-        markerView?.setLocalClickListener {
+        markerView.setLocalClickListener {
             onMarkerClicker(it.matrixData.data)
         }
-        markerView?.setLongClickListener { onMarkerLongClicker(it.matrixData.data) }
+        markerView.setLongClickListener { onMarkerLongClicker(it.matrixData.data) }
         restoreState(state)
     }
 
     private fun restoreState(saveState: Bundle?) {
         saveState?.let {
-            shouldFocusToMyLocation = saveState.getBoolean("shouldFocusToMyLocation", true)
             val parcelableArray = saveState.getParcelableArray("markerModels")
             val map = parcelableArray.map { it as Place }
             markerDataList = (map).toHashSet()
         }
-        markerView?.setMarkers(markerDataList)
+        markerView.setMarkers(markerDataList)
     }
 
     fun onSaveInstanceState(state: Bundle?): Bundle {
         val bundle = state ?: Bundle()
         val arrayOfPlaces = markerDataList.toTypedArray()
         bundle.putParcelableArray("markerModels", arrayOfPlaces)
-        bundle.putBoolean("shouldFocusToMyLocation", shouldFocusToMyLocation)
         return bundle
     }
 
     fun onResume() {
         streetView.onResume()
-        markerView?.postDelayed({ markerView?.onCameraUpdate(cam) }, 300)
+        markerView.postDelayed({ markerView.onCameraUpdate(cam) }, 300)
     }
 
     fun onPause() {
-        markerView?.pause()
+        markerView.pause()
         streetView.onPause()
     }
 
     fun onStart() {
     }
 
-    fun onStop(){
-        markerView?.stop()
+    fun onStop() {
+        markerView.stop()
     }
 
     fun onDestroy() {
-        markerView?.stop()
+        markerView.stop()
         streetView.onDestroy()
     }
 
     fun onLowMemory() = streetView.onLowMemory()
-    override fun setSharingListener(listener: (Bitmap) -> Unit) {
-        markerView?.setSharingListener(listener)
-    }
 
 }

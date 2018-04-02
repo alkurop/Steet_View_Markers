@@ -56,9 +56,16 @@ data class MapsConfig(
         @JvmField val lowerForCloser: Boolean = false,
 
         /**
+         * Automatically move street view to clicked marker's location
+         */
+        @JvmField val navigateToLocationOnMarkerClick: Boolean = true,
+
+        /**
          * this is here for debugging. don't touch it.
          */
         @JvmField val showIgnoringAzimuth: Boolean = false
+
+
 )
 
 

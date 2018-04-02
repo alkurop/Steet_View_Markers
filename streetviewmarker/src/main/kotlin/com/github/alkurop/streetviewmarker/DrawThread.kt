@@ -24,14 +24,10 @@ import java.util.LinkedList
 import java.util.concurrent.ConcurrentHashMap
 import com.squareup.picasso.Target as PicassoTarget
 
-/**
- * Created by alkurop on 31.05.16.
- */
 
 interface IDrawThread {
     fun updateCamera(location: LatLng, bearing: Float, tilt: Float, zoom: Float)
     fun setRunning(run: Boolean)
-    fun setSharingListener(listener: (Bitmap) -> Unit)
 }
 
 class DrawThread(
@@ -64,9 +60,6 @@ class DrawThread(
     private var yTransitionDim: Double = 0.0
     private var xCalcAngle: Double = 0.0
     private var yCalcAngle: Double = 0.0
-
-    private var isSharing = false
-    private var mSharingListener: ((Bitmap) -> Unit)? = null
 
     override fun setRunning(run: Boolean) {
         runFlag = run
@@ -104,7 +97,7 @@ class DrawThread(
                 canvas = surfaceHolder?.lockCanvas(null)
                 canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
                 if (canvas != null)
-                    drawMarkersOnCanvas(canvas!!)
+                    drawMarkersOnCanvas(canvas)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
@@ -121,14 +114,6 @@ class DrawThread(
     }
 
     private fun drawMarkersOnCanvas(canvas: Canvas) {
-        var sharingBitmap: Bitmap? = null
-        var sharingCanvas: Canvas? = null
-        if (isSharing && mSharingListener != null) {
-            sharingBitmap = Bitmap.createBitmap(screenWidth.toInt(), screenHeight.toInt(), Bitmap.Config.ARGB_8888)
-            sharingCanvas = Canvas(sharingBitmap)
-        }
-        sharingCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-
         val drawDataList = matrixSet
             .sortedBy { it.data.distance }
             .reversed()
@@ -181,11 +166,6 @@ class DrawThread(
                         paint.isFilterBitmap = true
 
                         bitmap?.let {
-                            if (sharingCanvas != null) {
-                                val sharePiece = Bitmap.createBitmap(bitmap)
-                                sharingCanvas?.drawBitmap(sharePiece, null, rec, paint)
-
-                            }
                             canvas.drawBitmap(bitmap, null, rec, paint)
 
                             markerData = MarkerDrawData(
@@ -206,12 +186,6 @@ class DrawThread(
             .filter { it != null }
         drawData?.clear()
         drawData?.addAll(drawDataList)
-        if (isSharing && mSharingListener != null && sharingBitmap != null) {
-            isSharing = false
-            Thread().run {
-                mSharingListener?.invoke(sharingBitmap!!)
-            }
-        }
     }
 
     private fun MarkerMatrixData.getBitmapFromModel(key: String, distanceMeters: Int): Bitmap? {
@@ -271,8 +245,8 @@ class DrawThread(
         mBearing = bearing.toDouble()
         mTilt = tilt.toDouble()
         mZoom = 1.0 + zoom.toDouble()
-        xCalcAngle = mapsConfig?.xMapCameraAngle ?: 0 / mZoom
-        yCalcAngle = mapsConfig?.yMapCameraAngle ?: 0 / mZoom
+        xCalcAngle = mapsConfig.xMapCameraAngle
+        yCalcAngle = mapsConfig.yMapCameraAngle
         calcFlag = true
         xTransitionDim = screenWidth / xCalcAngle
         yTransitionDim = screenHeight / yCalcAngle
@@ -369,10 +343,5 @@ class DrawThread(
 
         val bearing = temp.bearingTo(temp2)
         return bearing.toDouble()
-    }
-
-    override fun setSharingListener(listener: (Bitmap) -> Unit) {
-        mSharingListener = listener
-        isSharing = true
     }
 }

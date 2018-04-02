@@ -18,25 +18,32 @@ Add clickable markers to android street view.
 
 ```
 
-val focusLocation = arguments.getParcelable<LatLng>(FOCUS_LOCATION_KEY)
-
+val focusLocation = LatLng(50.431849329572735, 30.515935972507187)
+    marker_view.focusToLocation(focusLocation)
+    
 marker_view.focusToLocation(focusLocation)
 
 marker_view.onMarkerClickListener = {
-            presenter.onMarkerClicked(it)
-        }
+    Toast.makeText(this, "$it", Toast.LENGTH_SHORT).show()
+}
 
 marker_view.onMarkerLongClickListener = {
-            presenter.onMarkerClicked(it)
-        }
+    Toast.makeText(this, "$it", Toast.LENGTH_SHORT).show()
+}
 marker_view.onStreetLoadedSuccess = { loadedSuccess ->
-            if (!loadedSuccess) {
-                presenter.errorLoadingStreetView()
-            }
-        }
-marker_view.onCameraUpdateListener = {
-            presenter.onCameraUpdate(it)
-        }
+    if (!loadedSuccess) {
+        Toast.makeText(this, "No street found at this location", Toast.LENGTH_SHORT).show()
+    }
+}
+
+marker_view.onCameraUpdateListener = { cameraPosition ->
+    Log.d(this.javaClass.canonicalName, "Load new markres list for position $cameraPosition")
+}
+
+val markerLocation = LatLng(50.431781340278064, 30.51638161763549)
+val marker = PinPlace("1", markerLocation, "title")
+
+marker_view.setMarkers(hashSetOf(marker))
 
 ```
 
