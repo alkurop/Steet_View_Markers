@@ -64,6 +64,7 @@ class StreetOverlayView : SurfaceView,
             }
 
         }
+        System.gc()
     }
 
     fun pause() {

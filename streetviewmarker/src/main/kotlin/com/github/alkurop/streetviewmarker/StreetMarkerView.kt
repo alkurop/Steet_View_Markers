@@ -187,6 +187,9 @@ class StreetMarkerView @JvmOverloads constructor(
     fun onStart() {
     }
 
+    fun onStop(){
+        markerView?.stop()
+    }
 
     fun onDestroy() {
         markerView?.stop()

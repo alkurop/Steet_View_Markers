@@ -40,7 +40,7 @@ class DrawThread(
         var markers: List<Place>?,
         var drawData: MutableList<MarkerDrawData?>?,
         var context: Context?,
-        var mapsConfig: MapsConfig?
+        var mapsConfig: MapsConfig
 ) : Thread(),
     IDrawThread {
     val TAG = DrawThread::class.java.simpleName
@@ -77,7 +77,7 @@ class DrawThread(
             resources = null
             context = null
             drawData = null
-            mapsConfig = null
+            mapsConfig = MapsConfig()
             markers = null
             matrixSet.clear()
             targetMap.clear()
@@ -293,7 +293,7 @@ class DrawThread(
 
     private fun generateMatrix(geoData: MarkerGeoData): MarkerMatrixData {
 
-        val isInRange = geoData.distance * 1000 <= mapsConfig?.markersToShowStreetRadius ?: 0.0
+        val isInRange = geoData.distance * 1000 <= mapsConfig.markersToShowStreetRadius
         var xLoc = 0.toDouble()
         var yLoc = 0.toDouble()
         var scale = 0.toDouble()
@@ -310,33 +310,36 @@ class DrawThread(
         if (!isInRange) shouldShow = false
 
         if (shouldShow) {
-            scale = ((mapsConfig?.markerScaleRadius ?: 0-geoData.distance * 1000.toDouble())
-                    / (mapsConfig?.markerScaleRadius ?: 1.0))
+            scale = ((mapsConfig.markerScaleRadius - geoData.distance * 1000.toDouble())
+                    / (mapsConfig.markerScaleRadius))
 
             if (scale > 1) {
                 scale = 1.toDouble()
             }
-            if (scale <= mapsConfig?.minMarkerSize ?: 0.0 &&
-                mapsConfig?.markersToShowStreetRadius ?: 0 - geoData.distance * 1000.toDouble() > 0) {
-                scale = mapsConfig?.minMarkerSize ?: 0.0
+            if (scale <= mapsConfig.minMarkerSize &&
+                mapsConfig.markersToShowStreetRadius - geoData.distance * 1000.toDouble() > 0) {
+                scale = mapsConfig.minMarkerSize
 
-            } else if (scale <= mapsConfig?.minMarkerSize ?: 0.0) {
+            } else if (scale <= mapsConfig.minMarkerSize) {
                 scale = 0.toDouble()
             }
             scale *= (mZoom - 1) / 2 + 1
             val correctedProjectionBearing =
-                if (geoData.azimuth - mBearing >= mapsConfig?.xMapCameraAngle ?: 0.0 * 1.5) {
+                if (geoData.azimuth - mBearing >= mapsConfig.xMapCameraAngle) {
                     mBearing + 360
-                } else if (mBearing - geoData.azimuth >= mapsConfig?.xMapCameraAngle ?: 0 * 1.5) {
+                } else if (mBearing - geoData.azimuth >= mapsConfig.xMapCameraAngle * 1.5) {
                     mBearing - 360
 
                 } else mBearing
 
             xLoc = ((geoData.azimuth - correctedProjectionBearing) * xTransitionDim) + screenWidth / 2.toDouble()
 
-            val lowerForCloser = (mapsConfig?.markersToShowStreetRadius ?: 0 / 2-geoData.distance * 1000) / (mapsConfig?.markersToShowStreetRadius ?: 0.0)
+            val lowerForCloser = (mapsConfig.markersToShowStreetRadius / 2 - geoData.distance * 1000) / (mapsConfig.markersToShowStreetRadius)
 
-            yLoc = (screenHeight / 2.toDouble() + (mTilt * yTransitionDim)) * (1.toDouble() - (mapsConfig?.yOffset ?: 0.0) + lowerForCloser / 2)
+            yLoc = (screenHeight / 2.toDouble() + (mTilt * yTransitionDim)) * (1.toDouble() - mapsConfig.yOffset +
+                    if (mapsConfig.lowerForCloser) {
+                        lowerForCloser / 2
+                    } else 0.toDouble())
 
         }
 

@@ -93,9 +93,6 @@ dependencies {
     implementation 'com.uphyca:stetho_realm:2.2.2'
     implementation 'com.nex3z:flow-layout:1.2.2'
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-
     testCompile 'org.assertj:assertj-core:2.9.0'
     testCompile 'junit:junit:4.12'
 }

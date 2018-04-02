@@ -2,13 +2,13 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <com.github.alkurop.streetviewmarker.StreetOverlayView
-        android:id="@+id/overlay"
+    <com.google.android.gms.maps.StreetViewPanoramaView
+        android:id="@+id/panorama"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.google.android.gms.maps.StreetViewPanoramaView
-        android:id="@+id/panorama"
+    <com.github.alkurop.streetviewmarker.StreetOverlayView
+        android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
